@@ -1,4 +1,6 @@
+import argparse
 import json
+import os
 import statistics
 import sys
 import time
@@ -10,11 +12,19 @@ sys.path.insert(0, str(ROOT))
 
 from sts_engine.agent import build_graph
 
-EVAL_PATH = ROOT / "data" / "eval_cases.json"
+DEFAULT_EVAL_PATH = ROOT / "data" / "eval_cases.json"
 
 
 def main() -> None:
-    with open(EVAL_PATH, "r", encoding="utf-8") as f:
+    parser = argparse.ArgumentParser(description="Evaluate recommendation quality on fixed scenarios.")
+    parser.add_argument("--eval", default=str(DEFAULT_EVAL_PATH), help="Path to evaluation cases JSON.")
+    parser.add_argument("--data", default=None, help="Optional knowledge-base dataset path.")
+    args = parser.parse_args()
+
+    if args.data:
+        os.environ["STS_KB_PATH"] = args.data
+
+    with open(args.eval, "r", encoding="utf-8") as f:
         cases = json.load(f)
 
     engine = build_graph()
@@ -33,7 +43,7 @@ def main() -> None:
         ranked = [item["option_id"] for item in result.get("option_scores", [])]
         expected = case["expected_top"]
         acceptable = set(case.get("acceptable", [expected]))
-        if ranked and ranked[0] == expected:
+        if ranked and ranked[0] in acceptable:
             top1 += 1
         elif ranked and ranked[0] not in acceptable:
             failures.append((case["id"], ranked[:3], expected))

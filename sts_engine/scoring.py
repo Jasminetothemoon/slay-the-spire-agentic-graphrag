@@ -34,7 +34,7 @@ class RecommendationScorer:
             reasons: List[str] = []
             risks: List[str] = []
 
-            synergy_bonus = sum(item.get("weight", 0.5) * 18 for item in option_evidence)
+            synergy_bonus = sum(self._synergy_weight(item) for item in option_evidence)
             if synergy_bonus:
                 score += synergy_bonus
                 mechanics = sorted({item["mechanic_name"] for item in option_evidence})
@@ -76,7 +76,15 @@ class RecommendationScorer:
                 }
             )
 
-        scores.sort(key=lambda item: item["score"], reverse=True)
+        scores.sort(
+            key=lambda item: (
+                item["score"],
+                len(item.get("evidence", [])),
+                item["confidence"],
+                -len(item.get("risks", [])),
+            ),
+            reverse=True,
+        )
         return scores
 
     def risk_report(self, state: Dict[str, Any]) -> Dict[str, Any]:
@@ -145,8 +153,21 @@ class RecommendationScorer:
         if option_class == character_class:
             return 3.0, "Matches the current character card pool."
         if option.get("entity_type") == "card":
-            return -25.0, "Off-class card detected; likely invalid unless a modded run allows it."
+            return -45.0, "Off-class card detected; likely invalid unless a modded run allows it."
         return 0.0, ""
+
+    def _synergy_weight(self, item: Dict[str, Any]) -> float:
+        base = item.get("weight", 0.5) * 18
+        option_rel = item.get("option_relationship")
+        owned_rel = item.get("owned_relationship")
+        mechanic = item.get("mechanic")
+        if option_rel == "SCALES_WITH":
+            base += 10
+        if option_rel == "ENHANCES":
+            base += 6
+        if owned_rel in {"APPLIES", "ENHANCES"} and mechanic in {"poison", "strength", "focus", "orb_frost", "orb_lightning"}:
+            base += 4
+        return base
 
     def _redundancy_penalty(self, option_tags: set[str], deck_tags: List[str]) -> float:
         if not option_tags:

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "public_silent_poison_take_catalyst",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_001",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 1,
+      "current_floor": 10,
+      "current_hp": 40,
+      "max_hp": 70,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask", "Noxious Fumes"],
+      "relics": ["Snecko Skull"],
+      "potions": []
+    },
+    "options": ["Catalyst", "Backflip", "Dagger Spray"],
+    "expected_top": "catalyst",
+    "acceptable": ["catalyst"]
+  },
+  {
+    "id": "public_silent_missing_aoe_take_dagger_spray",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_002",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 6,
+      "current_hp": 52,
+      "max_hp": 70,
+      "gold": 80,
+      "deck": ["Strike", "Defend", "Backflip"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Dagger Spray", "Deadly Poison", "Catalyst"],
+    "expected_top": "dagger_spray",
+    "acceptable": ["dagger_spray"]
+  },
+  {
+    "id": "public_ironclad_strength_take_limit_break",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_003",
+      "character_class": "ironclad",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 55,
+      "max_hp": 80,
+      "gold": 130,
+      "deck": ["Strike", "Defend", "Bash", "Inflame", "Spot Weakness"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Limit Break", "Shockwave", "Backflip"],
+    "expected_top": "limit_break",
+    "acceptable": ["limit_break", "shockwave"]
+  },
+  {
+    "id": "public_defect_focus_take_defragment",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_004",
+      "character_class": "defect",
+      "ascension_level": 10,
+      "act": 2,
+      "current_floor": 23,
+      "current_hp": 38,
+      "max_hp": 75,
+      "gold": 145,
+      "deck": ["Strike", "Defend", "Zap", "Glacier"],
+      "relics": ["Cracked Core"],
+      "potions": []
+    },
+    "options": ["Defragment", "Dagger Spray", "Wallop"],
+    "expected_top": "defragment",
+    "acceptable": ["defragment"]
+  },
+  {
+    "id": "public_shop_remove_card",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_005",
+      "character_class": "ironclad",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 18,
+      "current_hp": 50,
+      "max_hp": 80,
+      "gold": 180,
+      "deck": ["Strike", "Strike", "Strike", "Defend", "Defend", "Bash", "Inflame", "Shockwave", "Defend", "Strike", "Strike", "Defend"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Remove a Card", "Buy Potion", "Skip"],
+    "expected_top": "remove_card",
+    "acceptable": ["remove_card"]
+  }
+]

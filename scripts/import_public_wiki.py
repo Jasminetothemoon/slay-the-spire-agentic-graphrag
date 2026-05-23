@@ -209,6 +209,8 @@ class PublicWikiImporter:
         cost = self._field_block(text_lines, "Cost")
         deck = self._field_block(text_lines, "Deck") or link["class"]
         mechanics = self._detect_mechanics(" ".join([description, name]))
+        relationships = self._relationships_for_mechanics(mechanics)
+        relationships = self._promote_scaling_relationships(relationships, description)
         return {
             "id": self._unique_card_id(name, deck),
             "name": name,
@@ -222,7 +224,7 @@ class PublicWikiImporter:
             "source_url": link["url"],
             "source": "slaythespire.gg",
             "confidence": 0.72,
-            "relationships": self._relationships_for_mechanics(mechanics),
+            "relationships": relationships,
         }
 
     def parse_generic_entity(self, collection: str, link: Dict[str, str]) -> Dict[str, Any]:
@@ -417,6 +419,20 @@ class PublicWikiImporter:
                     "weight": 0.65,
                 }
             )
+        return relationships
+
+    def _promote_scaling_relationships(
+        self, relationships: List[Dict[str, Any]], description: str
+    ) -> List[Dict[str, Any]]:
+        lower = description.lower()
+        scaling_markers = ("double", "triple", "multiply", "increase", "gain focus", "gain strength")
+        if not any(marker in lower for marker in scaling_markers):
+            return relationships
+        scaling_targets = {"poison", "strength", "focus", "orb_frost", "orb_lightning", "orb_dark"}
+        for relationship in relationships:
+            if relationship.get("target") in scaling_targets:
+                relationship["type"] = "SCALES_WITH"
+                relationship["weight"] = max(float(relationship.get("weight", 0.65)), 0.85)
         return relationships
 
     def _enemy_risk_relationships(self, body: str) -> List[Dict[str, Any]]:

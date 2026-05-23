@@ -2200,9 +2200,9 @@
           "weight": 0.65
         },
         {
-          "type": "APPLIES",
+          "type": "SCALES_WITH",
           "target": "strength",
-          "weight": 0.65
+          "weight": 0.85
         }
       ]
     },
@@ -3093,9 +3093,9 @@
           "weight": 0.65
         },
         {
-          "type": "APPLIES",
+          "type": "SCALES_WITH",
           "target": "poison",
-          "weight": 0.65
+          "weight": 0.85
         }
       ]
     },

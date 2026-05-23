@@ -38,6 +38,7 @@ def normalize(data: Dict[str, Any]) -> Dict[str, Any]:
         for collection in collections
     }
     data["metadata"]["normalized"] = True
+    _promote_scaling_relationships(data)
     return data
 
 
@@ -48,6 +49,19 @@ def _rewrite_relationship_targets(data: Dict[str, Any], old_id: str, new_id: str
         for relationship in entity.get("relationships", []):
             if relationship.get("target") == old_id:
                 relationship["target"] = new_id
+
+
+def _promote_scaling_relationships(data: Dict[str, Any]) -> None:
+    scaling_targets = {"poison", "strength", "focus", "orb_frost", "orb_lightning", "orb_dark"}
+    markers = ("double", "triple", "multiply", "increase", "gain focus", "gain strength")
+    for card in data.get("cards", []):
+        description = card.get("description", "").lower()
+        if not any(marker in description for marker in markers):
+            continue
+        for relationship in card.get("relationships", []):
+            if relationship.get("target") in scaling_targets:
+                relationship["type"] = "SCALES_WITH"
+                relationship["weight"] = max(float(relationship.get("weight", 0.65)), 0.85)
 
 
 def main() -> None:

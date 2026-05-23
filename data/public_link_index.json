@@ -1,0 +1,2683 @@
+{
+  "cards": [
+    {
+      "name": "Bash",
+      "url": "https://slaythespire.gg/cards/ironclad/Bash",
+      "class": "ironclad"
+    },
+    {
+      "name": "Defend",
+      "url": "https://slaythespire.gg/cards/ironclad/Defend",
+      "class": "ironclad"
+    },
+    {
+      "name": "Strike",
+      "url": "https://slaythespire.gg/cards/ironclad/Strike",
+      "class": "ironclad"
+    },
+    {
+      "name": "Anger",
+      "url": "https://slaythespire.gg/cards/ironclad/Anger",
+      "class": "ironclad"
+    },
+    {
+      "name": "Armaments",
+      "url": "https://slaythespire.gg/cards/ironclad/Armaments",
+      "class": "ironclad"
+    },
+    {
+      "name": "Body Slam",
+      "url": "https://slaythespire.gg/cards/ironclad/Body_Slam",
+      "class": "ironclad"
+    },
+    {
+      "name": "Clash",
+      "url": "https://slaythespire.gg/cards/ironclad/Clash",
+      "class": "ironclad"
+    },
+    {
+      "name": "Cleave",
+      "url": "https://slaythespire.gg/cards/ironclad/Cleave",
+      "class": "ironclad"
+    },
+    {
+      "name": "Clothesline",
+      "url": "https://slaythespire.gg/cards/ironclad/Clothesline",
+      "class": "ironclad"
+    },
+    {
+      "name": "Flex",
+      "url": "https://slaythespire.gg/cards/ironclad/Flex",
+      "class": "ironclad"
+    },
+    {
+      "name": "Havoc",
+      "url": "https://slaythespire.gg/cards/ironclad/Havoc",
+      "class": "ironclad"
+    },
+    {
+      "name": "Headbutt",
+      "url": "https://slaythespire.gg/cards/ironclad/Headbutt",
+      "class": "ironclad"
+    },
+    {
+      "name": "Heavy Blade",
+      "url": "https://slaythespire.gg/cards/ironclad/Heavy_Blade",
+      "class": "ironclad"
+    },
+    {
+      "name": "Iron Wave",
+      "url": "https://slaythespire.gg/cards/ironclad/Iron_Wave",
+      "class": "ironclad"
+    },
+    {
+      "name": "Perfected Strike",
+      "url": "https://slaythespire.gg/cards/ironclad/Perfected_Strike",
+      "class": "ironclad"
+    },
+    {
+      "name": "Pommel Strike",
+      "url": "https://slaythespire.gg/cards/ironclad/Pommel_Strike",
+      "class": "ironclad"
+    },
+    {
+      "name": "Shrug it Off",
+      "url": "https://slaythespire.gg/cards/ironclad/Shrug_it_Off",
+      "class": "ironclad"
+    },
+    {
+      "name": "Sword Boomerang",
+      "url": "https://slaythespire.gg/cards/ironclad/Sword_Boomerang",
+      "class": "ironclad"
+    },
+    {
+      "name": "Thunderclap",
+      "url": "https://slaythespire.gg/cards/ironclad/Thunderclap",
+      "class": "ironclad"
+    },
+    {
+      "name": "True Grit",
+      "url": "https://slaythespire.gg/cards/ironclad/True_Grit",
+      "class": "ironclad"
+    },
+    {
+      "name": "Twin Strike",
+      "url": "https://slaythespire.gg/cards/ironclad/Twin_Strike",
+      "class": "ironclad"
+    },
+    {
+      "name": "Warcry",
+      "url": "https://slaythespire.gg/cards/ironclad/Warcry",
+      "class": "ironclad"
+    },
+    {
+      "name": "Wild Strike",
+      "url": "https://slaythespire.gg/cards/ironclad/Wild_Strike",
+      "class": "ironclad"
+    },
+    {
+      "name": "Battle Trance",
+      "url": "https://slaythespire.gg/cards/ironclad/Battle_Trance",
+      "class": "ironclad"
+    },
+    {
+      "name": "Blood for Blood",
+      "url": "https://slaythespire.gg/cards/ironclad/Blood_for_Blood",
+      "class": "ironclad"
+    },
+    {
+      "name": "Bloodletting",
+      "url": "https://slaythespire.gg/cards/ironclad/Bloodletting",
+      "class": "ironclad"
+    },
+    {
+      "name": "Burning Pact",
+      "url": "https://slaythespire.gg/cards/ironclad/Burning_Pact",
+      "class": "ironclad"
+    },
+    {
+      "name": "Carnage",
+      "url": "https://slaythespire.gg/cards/ironclad/Carnage",
+      "class": "ironclad"
+    },
+    {
+      "name": "Combust",
+      "url": "https://slaythespire.gg/cards/ironclad/Combust",
+      "class": "ironclad"
+    },
+    {
+      "name": "Dark Embrace",
+      "url": "https://slaythespire.gg/cards/ironclad/Dark_Embrace",
+      "class": "ironclad"
+    },
+    {
+      "name": "Disarm",
+      "url": "https://slaythespire.gg/cards/ironclad/Disarm",
+      "class": "ironclad"
+    },
+    {
+      "name": "Dropkick",
+      "url": "https://slaythespire.gg/cards/ironclad/Dropkick",
+      "class": "ironclad"
+    },
+    {
+      "name": "Dual Wield",
+      "url": "https://slaythespire.gg/cards/ironclad/Dual_Wield",
+      "class": "ironclad"
+    },
+    {
+      "name": "Entrench",
+      "url": "https://slaythespire.gg/cards/ironclad/Entrench",
+      "class": "ironclad"
+    },
+    {
+      "name": "Evolve",
+      "url": "https://slaythespire.gg/cards/ironclad/Evolve",
+      "class": "ironclad"
+    },
+    {
+      "name": "Feel No Pain",
+      "url": "https://slaythespire.gg/cards/ironclad/Feel_No_Pain",
+      "class": "ironclad"
+    },
+    {
+      "name": "Fire Breathing",
+      "url": "https://slaythespire.gg/cards/ironclad/Fire_Breathing",
+      "class": "ironclad"
+    },
+    {
+      "name": "Flame Barrier",
+      "url": "https://slaythespire.gg/cards/ironclad/Flame_Barrier",
+      "class": "ironclad"
+    },
+    {
+      "name": "Ghostly Armor",
+      "url": "https://slaythespire.gg/cards/ironclad/Ghostly_Armor",
+      "class": "ironclad"
+    },
+    {
+      "name": "Hemokinesis",
+      "url": "https://slaythespire.gg/cards/ironclad/Hemokinesis",
+      "class": "ironclad"
+    },
+    {
+      "name": "Infernal Blade",
+      "url": "https://slaythespire.gg/cards/ironclad/Infernal_Blade",
+      "class": "ironclad"
+    },
+    {
+      "name": "Inflame",
+      "url": "https://slaythespire.gg/cards/ironclad/Inflame",
+      "class": "ironclad"
+    },
+    {
+      "name": "Intimidate",
+      "url": "https://slaythespire.gg/cards/ironclad/Intimidate",
+      "class": "ironclad"
+    },
+    {
+      "name": "Metallicize",
+      "url": "https://slaythespire.gg/cards/ironclad/Metallicize",
+      "class": "ironclad"
+    },
+    {
+      "name": "Power Through",
+      "url": "https://slaythespire.gg/cards/ironclad/Power_Through",
+      "class": "ironclad"
+    },
+    {
+      "name": "Pummel",
+      "url": "https://slaythespire.gg/cards/ironclad/Pummel",
+      "class": "ironclad"
+    },
+    {
+      "name": "Rage",
+      "url": "https://slaythespire.gg/cards/ironclad/Rage",
+      "class": "ironclad"
+    },
+    {
+      "name": "Rampage",
+      "url": "https://slaythespire.gg/cards/ironclad/Rampage",
+      "class": "ironclad"
+    },
+    {
+      "name": "Reckless Charge",
+      "url": "https://slaythespire.gg/cards/ironclad/Reckless_Charge",
+      "class": "ironclad"
+    },
+    {
+      "name": "Rupture",
+      "url": "https://slaythespire.gg/cards/ironclad/Rupture",
+      "class": "ironclad"
+    },
+    {
+      "name": "Searing Blow",
+      "url": "https://slaythespire.gg/cards/ironclad/Searing_Blow",
+      "class": "ironclad"
+    },
+    {
+      "name": "Second Wind",
+      "url": "https://slaythespire.gg/cards/ironclad/Second_Wind",
+      "class": "ironclad"
+    },
+    {
+      "name": "Seeing Red",
+      "url": "https://slaythespire.gg/cards/ironclad/Seeing_Red",
+      "class": "ironclad"
+    },
+    {
+      "name": "Sentinel",
+      "url": "https://slaythespire.gg/cards/ironclad/Sentinel",
+      "class": "ironclad"
+    },
+    {
+      "name": "Sever Soul",
+      "url": "https://slaythespire.gg/cards/ironclad/Sever_Soul",
+      "class": "ironclad"
+    },
+    {
+      "name": "Shockwave",
+      "url": "https://slaythespire.gg/cards/ironclad/Shockwave",
+      "class": "ironclad"
+    },
+    {
+      "name": "Spot Weakness",
+      "url": "https://slaythespire.gg/cards/ironclad/Spot_Weakness",
+      "class": "ironclad"
+    },
+    {
+      "name": "Uppercut",
+      "url": "https://slaythespire.gg/cards/ironclad/Uppercut",
+      "class": "ironclad"
+    },
+    {
+      "name": "Whirlwind",
+      "url": "https://slaythespire.gg/cards/ironclad/Whirlwind",
+      "class": "ironclad"
+    },
+    {
+      "name": "Barricade",
+      "url": "https://slaythespire.gg/cards/ironclad/Barricade",
+      "class": "ironclad"
+    },
+    {
+      "name": "Berserk",
+      "url": "https://slaythespire.gg/cards/ironclad/Berserk",
+      "class": "ironclad"
+    },
+    {
+      "name": "Bludgeon",
+      "url": "https://slaythespire.gg/cards/ironclad/Bludgeon",
+      "class": "ironclad"
+    },
+    {
+      "name": "Brutality",
+      "url": "https://slaythespire.gg/cards/ironclad/Brutality",
+      "class": "ironclad"
+    },
+    {
+      "name": "Corruption",
+      "url": "https://slaythespire.gg/cards/ironclad/Corruption",
+      "class": "ironclad"
+    },
+    {
+      "name": "Demon Form",
+      "url": "https://slaythespire.gg/cards/ironclad/Demon_Form",
+      "class": "ironclad"
+    },
+    {
+      "name": "Double Tap",
+      "url": "https://slaythespire.gg/cards/ironclad/Double_Tap",
+      "class": "ironclad"
+    },
+    {
+      "name": "Exhume",
+      "url": "https://slaythespire.gg/cards/ironclad/Exhume",
+      "class": "ironclad"
+    },
+    {
+      "name": "Feed",
+      "url": "https://slaythespire.gg/cards/ironclad/Feed",
+      "class": "ironclad"
+    },
+    {
+      "name": "Fiend Fire",
+      "url": "https://slaythespire.gg/cards/ironclad/Fiend_Fire",
+      "class": "ironclad"
+    },
+    {
+      "name": "Immolate",
+      "url": "https://slaythespire.gg/cards/ironclad/Immolate",
+      "class": "ironclad"
+    },
+    {
+      "name": "Impervious",
+      "url": "https://slaythespire.gg/cards/ironclad/Impervious",
+      "class": "ironclad"
+    },
+    {
+      "name": "Juggernaut",
+      "url": "https://slaythespire.gg/cards/ironclad/Juggernaut",
+      "class": "ironclad"
+    },
+    {
+      "name": "Limit Break",
+      "url": "https://slaythespire.gg/cards/ironclad/Limit_Break",
+      "class": "ironclad"
+    },
+    {
+      "name": "Offering",
+      "url": "https://slaythespire.gg/cards/ironclad/Offering",
+      "class": "ironclad"
+    },
+    {
+      "name": "Reaper",
+      "url": "https://slaythespire.gg/cards/ironclad/Reaper",
+      "class": "ironclad"
+    },
+    {
+      "name": "Defend",
+      "url": "https://slaythespire.gg/cards/silent/Defend",
+      "class": "silent"
+    },
+    {
+      "name": "Neutralize",
+      "url": "https://slaythespire.gg/cards/silent/Neutralize",
+      "class": "silent"
+    },
+    {
+      "name": "Strike",
+      "url": "https://slaythespire.gg/cards/silent/Strike",
+      "class": "silent"
+    },
+    {
+      "name": "Survivor",
+      "url": "https://slaythespire.gg/cards/silent/Survivor",
+      "class": "silent"
+    },
+    {
+      "name": "Acrobatics",
+      "url": "https://slaythespire.gg/cards/silent/Acrobatics",
+      "class": "silent"
+    },
+    {
+      "name": "Backflip",
+      "url": "https://slaythespire.gg/cards/silent/Backflip",
+      "class": "silent"
+    },
+    {
+      "name": "Bane",
+      "url": "https://slaythespire.gg/cards/silent/Bane",
+      "class": "silent"
+    },
+    {
+      "name": "Blade Dance",
+      "url": "https://slaythespire.gg/cards/silent/Blade_Dance",
+      "class": "silent"
+    },
+    {
+      "name": "Cloak And Dagger",
+      "url": "https://slaythespire.gg/cards/silent/Cloak_And_Dagger",
+      "class": "silent"
+    },
+    {
+      "name": "Dagger Spray",
+      "url": "https://slaythespire.gg/cards/silent/Dagger_Spray",
+      "class": "silent"
+    },
+    {
+      "name": "Dagger Throw",
+      "url": "https://slaythespire.gg/cards/silent/Dagger_Throw",
+      "class": "silent"
+    },
+    {
+      "name": "Deadly Poison",
+      "url": "https://slaythespire.gg/cards/silent/Deadly_Poison",
+      "class": "silent"
+    },
+    {
+      "name": "Deflect",
+      "url": "https://slaythespire.gg/cards/silent/Deflect",
+      "class": "silent"
+    },
+    {
+      "name": "Dodge and Roll",
+      "url": "https://slaythespire.gg/cards/silent/Dodge_and_Roll",
+      "class": "silent"
+    },
+    {
+      "name": "Flying Knee",
+      "url": "https://slaythespire.gg/cards/silent/Flying_Knee",
+      "class": "silent"
+    },
+    {
+      "name": "Outmaneuver",
+      "url": "https://slaythespire.gg/cards/silent/Outmaneuver",
+      "class": "silent"
+    },
+    {
+      "name": "Piercing Wail",
+      "url": "https://slaythespire.gg/cards/silent/Piercing_Wail",
+      "class": "silent"
+    },
+    {
+      "name": "Poisoned Stab",
+      "url": "https://slaythespire.gg/cards/silent/Poisoned_Stab",
+      "class": "silent"
+    },
+    {
+      "name": "Prepared",
+      "url": "https://slaythespire.gg/cards/silent/Prepared",
+      "class": "silent"
+    },
+    {
+      "name": "Quick Slash",
+      "url": "https://slaythespire.gg/cards/silent/Quick_Slash",
+      "class": "silent"
+    },
+    {
+      "name": "Slice",
+      "url": "https://slaythespire.gg/cards/silent/Slice",
+      "class": "silent"
+    },
+    {
+      "name": "Sneaky Strike",
+      "url": "https://slaythespire.gg/cards/silent/Sneaky_Strike",
+      "class": "silent"
+    },
+    {
+      "name": "Sucker Punch",
+      "url": "https://slaythespire.gg/cards/silent/Sucker_Punch",
+      "class": "silent"
+    },
+    {
+      "name": "Accuracy",
+      "url": "https://slaythespire.gg/cards/silent/Accuracy",
+      "class": "silent"
+    },
+    {
+      "name": "All-Out Attack",
+      "url": "https://slaythespire.gg/cards/silent/All_Out_Attack",
+      "class": "silent"
+    },
+    {
+      "name": "Backstab",
+      "url": "https://slaythespire.gg/cards/silent/Backstab",
+      "class": "silent"
+    },
+    {
+      "name": "Blur",
+      "url": "https://slaythespire.gg/cards/silent/Blur",
+      "class": "silent"
+    },
+    {
+      "name": "Bouncing Flask",
+      "url": "https://slaythespire.gg/cards/silent/Bouncing_Flask",
+      "class": "silent"
+    },
+    {
+      "name": "Calculated Gamble",
+      "url": "https://slaythespire.gg/cards/silent/Calculated_Gamble",
+      "class": "silent"
+    },
+    {
+      "name": "Caltrops",
+      "url": "https://slaythespire.gg/cards/silent/Caltrops",
+      "class": "silent"
+    },
+    {
+      "name": "Catalyst",
+      "url": "https://slaythespire.gg/cards/silent/Catalyst",
+      "class": "silent"
+    },
+    {
+      "name": "Choke",
+      "url": "https://slaythespire.gg/cards/silent/Choke",
+      "class": "silent"
+    },
+    {
+      "name": "Concentrate",
+      "url": "https://slaythespire.gg/cards/silent/Concentrate",
+      "class": "silent"
+    },
+    {
+      "name": "Crippling Cloud",
+      "url": "https://slaythespire.gg/cards/silent/Crippling_Cloud",
+      "class": "silent"
+    },
+    {
+      "name": "Dash",
+      "url": "https://slaythespire.gg/cards/silent/Dash",
+      "class": "silent"
+    },
+    {
+      "name": "Distraction",
+      "url": "https://slaythespire.gg/cards/silent/Distraction",
+      "class": "silent"
+    },
+    {
+      "name": "Endless Agony",
+      "url": "https://slaythespire.gg/cards/silent/Endless_Agony",
+      "class": "silent"
+    },
+    {
+      "name": "Escape Plan",
+      "url": "https://slaythespire.gg/cards/silent/Escape_Plan",
+      "class": "silent"
+    },
+    {
+      "name": "Eviscerate",
+      "url": "https://slaythespire.gg/cards/silent/Eviscerate",
+      "class": "silent"
+    },
+    {
+      "name": "Expertise",
+      "url": "https://slaythespire.gg/cards/silent/Expertise",
+      "class": "silent"
+    },
+    {
+      "name": "Finisher",
+      "url": "https://slaythespire.gg/cards/silent/Finisher",
+      "class": "silent"
+    },
+    {
+      "name": "Flechettes",
+      "url": "https://slaythespire.gg/cards/silent/Flechettes",
+      "class": "silent"
+    },
+    {
+      "name": "Footwork",
+      "url": "https://slaythespire.gg/cards/silent/Footwork",
+      "class": "silent"
+    },
+    {
+      "name": "Heel Hook",
+      "url": "https://slaythespire.gg/cards/silent/Heel_Hook",
+      "class": "silent"
+    },
+    {
+      "name": "Infinite Blades",
+      "url": "https://slaythespire.gg/cards/silent/Infinite_Blades",
+      "class": "silent"
+    },
+    {
+      "name": "Leg Sweep",
+      "url": "https://slaythespire.gg/cards/silent/Leg_Sweep",
+      "class": "silent"
+    },
+    {
+      "name": "Masterful Stab",
+      "url": "https://slaythespire.gg/cards/silent/Masterful_Stab",
+      "class": "silent"
+    },
+    {
+      "name": "Noxious Fumes",
+      "url": "https://slaythespire.gg/cards/silent/Noxious_Fumes",
+      "class": "silent"
+    },
+    {
+      "name": "Predator",
+      "url": "https://slaythespire.gg/cards/silent/Predator",
+      "class": "silent"
+    },
+    {
+      "name": "Reflex",
+      "url": "https://slaythespire.gg/cards/silent/Reflex",
+      "class": "silent"
+    },
+    {
+      "name": "Riddle With Holes",
+      "url": "https://slaythespire.gg/cards/silent/Riddle_With_Holes",
+      "class": "silent"
+    },
+    {
+      "name": "Setup",
+      "url": "https://slaythespire.gg/cards/silent/Setup",
+      "class": "silent"
+    },
+    {
+      "name": "Skewer",
+      "url": "https://slaythespire.gg/cards/silent/Skewer",
+      "class": "silent"
+    },
+    {
+      "name": "Tactician",
+      "url": "https://slaythespire.gg/cards/silent/Tactician",
+      "class": "silent"
+    },
+    {
+      "name": "Terror",
+      "url": "https://slaythespire.gg/cards/silent/Terror",
+      "class": "silent"
+    },
+    {
+      "name": "Well-Laid Plans",
+      "url": "https://slaythespire.gg/cards/silent/Well_Laid_Plans",
+      "class": "silent"
+    },
+    {
+      "name": "A Thousand Cuts",
+      "url": "https://slaythespire.gg/cards/silent/A_Thousand_Cuts",
+      "class": "silent"
+    },
+    {
+      "name": "Adrenaline",
+      "url": "https://slaythespire.gg/cards/silent/Adrenaline",
+      "class": "silent"
+    },
+    {
+      "name": "After Image",
+      "url": "https://slaythespire.gg/cards/silent/After_Image",
+      "class": "silent"
+    },
+    {
+      "name": "Alchemize",
+      "url": "https://slaythespire.gg/cards/silent/Alchemize",
+      "class": "silent"
+    },
+    {
+      "name": "Bullet Time",
+      "url": "https://slaythespire.gg/cards/silent/Bullet_Time",
+      "class": "silent"
+    },
+    {
+      "name": "Burst",
+      "url": "https://slaythespire.gg/cards/silent/Burst",
+      "class": "silent"
+    },
+    {
+      "name": "Corpse Explosion",
+      "url": "https://slaythespire.gg/cards/silent/Corpse_Explosion",
+      "class": "silent"
+    },
+    {
+      "name": "Die Die Die",
+      "url": "https://slaythespire.gg/cards/silent/Die_Die_Die",
+      "class": "silent"
+    },
+    {
+      "name": "Doppelganger",
+      "url": "https://slaythespire.gg/cards/silent/Doppelganger",
+      "class": "silent"
+    },
+    {
+      "name": "Envenom",
+      "url": "https://slaythespire.gg/cards/silent/Envenom",
+      "class": "silent"
+    },
+    {
+      "name": "Glass Knife",
+      "url": "https://slaythespire.gg/cards/silent/Glass_Knife",
+      "class": "silent"
+    },
+    {
+      "name": "Grand Finale",
+      "url": "https://slaythespire.gg/cards/silent/Grand_Finale",
+      "class": "silent"
+    },
+    {
+      "name": "Malaise",
+      "url": "https://slaythespire.gg/cards/silent/Malaise",
+      "class": "silent"
+    },
+    {
+      "name": "Nightmare",
+      "url": "https://slaythespire.gg/cards/silent/Nightmare",
+      "class": "silent"
+    },
+    {
+      "name": "Phantasmal Killer",
+      "url": "https://slaythespire.gg/cards/silent/Phantasmal_Killer",
+      "class": "silent"
+    },
+    {
+      "name": "Storm of Steel",
+      "url": "https://slaythespire.gg/cards/silent/Storm_of_Steel",
+      "class": "silent"
+    },
+    {
+      "name": "Tools of the Trade",
+      "url": "https://slaythespire.gg/cards/silent/Tools_of_the_Trade",
+      "class": "silent"
+    },
+    {
+      "name": "Unload",
+      "url": "https://slaythespire.gg/cards/silent/Unload",
+      "class": "silent"
+    },
+    {
+      "name": "Wraith Form",
+      "url": "https://slaythespire.gg/cards/silent/Wraith_Form",
+      "class": "silent"
+    },
+    {
+      "name": "Defend",
+      "url": "https://slaythespire.gg/cards/defect/Defend",
+      "class": "defect"
+    },
+    {
+      "name": "Dualcast",
+      "url": "https://slaythespire.gg/cards/defect/Dualcast",
+      "class": "defect"
+    },
+    {
+      "name": "Strike",
+      "url": "https://slaythespire.gg/cards/defect/Strike",
+      "class": "defect"
+    },
+    {
+      "name": "Zap",
+      "url": "https://slaythespire.gg/cards/defect/Zap",
+      "class": "defect"
+    },
+    {
+      "name": "Ball Lightning",
+      "url": "https://slaythespire.gg/cards/defect/Ball_Lightning",
+      "class": "defect"
+    },
+    {
+      "name": "Barrage",
+      "url": "https://slaythespire.gg/cards/defect/Barrage",
+      "class": "defect"
+    },
+    {
+      "name": "Beam Cell",
+      "url": "https://slaythespire.gg/cards/defect/Beam_Cell",
+      "class": "defect"
+    },
+    {
+      "name": "Charge Battery",
+      "url": "https://slaythespire.gg/cards/defect/Charge_Battery",
+      "class": "defect"
+    },
+    {
+      "name": "Claw",
+      "url": "https://slaythespire.gg/cards/defect/Claw",
+      "class": "defect"
+    },
+    {
+      "name": "Cold Snap",
+      "url": "https://slaythespire.gg/cards/defect/Cold_Snap",
+      "class": "defect"
+    },
+    {
+      "name": "Compile Driver",
+      "url": "https://slaythespire.gg/cards/defect/Compile_Driver",
+      "class": "defect"
+    },
+    {
+      "name": "Coolheaded",
+      "url": "https://slaythespire.gg/cards/defect/Coolheaded",
+      "class": "defect"
+    },
+    {
+      "name": "Go for the Eyes",
+      "url": "https://slaythespire.gg/cards/defect/Go_for_the_Eyes",
+      "class": "defect"
+    },
+    {
+      "name": "Hologram",
+      "url": "https://slaythespire.gg/cards/defect/Hologram",
+      "class": "defect"
+    },
+    {
+      "name": "Leap",
+      "url": "https://slaythespire.gg/cards/defect/Leap",
+      "class": "defect"
+    },
+    {
+      "name": "Rebound",
+      "url": "https://slaythespire.gg/cards/defect/Rebound",
+      "class": "defect"
+    },
+    {
+      "name": "Recursion",
+      "url": "https://slaythespire.gg/cards/defect/Recursion",
+      "class": "defect"
+    },
+    {
+      "name": "Stack",
+      "url": "https://slaythespire.gg/cards/defect/Stack",
+      "class": "defect"
+    },
+    {
+      "name": "Steam Barrier",
+      "url": "https://slaythespire.gg/cards/defect/Steam_Barrier",
+      "class": "defect"
+    },
+    {
+      "name": "Streamline",
+      "url": "https://slaythespire.gg/cards/defect/Streamline",
+      "class": "defect"
+    },
+    {
+      "name": "Sweeping Beam",
+      "url": "https://slaythespire.gg/cards/defect/Sweeping_Beam",
+      "class": "defect"
+    },
+    {
+      "name": "TURBO",
+      "url": "https://slaythespire.gg/cards/defect/TURBO",
+      "class": "defect"
+    },
+    {
+      "name": "Aggregate",
+      "url": "https://slaythespire.gg/cards/defect/Aggregate",
+      "class": "defect"
+    },
+    {
+      "name": "Auto-Shields",
+      "url": "https://slaythespire.gg/cards/defect/Auto_Shields",
+      "class": "defect"
+    },
+    {
+      "name": "Blizzard",
+      "url": "https://slaythespire.gg/cards/defect/Blizzard",
+      "class": "defect"
+    },
+    {
+      "name": "Boot Sequence",
+      "url": "https://slaythespire.gg/cards/defect/Boot_Sequence",
+      "class": "defect"
+    },
+    {
+      "name": "Bullseye",
+      "url": "https://slaythespire.gg/cards/defect/Bullseye",
+      "class": "defect"
+    },
+    {
+      "name": "Capacitor",
+      "url": "https://slaythespire.gg/cards/defect/Capacitor",
+      "class": "defect"
+    },
+    {
+      "name": "Chaos",
+      "url": "https://slaythespire.gg/cards/defect/Chaos",
+      "class": "defect"
+    },
+    {
+      "name": "Chill",
+      "url": "https://slaythespire.gg/cards/defect/Chill",
+      "class": "defect"
+    },
+    {
+      "name": "Consume",
+      "url": "https://slaythespire.gg/cards/defect/Consume",
+      "class": "defect"
+    },
+    {
+      "name": "Darkness",
+      "url": "https://slaythespire.gg/cards/defect/Darkness",
+      "class": "defect"
+    },
+    {
+      "name": "Defragment",
+      "url": "https://slaythespire.gg/cards/defect/Defragment",
+      "class": "defect"
+    },
+    {
+      "name": "Doom and Gloom",
+      "url": "https://slaythespire.gg/cards/defect/Doom_and_Gloom",
+      "class": "defect"
+    },
+    {
+      "name": "Double Energy",
+      "url": "https://slaythespire.gg/cards/defect/Double_Energy",
+      "class": "defect"
+    },
+    {
+      "name": "Equilibrium",
+      "url": "https://slaythespire.gg/cards/defect/Equilibrium",
+      "class": "defect"
+    },
+    {
+      "name": "FTL",
+      "url": "https://slaythespire.gg/cards/defect/FTL",
+      "class": "defect"
+    },
+    {
+      "name": "Force Field",
+      "url": "https://slaythespire.gg/cards/defect/Force_Field",
+      "class": "defect"
+    },
+    {
+      "name": "Fusion",
+      "url": "https://slaythespire.gg/cards/defect/Fusion",
+      "class": "defect"
+    },
+    {
+      "name": "Genetic Algorithm",
+      "url": "https://slaythespire.gg/cards/defect/Genetic_Algorithm",
+      "class": "defect"
+    },
+    {
+      "name": "Glacier",
+      "url": "https://slaythespire.gg/cards/defect/Glacier",
+      "class": "defect"
+    },
+    {
+      "name": "Heatsinks",
+      "url": "https://slaythespire.gg/cards/defect/Heatsinks",
+      "class": "defect"
+    },
+    {
+      "name": "Hello World",
+      "url": "https://slaythespire.gg/cards/defect/Hello_World",
+      "class": "defect"
+    },
+    {
+      "name": "Loop",
+      "url": "https://slaythespire.gg/cards/defect/Loop",
+      "class": "defect"
+    },
+    {
+      "name": "Melter",
+      "url": "https://slaythespire.gg/cards/defect/Melter",
+      "class": "defect"
+    },
+    {
+      "name": "Overclock",
+      "url": "https://slaythespire.gg/cards/defect/Overclock",
+      "class": "defect"
+    },
+    {
+      "name": "Recycle",
+      "url": "https://slaythespire.gg/cards/defect/Recycle",
+      "class": "defect"
+    },
+    {
+      "name": "Reinforced Body",
+      "url": "https://slaythespire.gg/cards/defect/Reinforced_Body",
+      "class": "defect"
+    },
+    {
+      "name": "Reprogram",
+      "url": "https://slaythespire.gg/cards/defect/Reprogram",
+      "class": "defect"
+    },
+    {
+      "name": "Rip and Tear",
+      "url": "https://slaythespire.gg/cards/defect/Rip_and_Tear",
+      "class": "defect"
+    },
+    {
+      "name": "Scrape",
+      "url": "https://slaythespire.gg/cards/defect/Scrape",
+      "class": "defect"
+    },
+    {
+      "name": "Self Repair",
+      "url": "https://slaythespire.gg/cards/defect/Self_Repair",
+      "class": "defect"
+    },
+    {
+      "name": "Skim",
+      "url": "https://slaythespire.gg/cards/defect/Skim",
+      "class": "defect"
+    },
+    {
+      "name": "Static Discharge",
+      "url": "https://slaythespire.gg/cards/defect/Static_Discharge",
+      "class": "defect"
+    },
+    {
+      "name": "Storm",
+      "url": "https://slaythespire.gg/cards/defect/Storm",
+      "class": "defect"
+    },
+    {
+      "name": "Sunder",
+      "url": "https://slaythespire.gg/cards/defect/Sunder",
+      "class": "defect"
+    },
+    {
+      "name": "Tempest",
+      "url": "https://slaythespire.gg/cards/defect/Tempest",
+      "class": "defect"
+    },
+    {
+      "name": "White Noise",
+      "url": "https://slaythespire.gg/cards/defect/White_Noise",
+      "class": "defect"
+    },
+    {
+      "name": "All for One",
+      "url": "https://slaythespire.gg/cards/defect/All_for_One",
+      "class": "defect"
+    },
+    {
+      "name": "Amplify",
+      "url": "https://slaythespire.gg/cards/defect/Amplify",
+      "class": "defect"
+    },
+    {
+      "name": "Biased Cognition",
+      "url": "https://slaythespire.gg/cards/defect/Biased_Cognition",
+      "class": "defect"
+    },
+    {
+      "name": "Buffer",
+      "url": "https://slaythespire.gg/cards/defect/Buffer",
+      "class": "defect"
+    },
+    {
+      "name": "Core Surge",
+      "url": "https://slaythespire.gg/cards/defect/Core_Surge",
+      "class": "defect"
+    },
+    {
+      "name": "Creative AI",
+      "url": "https://slaythespire.gg/cards/defect/Creative_AI",
+      "class": "defect"
+    },
+    {
+      "name": "Echo Form",
+      "url": "https://slaythespire.gg/cards/defect/Echo_Form",
+      "class": "defect"
+    },
+    {
+      "name": "Electrodynamics",
+      "url": "https://slaythespire.gg/cards/defect/Electrodynamics",
+      "class": "defect"
+    },
+    {
+      "name": "Fission",
+      "url": "https://slaythespire.gg/cards/defect/Fission",
+      "class": "defect"
+    },
+    {
+      "name": "Hyperbeam",
+      "url": "https://slaythespire.gg/cards/defect/Hyperbeam",
+      "class": "defect"
+    },
+    {
+      "name": "Machine Learning",
+      "url": "https://slaythespire.gg/cards/defect/Machine_Learning",
+      "class": "defect"
+    },
+    {
+      "name": "Meteor Strike",
+      "url": "https://slaythespire.gg/cards/defect/Meteor_Strike",
+      "class": "defect"
+    },
+    {
+      "name": "Multi-Cast",
+      "url": "https://slaythespire.gg/cards/defect/Multi_Cast",
+      "class": "defect"
+    },
+    {
+      "name": "Rainbow",
+      "url": "https://slaythespire.gg/cards/defect/Rainbow",
+      "class": "defect"
+    },
+    {
+      "name": "Reboot",
+      "url": "https://slaythespire.gg/cards/defect/Reboot",
+      "class": "defect"
+    },
+    {
+      "name": "Seek",
+      "url": "https://slaythespire.gg/cards/defect/Seek",
+      "class": "defect"
+    },
+    {
+      "name": "Thunder Strike",
+      "url": "https://slaythespire.gg/cards/defect/Thunder_Strike",
+      "class": "defect"
+    },
+    {
+      "name": "Defend",
+      "url": "https://slaythespire.gg/cards/watcher/Defend",
+      "class": "watcher"
+    },
+    {
+      "name": "Eruption",
+      "url": "https://slaythespire.gg/cards/watcher/Eruption",
+      "class": "watcher"
+    },
+    {
+      "name": "Strike",
+      "url": "https://slaythespire.gg/cards/watcher/Strike",
+      "class": "watcher"
+    },
+    {
+      "name": "Vigilance",
+      "url": "https://slaythespire.gg/cards/watcher/Vigilance",
+      "class": "watcher"
+    },
+    {
+      "name": "Bowling Bash",
+      "url": "https://slaythespire.gg/cards/watcher/Bowling_Bash",
+      "class": "watcher"
+    },
+    {
+      "name": "Consecrate",
+      "url": "https://slaythespire.gg/cards/watcher/Consecrate",
+      "class": "watcher"
+    },
+    {
+      "name": "Crescendo",
+      "url": "https://slaythespire.gg/cards/watcher/Crescendo",
+      "class": "watcher"
+    },
+    {
+      "name": "Crush Joints",
+      "url": "https://slaythespire.gg/cards/watcher/Crush_Joints",
+      "class": "watcher"
+    },
+    {
+      "name": "Cut Through Fate",
+      "url": "https://slaythespire.gg/cards/watcher/Cut_Through_Fate",
+      "class": "watcher"
+    },
+    {
+      "name": "Empty Body",
+      "url": "https://slaythespire.gg/cards/watcher/Empty_Body",
+      "class": "watcher"
+    },
+    {
+      "name": "Empty Fist",
+      "url": "https://slaythespire.gg/cards/watcher/Empty_Fist",
+      "class": "watcher"
+    },
+    {
+      "name": "Evaluate",
+      "url": "https://slaythespire.gg/cards/watcher/Evaluate",
+      "class": "watcher"
+    },
+    {
+      "name": "Flurry of Blows",
+      "url": "https://slaythespire.gg/cards/watcher/Flurry_of_Blows",
+      "class": "watcher"
+    },
+    {
+      "name": "Flying Sleeves",
+      "url": "https://slaythespire.gg/cards/watcher/Flying_Sleeves",
+      "class": "watcher"
+    },
+    {
+      "name": "Follow-Up",
+      "url": "https://slaythespire.gg/cards/watcher/Follow_Up",
+      "class": "watcher"
+    },
+    {
+      "name": "Halt",
+      "url": "https://slaythespire.gg/cards/watcher/Halt",
+      "class": "watcher"
+    },
+    {
+      "name": "Just Lucky",
+      "url": "https://slaythespire.gg/cards/watcher/Just_Lucky",
+      "class": "watcher"
+    },
+    {
+      "name": "Pressure Points",
+      "url": "https://slaythespire.gg/cards/watcher/Pressure_Points",
+      "class": "watcher"
+    },
+    {
+      "name": "Prostrate",
+      "url": "https://slaythespire.gg/cards/watcher/Prostrate",
+      "class": "watcher"
+    },
+    {
+      "name": "Protect",
+      "url": "https://slaythespire.gg/cards/watcher/Protect",
+      "class": "watcher"
+    },
+    {
+      "name": "Sash Whip",
+      "url": "https://slaythespire.gg/cards/watcher/Sash_Whip",
+      "class": "watcher"
+    },
+    {
+      "name": "Third Eye",
+      "url": "https://slaythespire.gg/cards/watcher/Third_Eye",
+      "class": "watcher"
+    },
+    {
+      "name": "Tranquility",
+      "url": "https://slaythespire.gg/cards/watcher/Tranquility",
+      "class": "watcher"
+    },
+    {
+      "name": "Battle Hymn",
+      "url": "https://slaythespire.gg/cards/watcher/Battle_Hymn",
+      "class": "watcher"
+    },
+    {
+      "name": "Carve Reality",
+      "url": "https://slaythespire.gg/cards/watcher/Carve_Reality",
+      "class": "watcher"
+    },
+    {
+      "name": "Collect",
+      "url": "https://slaythespire.gg/cards/watcher/Collect",
+      "class": "watcher"
+    },
+    {
+      "name": "Conclude",
+      "url": "https://slaythespire.gg/cards/watcher/Conclude",
+      "class": "watcher"
+    },
+    {
+      "name": "Deceive Reality",
+      "url": "https://slaythespire.gg/cards/watcher/Deceive_Reality",
+      "class": "watcher"
+    },
+    {
+      "name": "Empty Mind",
+      "url": "https://slaythespire.gg/cards/watcher/Empty_Mind",
+      "class": "watcher"
+    },
+    {
+      "name": "Fasting",
+      "url": "https://slaythespire.gg/cards/watcher/Fasting",
+      "class": "watcher"
+    },
+    {
+      "name": "Fear No Evil",
+      "url": "https://slaythespire.gg/cards/watcher/Fear_No_Evil",
+      "class": "watcher"
+    },
+    {
+      "name": "Foreign Influence",
+      "url": "https://slaythespire.gg/cards/watcher/Foreign_Influence",
+      "class": "watcher"
+    },
+    {
+      "name": "Foresight",
+      "url": "https://slaythespire.gg/cards/watcher/Foresight",
+      "class": "watcher"
+    },
+    {
+      "name": "Indignation",
+      "url": "https://slaythespire.gg/cards/watcher/Indignation",
+      "class": "watcher"
+    },
+    {
+      "name": "Inner Peace",
+      "url": "https://slaythespire.gg/cards/watcher/Inner_Peace",
+      "class": "watcher"
+    },
+    {
+      "name": "Like Water",
+      "url": "https://slaythespire.gg/cards/watcher/Like_Water",
+      "class": "watcher"
+    },
+    {
+      "name": "Meditate",
+      "url": "https://slaythespire.gg/cards/watcher/Meditate",
+      "class": "watcher"
+    },
+    {
+      "name": "Mental Fortress",
+      "url": "https://slaythespire.gg/cards/watcher/Mental_Fortress",
+      "class": "watcher"
+    },
+    {
+      "name": "Nirvana",
+      "url": "https://slaythespire.gg/cards/watcher/Nirvana",
+      "class": "watcher"
+    },
+    {
+      "name": "Perseverance",
+      "url": "https://slaythespire.gg/cards/watcher/Perseverance",
+      "class": "watcher"
+    },
+    {
+      "name": "Pray",
+      "url": "https://slaythespire.gg/cards/watcher/Pray",
+      "class": "watcher"
+    },
+    {
+      "name": "Reach Heaven",
+      "url": "https://slaythespire.gg/cards/watcher/Reach_Heaven",
+      "class": "watcher"
+    },
+    {
+      "name": "Rushdown",
+      "url": "https://slaythespire.gg/cards/watcher/Rushdown",
+      "class": "watcher"
+    },
+    {
+      "name": "Sanctity",
+      "url": "https://slaythespire.gg/cards/watcher/Sanctity",
+      "class": "watcher"
+    },
+    {
+      "name": "Sands of Time",
+      "url": "https://slaythespire.gg/cards/watcher/Sands_of_Time",
+      "class": "watcher"
+    },
+    {
+      "name": "Signature Move",
+      "url": "https://slaythespire.gg/cards/watcher/Signature_Move",
+      "class": "watcher"
+    },
+    {
+      "name": "Simmering Fury",
+      "url": "https://slaythespire.gg/cards/watcher/Simmering_Fury",
+      "class": "watcher"
+    },
+    {
+      "name": "Study",
+      "url": "https://slaythespire.gg/cards/watcher/Study",
+      "class": "watcher"
+    },
+    {
+      "name": "Swivel",
+      "url": "https://slaythespire.gg/cards/watcher/Swivel",
+      "class": "watcher"
+    },
+    {
+      "name": "Talk to the Hand",
+      "url": "https://slaythespire.gg/cards/watcher/Talk_to_the_Hand",
+      "class": "watcher"
+    },
+    {
+      "name": "Tantrum",
+      "url": "https://slaythespire.gg/cards/watcher/Tantrum",
+      "class": "watcher"
+    },
+    {
+      "name": "Wallop",
+      "url": "https://slaythespire.gg/cards/watcher/Wallop",
+      "class": "watcher"
+    },
+    {
+      "name": "Wave of the Hand",
+      "url": "https://slaythespire.gg/cards/watcher/Wave_of_the_Hand",
+      "class": "watcher"
+    },
+    {
+      "name": "Weave",
+      "url": "https://slaythespire.gg/cards/watcher/Weave",
+      "class": "watcher"
+    },
+    {
+      "name": "Wheel Kick",
+      "url": "https://slaythespire.gg/cards/watcher/Wheel_Kick",
+      "class": "watcher"
+    },
+    {
+      "name": "Windmill Strike",
+      "url": "https://slaythespire.gg/cards/watcher/Windmill_Strike",
+      "class": "watcher"
+    },
+    {
+      "name": "Worship",
+      "url": "https://slaythespire.gg/cards/watcher/Worship",
+      "class": "watcher"
+    },
+    {
+      "name": "Wreath of Flame",
+      "url": "https://slaythespire.gg/cards/watcher/Wreath_of_Flame",
+      "class": "watcher"
+    },
+    {
+      "name": "Alpha",
+      "url": "https://slaythespire.gg/cards/watcher/Alpha",
+      "class": "watcher"
+    },
+    {
+      "name": "Blasphemy",
+      "url": "https://slaythespire.gg/cards/watcher/Blasphemy",
+      "class": "watcher"
+    },
+    {
+      "name": "Brilliance",
+      "url": "https://slaythespire.gg/cards/watcher/Brilliance",
+      "class": "watcher"
+    },
+    {
+      "name": "Conjure Blade",
+      "url": "https://slaythespire.gg/cards/watcher/Conjure_Blade",
+      "class": "watcher"
+    },
+    {
+      "name": "Deus Ex Machina",
+      "url": "https://slaythespire.gg/cards/watcher/Deus_Ex_Machina",
+      "class": "watcher"
+    },
+    {
+      "name": "Deva Form",
+      "url": "https://slaythespire.gg/cards/watcher/Deva_Form",
+      "class": "watcher"
+    },
+    {
+      "name": "Devotion",
+      "url": "https://slaythespire.gg/cards/watcher/Devotion",
+      "class": "watcher"
+    },
+    {
+      "name": "Establishment",
+      "url": "https://slaythespire.gg/cards/watcher/Establishment",
+      "class": "watcher"
+    },
+    {
+      "name": "Judgment",
+      "url": "https://slaythespire.gg/cards/watcher/Judgment",
+      "class": "watcher"
+    },
+    {
+      "name": "Lesson Learned",
+      "url": "https://slaythespire.gg/cards/watcher/Lesson_Learned",
+      "class": "watcher"
+    },
+    {
+      "name": "Master Reality",
+      "url": "https://slaythespire.gg/cards/watcher/Master_Reality",
+      "class": "watcher"
+    },
+    {
+      "name": "Omniscience",
+      "url": "https://slaythespire.gg/cards/watcher/Omniscience",
+      "class": "watcher"
+    },
+    {
+      "name": "Ragnarok",
+      "url": "https://slaythespire.gg/cards/watcher/Ragnarok",
+      "class": "watcher"
+    },
+    {
+      "name": "Scrawl",
+      "url": "https://slaythespire.gg/cards/watcher/Scrawl",
+      "class": "watcher"
+    },
+    {
+      "name": "Spirit Shield",
+      "url": "https://slaythespire.gg/cards/watcher/Spirit_Shield",
+      "class": "watcher"
+    },
+    {
+      "name": "Vault",
+      "url": "https://slaythespire.gg/cards/watcher/Vault",
+      "class": "watcher"
+    },
+    {
+      "name": "Wish",
+      "url": "https://slaythespire.gg/cards/watcher/Wish",
+      "class": "watcher"
+    },
+    {
+      "name": "Bandage Up",
+      "url": "https://slaythespire.gg/cards/colorless/Bandage_Up",
+      "class": "colorless"
+    },
+    {
+      "name": "Blind",
+      "url": "https://slaythespire.gg/cards/colorless/Blind",
+      "class": "colorless"
+    },
+    {
+      "name": "Dark Shackles",
+      "url": "https://slaythespire.gg/cards/colorless/Dark_Shackles",
+      "class": "colorless"
+    },
+    {
+      "name": "Deep Breath",
+      "url": "https://slaythespire.gg/cards/colorless/Deep_Breath",
+      "class": "colorless"
+    },
+    {
+      "name": "Discovery",
+      "url": "https://slaythespire.gg/cards/colorless/Discovery",
+      "class": "colorless"
+    },
+    {
+      "name": "Dramatic Entrance",
+      "url": "https://slaythespire.gg/cards/colorless/Dramatic_Entrance",
+      "class": "colorless"
+    },
+    {
+      "name": "Enlightenment",
+      "url": "https://slaythespire.gg/cards/colorless/Enlightenment",
+      "class": "colorless"
+    },
+    {
+      "name": "Finesse",
+      "url": "https://slaythespire.gg/cards/colorless/Finesse",
+      "class": "colorless"
+    },
+    {
+      "name": "Flash of Steel",
+      "url": "https://slaythespire.gg/cards/colorless/Flash_of_Steel",
+      "class": "colorless"
+    },
+    {
+      "name": "Forethought",
+      "url": "https://slaythespire.gg/cards/colorless/Forethought",
+      "class": "colorless"
+    },
+    {
+      "name": "Good Instincts",
+      "url": "https://slaythespire.gg/cards/colorless/Good_Instincts",
+      "class": "colorless"
+    },
+    {
+      "name": "Impatience",
+      "url": "https://slaythespire.gg/cards/colorless/Impatience",
+      "class": "colorless"
+    },
+    {
+      "name": "Jack Of All Trades",
+      "url": "https://slaythespire.gg/cards/colorless/Jack_Of_All_Trades",
+      "class": "colorless"
+    },
+    {
+      "name": "Madness",
+      "url": "https://slaythespire.gg/cards/colorless/Madness",
+      "class": "colorless"
+    },
+    {
+      "name": "Mind Blast",
+      "url": "https://slaythespire.gg/cards/colorless/Mind_Blast",
+      "class": "colorless"
+    },
+    {
+      "name": "Panacea",
+      "url": "https://slaythespire.gg/cards/colorless/Panacea",
+      "class": "colorless"
+    },
+    {
+      "name": "Panic Button",
+      "url": "https://slaythespire.gg/cards/colorless/Panic_Button",
+      "class": "colorless"
+    },
+    {
+      "name": "Purity",
+      "url": "https://slaythespire.gg/cards/colorless/Purity",
+      "class": "colorless"
+    },
+    {
+      "name": "Swift Strike",
+      "url": "https://slaythespire.gg/cards/colorless/Swift_Strike",
+      "class": "colorless"
+    },
+    {
+      "name": "Trip",
+      "url": "https://slaythespire.gg/cards/colorless/Trip",
+      "class": "colorless"
+    },
+    {
+      "name": "Apotheosis",
+      "url": "https://slaythespire.gg/cards/colorless/Apotheosis",
+      "class": "colorless"
+    },
+    {
+      "name": "Chrysalis",
+      "url": "https://slaythespire.gg/cards/colorless/Chrysalis",
+      "class": "colorless"
+    },
+    {
+      "name": "Hand of Greed",
+      "url": "https://slaythespire.gg/cards/colorless/Hand_of_Greed",
+      "class": "colorless"
+    },
+    {
+      "name": "Magnetism",
+      "url": "https://slaythespire.gg/cards/colorless/Magnetism",
+      "class": "colorless"
+    },
+    {
+      "name": "Master Of Strategy",
+      "url": "https://slaythespire.gg/cards/colorless/Master_Of_Strategy",
+      "class": "colorless"
+    },
+    {
+      "name": "Mayhem",
+      "url": "https://slaythespire.gg/cards/colorless/Mayhem",
+      "class": "colorless"
+    },
+    {
+      "name": "Metamorphosis",
+      "url": "https://slaythespire.gg/cards/colorless/Metamorphosis",
+      "class": "colorless"
+    },
+    {
+      "name": "Panache",
+      "url": "https://slaythespire.gg/cards/colorless/Panache",
+      "class": "colorless"
+    },
+    {
+      "name": "Sadistic Nature",
+      "url": "https://slaythespire.gg/cards/colorless/Sadistic_Nature",
+      "class": "colorless"
+    },
+    {
+      "name": "Secret Technique",
+      "url": "https://slaythespire.gg/cards/colorless/Secret_Technique",
+      "class": "colorless"
+    },
+    {
+      "name": "Secret Weapon",
+      "url": "https://slaythespire.gg/cards/colorless/Secret_Weapon",
+      "class": "colorless"
+    },
+    {
+      "name": "The Bomb",
+      "url": "https://slaythespire.gg/cards/colorless/The_Bomb",
+      "class": "colorless"
+    },
+    {
+      "name": "Thinking Ahead",
+      "url": "https://slaythespire.gg/cards/colorless/Thinking_Ahead",
+      "class": "colorless"
+    },
+    {
+      "name": "Transmutation",
+      "url": "https://slaythespire.gg/cards/colorless/Transmutation",
+      "class": "colorless"
+    },
+    {
+      "name": "Violence",
+      "url": "https://slaythespire.gg/cards/colorless/Violence",
+      "class": "colorless"
+    },
+    {
+      "name": "Apparition Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Apparition",
+      "class": "colorless"
+    },
+    {
+      "name": "Beta Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Beta",
+      "class": "colorless"
+    },
+    {
+      "name": "Bite Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Bite",
+      "class": "colorless"
+    },
+    {
+      "name": "Expunger Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Expunger",
+      "class": "colorless"
+    },
+    {
+      "name": "Insight Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Insight",
+      "class": "colorless"
+    },
+    {
+      "name": "J.A.X. Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/J_A_X",
+      "class": "colorless"
+    },
+    {
+      "name": "Miracle Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Miracle",
+      "class": "colorless"
+    },
+    {
+      "name": "Omega Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Omega",
+      "class": "colorless"
+    },
+    {
+      "name": "Ritual Dagger Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Ritual_Dagger",
+      "class": "colorless"
+    },
+    {
+      "name": "Safety Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Safety",
+      "class": "colorless"
+    },
+    {
+      "name": "Shiv Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Shiv",
+      "class": "colorless"
+    },
+    {
+      "name": "Smite Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Smite",
+      "class": "colorless"
+    },
+    {
+      "name": "Through Violence Special colorless",
+      "url": "https://slaythespire.gg/cards/colorless/Through_Violence",
+      "class": "colorless"
+    },
+    {
+      "name": "Ascender's Bane Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Ascender_s_Bane",
+      "class": "curse"
+    },
+    {
+      "name": "Clumsy Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Clumsy",
+      "class": "curse"
+    },
+    {
+      "name": "Curse of the Bell Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Curse_of_the_Bell",
+      "class": "curse"
+    },
+    {
+      "name": "Decay Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Decay",
+      "class": "curse"
+    },
+    {
+      "name": "Doubt Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Doubt",
+      "class": "curse"
+    },
+    {
+      "name": "Injury Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Injury",
+      "class": "curse"
+    },
+    {
+      "name": "Necronomicurse Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Necronomicurse",
+      "class": "curse"
+    },
+    {
+      "name": "Normality Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Normality",
+      "class": "curse"
+    },
+    {
+      "name": "Pain Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Pain",
+      "class": "curse"
+    },
+    {
+      "name": "Parasite Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Parasite",
+      "class": "curse"
+    },
+    {
+      "name": "Pride Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Pride",
+      "class": "curse"
+    },
+    {
+      "name": "Regret Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Regret",
+      "class": "curse"
+    },
+    {
+      "name": "Shame Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Shame",
+      "class": "curse"
+    },
+    {
+      "name": "Writhe Curse curse",
+      "url": "https://slaythespire.gg/cards/curse/Writhe",
+      "class": "curse"
+    },
+    {
+      "name": "Burn Status status",
+      "url": "https://slaythespire.gg/cards/status/Burn",
+      "class": "status"
+    },
+    {
+      "name": "Dazed Status status",
+      "url": "https://slaythespire.gg/cards/status/Dazed",
+      "class": "status"
+    },
+    {
+      "name": "Wound Status status",
+      "url": "https://slaythespire.gg/cards/status/Wound",
+      "class": "status"
+    },
+    {
+      "name": "Slimed Status status",
+      "url": "https://slaythespire.gg/cards/status/Slimed",
+      "class": "status"
+    },
+    {
+      "name": "Void Status status",
+      "url": "https://slaythespire.gg/cards/status/Void",
+      "class": "status"
+    }
+  ],
+  "relics": [
+    {
+      "name": "Burning Blood",
+      "url": "https://slaythespire.gg/relics/burning_blood"
+    },
+    {
+      "name": "Ring of the Snake",
+      "url": "https://slaythespire.gg/relics/ring_of_the_snake"
+    },
+    {
+      "name": "Cracked Core",
+      "url": "https://slaythespire.gg/relics/cracked_core"
+    },
+    {
+      "name": "Pure Water",
+      "url": "https://slaythespire.gg/relics/pure_water"
+    },
+    {
+      "name": "Akabeko",
+      "url": "https://slaythespire.gg/relics/akabeko"
+    },
+    {
+      "name": "Anchor",
+      "url": "https://slaythespire.gg/relics/anchor"
+    },
+    {
+      "name": "Ancient Tea Set",
+      "url": "https://slaythespire.gg/relics/ancient_tea_set"
+    },
+    {
+      "name": "Art of War",
+      "url": "https://slaythespire.gg/relics/art_of_war"
+    },
+    {
+      "name": "Bag of Marbles",
+      "url": "https://slaythespire.gg/relics/bag_of_marbles"
+    },
+    {
+      "name": "Bag of Preparation",
+      "url": "https://slaythespire.gg/relics/bag_of_preparation"
+    },
+    {
+      "name": "Blood Vial",
+      "url": "https://slaythespire.gg/relics/blood_vial"
+    },
+    {
+      "name": "Bronze Scales",
+      "url": "https://slaythespire.gg/relics/bronze_scales"
+    },
+    {
+      "name": "Centennial Puzzle",
+      "url": "https://slaythespire.gg/relics/centennial_puzzle"
+    },
+    {
+      "name": "Ceramic Fish",
+      "url": "https://slaythespire.gg/relics/ceramic_fish"
+    },
+    {
+      "name": "Damaru",
+      "url": "https://slaythespire.gg/relics/damaru"
+    },
+    {
+      "name": "Data Disk",
+      "url": "https://slaythespire.gg/relics/data_disk"
+    },
+    {
+      "name": "Dream Catcher",
+      "url": "https://slaythespire.gg/relics/dream_catcher"
+    },
+    {
+      "name": "Happy Flower",
+      "url": "https://slaythespire.gg/relics/happy_flower"
+    },
+    {
+      "name": "Juzu Bracelet",
+      "url": "https://slaythespire.gg/relics/juzu_bracelet"
+    },
+    {
+      "name": "Lantern",
+      "url": "https://slaythespire.gg/relics/lantern"
+    },
+    {
+      "name": "Maw Bank",
+      "url": "https://slaythespire.gg/relics/maw_bank"
+    },
+    {
+      "name": "Meal Ticket",
+      "url": "https://slaythespire.gg/relics/meal_ticket"
+    },
+    {
+      "name": "Nunchaku",
+      "url": "https://slaythespire.gg/relics/nunchaku"
+    },
+    {
+      "name": "Oddly Smooth Stone",
+      "url": "https://slaythespire.gg/relics/oddly_smooth_stone"
+    },
+    {
+      "name": "Omamori",
+      "url": "https://slaythespire.gg/relics/omamori"
+    },
+    {
+      "name": "Orichalcum",
+      "url": "https://slaythespire.gg/relics/orichalcum"
+    },
+    {
+      "name": "Pen Nib",
+      "url": "https://slaythespire.gg/relics/pen_nib"
+    },
+    {
+      "name": "Potion Belt",
+      "url": "https://slaythespire.gg/relics/potion_belt"
+    },
+    {
+      "name": "Preserved Insect",
+      "url": "https://slaythespire.gg/relics/preserved_insect"
+    },
+    {
+      "name": "Red Skull",
+      "url": "https://slaythespire.gg/relics/red_skull"
+    },
+    {
+      "name": "Regal Pillow",
+      "url": "https://slaythespire.gg/relics/regal_pillow"
+    },
+    {
+      "name": "Smiling Mask",
+      "url": "https://slaythespire.gg/relics/smiling_mask"
+    },
+    {
+      "name": "Snecko Skull",
+      "url": "https://slaythespire.gg/relics/snecko_skull"
+    },
+    {
+      "name": "Strawberry",
+      "url": "https://slaythespire.gg/relics/strawberry"
+    },
+    {
+      "name": "The Boot",
+      "url": "https://slaythespire.gg/relics/the_boot"
+    },
+    {
+      "name": "Tiny Chest",
+      "url": "https://slaythespire.gg/relics/tiny_chest"
+    },
+    {
+      "name": "Toy Ornithopter",
+      "url": "https://slaythespire.gg/relics/toy_ornithopter"
+    },
+    {
+      "name": "Vajra",
+      "url": "https://slaythespire.gg/relics/vajra"
+    },
+    {
+      "name": "War Paint",
+      "url": "https://slaythespire.gg/relics/war_paint"
+    },
+    {
+      "name": "Whetstone",
+      "url": "https://slaythespire.gg/relics/whetstone"
+    },
+    {
+      "name": "Blue Candle",
+      "url": "https://slaythespire.gg/relics/blue_candle"
+    },
+    {
+      "name": "Bottled Flame",
+      "url": "https://slaythespire.gg/relics/bottled_flame"
+    },
+    {
+      "name": "Bottled Lightning",
+      "url": "https://slaythespire.gg/relics/bottled_lightning"
+    },
+    {
+      "name": "Bottled Tornado",
+      "url": "https://slaythespire.gg/relics/bottled_tornado"
+    },
+    {
+      "name": "Darkstone Periapt",
+      "url": "https://slaythespire.gg/relics/darkstone_periapt"
+    },
+    {
+      "name": "Duality",
+      "url": "https://slaythespire.gg/relics/duality"
+    },
+    {
+      "name": "Eternal Feather",
+      "url": "https://slaythespire.gg/relics/eternal_feather"
+    },
+    {
+      "name": "Frozen Egg",
+      "url": "https://slaythespire.gg/relics/frozen_egg"
+    },
+    {
+      "name": "Gold-Plated Cables",
+      "url": "https://slaythespire.gg/relics/gold_plated_cables"
+    },
+    {
+      "name": "Gremlin Horn",
+      "url": "https://slaythespire.gg/relics/gremlin_horn"
+    },
+    {
+      "name": "Horn Cleat",
+      "url": "https://slaythespire.gg/relics/horn_cleat"
+    },
+    {
+      "name": "Ink Bottle",
+      "url": "https://slaythespire.gg/relics/ink_bottle"
+    },
+    {
+      "name": "Kunai",
+      "url": "https://slaythespire.gg/relics/kunai"
+    },
+    {
+      "name": "Letter Opener",
+      "url": "https://slaythespire.gg/relics/letter_opener"
+    },
+    {
+      "name": "Matryoshka",
+      "url": "https://slaythespire.gg/relics/matryoshka"
+    },
+    {
+      "name": "Meat on the Bone",
+      "url": "https://slaythespire.gg/relics/meat_on_the_bone"
+    },
+    {
+      "name": "Mercury Hourglass",
+      "url": "https://slaythespire.gg/relics/mercury_hourglass"
+    },
+    {
+      "name": "Molten Egg",
+      "url": "https://slaythespire.gg/relics/molten_egg"
+    },
+    {
+      "name": "Mummified Hand",
+      "url": "https://slaythespire.gg/relics/mummified_hand"
+    },
+    {
+      "name": "Ninja Scroll",
+      "url": "https://slaythespire.gg/relics/ninja_scroll"
+    },
+    {
+      "name": "Ornamental Fan",
+      "url": "https://slaythespire.gg/relics/ornamental_fan"
+    },
+    {
+      "name": "Pantograph",
+      "url": "https://slaythespire.gg/relics/pantograph"
+    },
+    {
+      "name": "Paper Krane",
+      "url": "https://slaythespire.gg/relics/paper_krane"
+    },
+    {
+      "name": "Pear",
+      "url": "https://slaythespire.gg/relics/pear"
+    },
+    {
+      "name": "Question Card",
+      "url": "https://slaythespire.gg/relics/question_card"
+    },
+    {
+      "name": "Self-Forming Clay",
+      "url": "https://slaythespire.gg/relics/self_forming_clay"
+    },
+    {
+      "name": "Shuriken",
+      "url": "https://slaythespire.gg/relics/shuriken"
+    },
+    {
+      "name": "Singing Bowl",
+      "url": "https://slaythespire.gg/relics/singing_bowl"
+    },
+    {
+      "name": "Strike Dummy",
+      "url": "https://slaythespire.gg/relics/strike_dummy"
+    },
+    {
+      "name": "Sundial",
+      "url": "https://slaythespire.gg/relics/sundial"
+    },
+    {
+      "name": "Symbiotic Virus",
+      "url": "https://slaythespire.gg/relics/symbiotic_virus"
+    },
+    {
+      "name": "Teardrop Locket",
+      "url": "https://slaythespire.gg/relics/teardrop_locket"
+    },
+    {
+      "name": "The Courier",
+      "url": "https://slaythespire.gg/relics/the_courier"
+    },
+    {
+      "name": "Toxic Egg",
+      "url": "https://slaythespire.gg/relics/toxic_egg"
+    },
+    {
+      "name": "White Beast Statue",
+      "url": "https://slaythespire.gg/relics/white_beast_statue"
+    },
+    {
+      "name": "Bird-Faced Urn",
+      "url": "https://slaythespire.gg/relics/bird_faced_urn"
+    },
+    {
+      "name": "Black Star",
+      "url": "https://slaythespire.gg/relics/black_star"
+    },
+    {
+      "name": "Brimstone",
+      "url": "https://slaythespire.gg/relics/brimstone"
+    },
+    {
+      "name": "Captain’s Wheel",
+      "url": "https://slaythespire.gg/relics/captains_wheel"
+    },
+    {
+      "name": "Cauldron",
+      "url": "https://slaythespire.gg/relics/cauldron"
+    },
+    {
+      "name": "Cloak Clasp",
+      "url": "https://slaythespire.gg/relics/cloak_clasp"
+    },
+    {
+      "name": "Dolly’s Mirror",
+      "url": "https://slaythespire.gg/relics/dollys_mirror"
+    },
+    {
+      "name": "Emotion Chip",
+      "url": "https://slaythespire.gg/relics/emotion_chip"
+    },
+    {
+      "name": "Fossilized Helix",
+      "url": "https://slaythespire.gg/relics/fossilized_helix"
+    },
+    {
+      "name": "Gambling Chip",
+      "url": "https://slaythespire.gg/relics/gambling_chip"
+    },
+    {
+      "name": "Ginger",
+      "url": "https://slaythespire.gg/relics/ginger"
+    },
+    {
+      "name": "Girya",
+      "url": "https://slaythespire.gg/relics/girya"
+    },
+    {
+      "name": "Golden Eye",
+      "url": "https://slaythespire.gg/relics/golden_eye"
+    },
+    {
+      "name": "Hand Drill",
+      "url": "https://slaythespire.gg/relics/hand_drill"
+    },
+    {
+      "name": "Ice Cream",
+      "url": "https://slaythespire.gg/relics/ice_cream"
+    },
+    {
+      "name": "Incense Burner",
+      "url": "https://slaythespire.gg/relics/incense_burner"
+    },
+    {
+      "name": "Lizard Tail",
+      "url": "https://slaythespire.gg/relics/lizard_tail"
+    },
+    {
+      "name": "Magic Flower",
+      "url": "https://slaythespire.gg/relics/magic_flower"
+    },
+    {
+      "name": "Mark of the Bloom",
+      "url": "https://slaythespire.gg/relics/mark_of_the_bloom"
+    },
+    {
+      "name": "Necronomicon",
+      "url": "https://slaythespire.gg/relics/necronomicon"
+    },
+    {
+      "name": "Old Coin",
+      "url": "https://slaythespire.gg/relics/old_coin"
+    },
+    {
+      "name": "Orange Pellets",
+      "url": "https://slaythespire.gg/relics/orange_pellets"
+    },
+    {
+      "name": "Peace Pipe",
+      "url": "https://slaythespire.gg/relics/peace_pipe"
+    },
+    {
+      "name": "Pocketwatch",
+      "url": "https://slaythespire.gg/relics/pocketwatch"
+    },
+    {
+      "name": "Prismatic Shard",
+      "url": "https://slaythespire.gg/relics/prismatic_shard"
+    },
+    {
+      "name": "Runic Cube",
+      "url": "https://slaythespire.gg/relics/runic_cube"
+    },
+    {
+      "name": "Stone Calendar",
+      "url": "https://slaythespire.gg/relics/stone_calendar"
+    },
+    {
+      "name": "Strange Spoon",
+      "url": "https://slaythespire.gg/relics/strange_spoon"
+    },
+    {
+      "name": "The Specimen",
+      "url": "https://slaythespire.gg/relics/the_specimen"
+    },
+    {
+      "name": "Thread and Needle",
+      "url": "https://slaythespire.gg/relics/thread_and_needle"
+    },
+    {
+      "name": "Torii",
+      "url": "https://slaythespire.gg/relics/torii"
+    },
+    {
+      "name": "Tough Bandages",
+      "url": "https://slaythespire.gg/relics/tough_bandages"
+    },
+    {
+      "name": "Turnip",
+      "url": "https://slaythespire.gg/relics/turnip"
+    },
+    {
+      "name": "Unceasing Top",
+      "url": "https://slaythespire.gg/relics/unceasing_top"
+    },
+    {
+      "name": "Winged Boots",
+      "url": "https://slaythespire.gg/relics/winged_boots"
+    },
+    {
+      "name": "Membership Card",
+      "url": "https://slaythespire.gg/relics/membership_card"
+    },
+    {
+      "name": "Sling of Courage",
+      "url": "https://slaythespire.gg/relics/sling_of_courage"
+    },
+    {
+      "name": "Astrolabe",
+      "url": "https://slaythespire.gg/relics/astrolabe"
+    },
+    {
+      "name": "Black Blood",
+      "url": "https://slaythespire.gg/relics/black_blood"
+    },
+    {
+      "name": "Calling Bell",
+      "url": "https://slaythespire.gg/relics/calling_bell"
+    },
+    {
+      "name": "Coffee Dripper",
+      "url": "https://slaythespire.gg/relics/coffee_dripper"
+    },
+    {
+      "name": "Cursed Key",
+      "url": "https://slaythespire.gg/relics/cursed_key"
+    },
+    {
+      "name": "Ectoplasm",
+      "url": "https://slaythespire.gg/relics/ectoplasm"
+    },
+    {
+      "name": "Empty Cage",
+      "url": "https://slaythespire.gg/relics/empty_cage"
+    },
+    {
+      "name": "Fusion Hammer",
+      "url": "https://slaythespire.gg/relics/fusion_hammer"
+    },
+    {
+      "name": "Holy Water",
+      "url": "https://slaythespire.gg/relics/holy_water"
+    },
+    {
+      "name": "Inserter",
+      "url": "https://slaythespire.gg/relics/inserter"
+    },
+    {
+      "name": "Mark of Pain",
+      "url": "https://slaythespire.gg/relics/mark_of_pain"
+    },
+    {
+      "name": "Philosopher’s Stone",
+      "url": "https://slaythespire.gg/relics/philosophers_stone"
+    },
+    {
+      "name": "Runic Dome",
+      "url": "https://slaythespire.gg/relics/runic_dome"
+    },
+    {
+      "name": "Runic Pyramid",
+      "url": "https://slaythespire.gg/relics/runic_pyramid"
+    },
+    {
+      "name": "Sacred Bark",
+      "url": "https://slaythespire.gg/relics/sacred_bark"
+    },
+    {
+      "name": "Slavers' Collar",
+      "url": "https://slaythespire.gg/relics/slavers_collar"
+    },
+    {
+      "name": "Snecko Eye",
+      "url": "https://slaythespire.gg/relics/snecko_eye"
+    },
+    {
+      "name": "Sozu",
+      "url": "https://slaythespire.gg/relics/sozu"
+    },
+    {
+      "name": "Tiny House",
+      "url": "https://slaythespire.gg/relics/tiny_house"
+    },
+    {
+      "name": "Velvet Choker",
+      "url": "https://slaythespire.gg/relics/velvet_choker"
+    },
+    {
+      "name": "Bloody Idol",
+      "url": "https://slaythespire.gg/relics/bloody_idol"
+    },
+    {
+      "name": "Cultist Headpiece",
+      "url": "https://slaythespire.gg/relics/cultist_headpiece"
+    },
+    {
+      "name": "Enchiridion",
+      "url": "https://slaythespire.gg/relics/enchiridion"
+    },
+    {
+      "name": "Face of Cleric",
+      "url": "https://slaythespire.gg/relics/face_of_cleric"
+    },
+    {
+      "name": "Golden Idol",
+      "url": "https://slaythespire.gg/relics/golden_idol"
+    },
+    {
+      "name": "Gremlin Visage",
+      "url": "https://slaythespire.gg/relics/gremlin_visage"
+    },
+    {
+      "name": "Mutagenic Strength",
+      "url": "https://slaythespire.gg/relics/mutagenic_strength"
+    },
+    {
+      "name": "Nloth's Gift",
+      "url": "https://slaythespire.gg/relics/nloths_gift"
+    },
+    {
+      "name": "Nloth's Hungry Face",
+      "url": "https://slaythespire.gg/relics/nloths_hungry_face"
+    },
+    {
+      "name": "Red Mask",
+      "url": "https://slaythespire.gg/relics/red_mask"
+    },
+    {
+      "name": "Spirit Poop",
+      "url": "https://slaythespire.gg/relics/spirit_poop"
+    },
+    {
+      "name": "Ssserpent Head",
+      "url": "https://slaythespire.gg/relics/ssserpent_head"
+    },
+    {
+      "name": "Warped Tongs",
+      "url": "https://slaythespire.gg/relics/warped_tongs"
+    },
+    {
+      "name": "Circlet",
+      "url": "https://slaythespire.gg/relics/circlet"
+    }
+  ],
+  "potions": [
+    {
+      "name": "Ambrosia",
+      "url": "https://slaythespire.gg/potions/Ambrosia"
+    },
+    {
+      "name": "Ancient Potion",
+      "url": "https://slaythespire.gg/potions/Ancient_Potion"
+    },
+    {
+      "name": "Attack Potion",
+      "url": "https://slaythespire.gg/potions/Attack_Potion"
+    },
+    {
+      "name": "Blessing of the Forge",
+      "url": "https://slaythespire.gg/potions/Blessing_of_the_Forge"
+    },
+    {
+      "name": "Block Potion",
+      "url": "https://slaythespire.gg/potions/Block_Potion"
+    },
+    {
+      "name": "Blood Potion",
+      "url": "https://slaythespire.gg/potions/Blood_Potion"
+    },
+    {
+      "name": "Bottled Miracle",
+      "url": "https://slaythespire.gg/potions/Bottled_Miracle"
+    },
+    {
+      "name": "Colorless Potion",
+      "url": "https://slaythespire.gg/potions/Colorless_Potion"
+    },
+    {
+      "name": "Cultist Potion",
+      "url": "https://slaythespire.gg/potions/Cultist_Potion"
+    },
+    {
+      "name": "Cunning Potion",
+      "url": "https://slaythespire.gg/potions/Cunning_Potion"
+    },
+    {
+      "name": "Dexterity Potion",
+      "url": "https://slaythespire.gg/potions/Dexterity_Potion"
+    },
+    {
+      "name": "Distilled Chaos",
+      "url": "https://slaythespire.gg/potions/Distilled_Chaos"
+    },
+    {
+      "name": "Duplication Potion",
+      "url": "https://slaythespire.gg/potions/Duplication_Potion"
+    },
+    {
+      "name": "Elixir",
+      "url": "https://slaythespire.gg/potions/Elixir"
+    },
+    {
+      "name": "Energy Potion",
+      "url": "https://slaythespire.gg/potions/Energy_Potion"
+    },
+    {
+      "name": "Entropic Brew",
+      "url": "https://slaythespire.gg/potions/Entropic_Brew"
+    },
+    {
+      "name": "Essence of Darkness",
+      "url": "https://slaythespire.gg/potions/Essence_of_Darkness"
+    },
+    {
+      "name": "Essence of Steel",
+      "url": "https://slaythespire.gg/potions/Essence_of_Steel"
+    },
+    {
+      "name": "Explosive Potion",
+      "url": "https://slaythespire.gg/potions/Explosive_Potion"
+    },
+    {
+      "name": "Fairy in a Bottle",
+      "url": "https://slaythespire.gg/potions/Fairy_in_a_Bottle"
+    },
+    {
+      "name": "Fear Potion",
+      "url": "https://slaythespire.gg/potions/Fear_Potion"
+    },
+    {
+      "name": "Fire Potion",
+      "url": "https://slaythespire.gg/potions/Fire_Potion"
+    },
+    {
+      "name": "Flex Potion",
+      "url": "https://slaythespire.gg/potions/Flex_Potion"
+    },
+    {
+      "name": "Focus Potion",
+      "url": "https://slaythespire.gg/potions/Focus_Potion"
+    },
+    {
+      "name": "Fruit Juice",
+      "url": "https://slaythespire.gg/potions/Fruit_Juice"
+    },
+    {
+      "name": "Gambler's Brew",
+      "url": "https://slaythespire.gg/potions/Gambler_s_Brew"
+    },
+    {
+      "name": "Ghost In A Jar",
+      "url": "https://slaythespire.gg/potions/Ghost_In_A_Jar"
+    },
+    {
+      "name": "Heart of Iron",
+      "url": "https://slaythespire.gg/potions/Heart_of_Iron"
+    },
+    {
+      "name": "Liquid Bronze",
+      "url": "https://slaythespire.gg/potions/Liquid_Bronze"
+    },
+    {
+      "name": "Liquid Memories",
+      "url": "https://slaythespire.gg/potions/Liquid_Memories"
+    },
+    {
+      "name": "Poison Potion",
+      "url": "https://slaythespire.gg/potions/Poison_Potion"
+    },
+    {
+      "name": "Potion of Capacity",
+      "url": "https://slaythespire.gg/potions/Potion_of_Capacity"
+    },
+    {
+      "name": "Power Potion",
+      "url": "https://slaythespire.gg/potions/Power_Potion"
+    },
+    {
+      "name": "Regen Potion",
+      "url": "https://slaythespire.gg/potions/Regen_Potion"
+    },
+    {
+      "name": "Skill Potion",
+      "url": "https://slaythespire.gg/potions/Skill_Potion"
+    },
+    {
+      "name": "Smoke Bomb",
+      "url": "https://slaythespire.gg/potions/Smoke_Bomb"
+    },
+    {
+      "name": "Snecko Oil",
+      "url": "https://slaythespire.gg/potions/Snecko_Oil"
+    },
+    {
+      "name": "Speed Potion",
+      "url": "https://slaythespire.gg/potions/Speed_Potion"
+    },
+    {
+      "name": "Stance Potion",
+      "url": "https://slaythespire.gg/potions/Stance_Potion"
+    },
+    {
+      "name": "Strength Potion",
+      "url": "https://slaythespire.gg/potions/Strength_Potion"
+    },
+    {
+      "name": "Swift Potion",
+      "url": "https://slaythespire.gg/potions/Swift_Potion"
+    },
+    {
+      "name": "Weak Potion",
+      "url": "https://slaythespire.gg/potions/Weak_Potion"
+    }
+  ],
+  "elites": [
+    {
+      "name": "Gremlin Nob",
+      "url": "https://slaythespire.gg/elites/Gremlin_Nob"
+    },
+    {
+      "name": "Lagavulin",
+      "url": "https://slaythespire.gg/elites/Lagavulin"
+    },
+    {
+      "name": "Three Sentries",
+      "url": "https://slaythespire.gg/elites/Three_Sentries"
+    },
+    {
+      "name": "Spire Spear",
+      "url": "https://slaythespire.gg/elites/Spire_Spear"
+    },
+    {
+      "name": "Spire Shield",
+      "url": "https://slaythespire.gg/elites/Spire_Shield"
+    },
+    {
+      "name": "Book of Stabbing",
+      "url": "https://slaythespire.gg/elites/Book_of_Stabbing"
+    },
+    {
+      "name": "Taskmaster",
+      "url": "https://slaythespire.gg/elites/Taskmaster"
+    },
+    {
+      "name": "Gremlin Leader",
+      "url": "https://slaythespire.gg/elites/Gremlin_Leader"
+    },
+    {
+      "name": "Giant Head",
+      "url": "https://slaythespire.gg/elites/Giant_Head"
+    },
+    {
+      "name": "Nemesis",
+      "url": "https://slaythespire.gg/elites/Nemesis"
+    },
+    {
+      "name": "Reptomancer",
+      "url": "https://slaythespire.gg/elites/Reptomancer"
+    }
+  ],
+  "bosses": [
+    {
+      "name": "Slime Boss",
+      "url": "https://slaythespire.gg/bosses/Slime_Boss"
+    },
+    {
+      "name": "Guardian",
+      "url": "https://slaythespire.gg/bosses/Guardian"
+    },
+    {
+      "name": "Hexaghost",
+      "url": "https://slaythespire.gg/bosses/Hexaghost"
+    },
+    {
+      "name": "Bronze Automaton",
+      "url": "https://slaythespire.gg/bosses/Bronze_Automaton"
+    },
+    {
+      "name": "The Champ",
+      "url": "https://slaythespire.gg/bosses/The_Champ"
+    },
+    {
+      "name": "The Collector",
+      "url": "https://slaythespire.gg/bosses/The_Collector"
+    },
+    {
+      "name": "Awakened One",
+      "url": "https://slaythespire.gg/bosses/Awakened_One"
+    },
+    {
+      "name": "Donu and Deca",
+      "url": "https://slaythespire.gg/bosses/Donu_and_Deca"
+    },
+    {
+      "name": "Time Eater",
+      "url": "https://slaythespire.gg/bosses/Time_Eater"
+    },
+    {
+      "name": "The Corrupt Heart",
+      "url": "https://slaythespire.gg/bosses/The_Corrupt_Heart"
+    }
+  ]
+}

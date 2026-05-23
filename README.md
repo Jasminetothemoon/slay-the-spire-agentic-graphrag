@@ -74,6 +74,35 @@ python scripts/ingest_graph.py --dry-run
 python scripts/ingest_graph.py
 ```
 
+## Public Wiki Data Import
+
+The seed dataset is intentionally small. To build a larger public dataset from `slaythespire.gg`:
+
+```bash
+python scripts/import_public_wiki.py --links-only --output data/public_link_index.json
+python scripts/import_public_wiki.py --collections cards --output data/public_cards.json --checkpoint-every 50
+python scripts/import_public_wiki.py --output data/public_full_data.json --checkpoint-every 50
+python scripts/normalize_dataset.py --input data/public_full_data.json --output data/public_full_data.json
+python scripts/validate_data.py --data data/public_cards.json
+python scripts/validate_data.py --data data/public_full_data.json
+python scripts/data_quality_report.py --data data/public_full_data.json
+```
+
+To run the app with an imported dataset instead of the seed data:
+
+```bash
+set STS_KB_PATH=data/public_cards.json
+uvicorn api.main:app --reload
+```
+
+Current public import snapshot:
+
+- 361 cards
+- 146 relics
+- 42 potions
+- 21 elite/boss enemy entries
+- 25 extracted mechanics/risk nodes
+
 ## API Example
 
 ```bash

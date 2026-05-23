@@ -1,11 +1,12 @@
 import json
+import argparse
 import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-DATA_PATH = ROOT / "data" / "sample_data.json"
+DEFAULT_DATA_PATH = ROOT / "data" / "sample_data.json"
 
 
 COLLECTIONS = [
@@ -22,7 +23,11 @@ COLLECTIONS = [
 
 
 def main() -> None:
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
+    parser = argparse.ArgumentParser(description="Validate a Slay the Spire knowledge dataset.")
+    parser.add_argument("--data", default=str(DEFAULT_DATA_PATH))
+    args = parser.parse_args()
+
+    with open(args.data, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     ids = set()

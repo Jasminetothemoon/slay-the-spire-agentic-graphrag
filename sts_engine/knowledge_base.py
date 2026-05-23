@@ -1,4 +1,5 @@
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
@@ -159,7 +160,12 @@ class KnowledgeBase:
         return {collection: len(self.data.get(collection, [])) for collection in ENTITY_COLLECTIONS}
 
 
-@lru_cache(maxsize=1)
-def load_knowledge_base(path: str = str(DATA_PATH)) -> KnowledgeBase:
+def default_data_path() -> str:
+    return os.getenv("STS_KB_PATH", str(DATA_PATH))
+
+
+@lru_cache(maxsize=4)
+def load_knowledge_base(path: str | None = None) -> KnowledgeBase:
+    path = path or default_data_path()
     with open(path, "r", encoding="utf-8") as f:
         return KnowledgeBase(json.load(f))

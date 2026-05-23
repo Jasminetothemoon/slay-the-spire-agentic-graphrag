@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 try:
     from langgraph.graph import END, StateGraph
-except ModuleNotFoundError:
+except Exception:
     END = None
     StateGraph = None
 

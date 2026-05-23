@@ -1,0 +1,9 @@
+neo4j>=5.14.1
+langgraph>=0.0.26
+langchain-core>=0.1.27
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.6.1
+requests>=2.31.0
+beautifulsoup4>=4.12.3
+websockets>=12.0

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "silent_poison_take_catalyst",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "eval_001",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 1,
+      "current_floor": 10,
+      "current_hp": 40,
+      "max_hp": 70,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask"],
+      "relics": ["Snecko Skull"],
+      "potions": []
+    },
+    "options": ["Catalyst", "Backflip", "Dagger Spray"],
+    "expected_top": "catalyst",
+    "acceptable": ["catalyst", "backflip"]
+  },
+  {
+    "id": "silent_missing_aoe_take_dagger_spray",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "eval_002",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 6,
+      "current_hp": 52,
+      "max_hp": 70,
+      "gold": 80,
+      "deck": ["Strike", "Defend", "Backflip"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Dagger Spray", "Deadly Poison", "Catalyst"],
+    "expected_top": "dagger_spray",
+    "acceptable": ["dagger_spray", "deadly_poison"]
+  },
+  {
+    "id": "defect_low_defense_take_glacier",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "eval_003",
+      "character_class": "defect",
+      "ascension_level": 10,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 24,
+      "max_hp": 75,
+      "gold": 140,
+      "deck": ["Strike", "Defend", "Zap"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Glacier", "Defragment", "Dagger Spray"],
+    "expected_top": "glacier",
+    "acceptable": ["glacier", "defragment"]
+  },
+  {
+    "id": "shop_remove_card_when_deck_large",
+    "query_type": "shop",
+    "state": {
+      "run_id": "eval_004",
+      "character_class": "ironclad",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 18,
+      "current_hp": 50,
+      "max_hp": 80,
+      "gold": 180,
+      "deck": ["Strike", "Strike", "Strike", "Defend", "Defend", "Bash", "Inflame", "Shockwave", "Defend", "Strike", "Strike", "Defend"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Remove a Card", "Buy Potion", "Skip"],
+    "expected_top": "remove_card",
+    "acceptable": ["remove_card"]
+  },
+  {
+    "id": "path_low_hp_take_rest",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "eval_005",
+      "character_class": "watcher",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 25,
+      "current_hp": 16,
+      "max_hp": 72,
+      "gold": 90,
+      "deck": ["Strike", "Defend", "Wallop"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Elite", "Rest Site", "Monster"],
+    "expected_top": "rest",
+    "acceptable": ["rest"]
+  }
+]

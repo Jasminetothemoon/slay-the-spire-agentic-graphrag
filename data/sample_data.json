@@ -1,0 +1,350 @@
+{
+  "metadata": {
+    "game": "sts1",
+    "patch_version": "2.3",
+    "source": "curated_seed_dataset",
+    "confidence": 0.78,
+    "description": "Seed dataset for the Agentic GraphRAG MVP. It is intentionally small but uses the production schema."
+  },
+  "classes": [
+    {"id": "ironclad", "name": "Ironclad"},
+    {"id": "silent", "name": "Silent"},
+    {"id": "defect", "name": "Defect"},
+    {"id": "watcher", "name": "Watcher"}
+  ],
+  "mechanics": [
+    {"id": "poison", "name": "Poison", "tags": ["scaling_damage", "single_target"]},
+    {"id": "shiv", "name": "Shiv", "tags": ["multi_attack", "zero_cost"]},
+    {"id": "strength", "name": "Strength", "tags": ["scaling_damage", "attack"]},
+    {"id": "block", "name": "Block", "tags": ["defense"]},
+    {"id": "aoe", "name": "AoE", "tags": ["multi_enemy"]},
+    {"id": "draw", "name": "Card Draw", "tags": ["consistency"]},
+    {"id": "energy", "name": "Energy", "tags": ["resource"]},
+    {"id": "exhaust", "name": "Exhaust", "tags": ["deck_control"]},
+    {"id": "orb_frost", "name": "Frost Orb", "tags": ["defense", "orb"]},
+    {"id": "orb_lightning", "name": "Lightning Orb", "tags": ["damage", "orb"]},
+    {"id": "stance_wrath", "name": "Wrath", "tags": ["burst_damage", "risk"]},
+    {"id": "stance_calm", "name": "Calm", "tags": ["energy", "stance"]},
+    {"id": "low_frontload", "name": "Low Frontload", "tags": ["risk"]},
+    {"id": "frontload_damage", "name": "Frontload Damage", "tags": ["damage"]},
+    {"id": "no_aoe", "name": "No AoE", "tags": ["risk"]},
+    {"id": "slow_scaling", "name": "Slow Scaling", "tags": ["risk"]}
+  ],
+  "cards": [
+    {
+      "id": "deadly_poison",
+      "name": "Deadly Poison",
+      "class": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "energy_cost": 1,
+      "base_value": 58,
+      "tags": ["poison", "scaling_damage", "single_target"],
+      "description": "Apply Poison.",
+      "relationships": [
+        {"type": "APPLIES", "target": "poison", "weight": 0.9}
+      ]
+    },
+    {
+      "id": "catalyst",
+      "name": "Catalyst",
+      "class": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "energy_cost": 1,
+      "base_value": 42,
+      "tags": ["poison", "scaling_damage", "finisher"],
+      "description": "Multiply enemy Poison.",
+      "relationships": [
+        {"type": "SCALES_WITH", "target": "poison", "weight": 1.0},
+        {"type": "CORE_PIECE_FOR", "target": "archetype_silent_poison", "weight": 1.0}
+      ]
+    },
+    {
+      "id": "bouncing_flask",
+      "name": "Bouncing Flask",
+      "class": "silent",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "energy_cost": 2,
+      "base_value": 64,
+      "tags": ["poison", "scaling_damage"],
+      "description": "Apply Poison to random enemies several times.",
+      "relationships": [
+        {"type": "APPLIES", "target": "poison", "weight": 0.9}
+      ]
+    },
+    {
+      "id": "backflip",
+      "name": "Backflip",
+      "class": "silent",
+      "type": "Skill",
+      "rarity": "Common",
+      "energy_cost": 1,
+      "base_value": 63,
+      "tags": ["block", "draw", "consistency"],
+      "description": "Gain Block and draw cards.",
+      "relationships": [
+        {"type": "APPLIES", "target": "block", "weight": 0.7},
+        {"type": "APPLIES", "target": "draw", "weight": 0.7}
+      ]
+    },
+    {
+      "id": "dagger_spray",
+      "name": "Dagger Spray",
+      "class": "silent",
+      "type": "Attack",
+      "rarity": "Common",
+      "energy_cost": 1,
+      "base_value": 61,
+      "tags": ["aoe", "multi_attack"],
+      "description": "Deal damage to all enemies twice.",
+      "relationships": [
+        {"type": "APPLIES", "target": "aoe", "weight": 0.85}
+      ]
+    },
+    {
+      "id": "limit_break",
+      "name": "Limit Break",
+      "class": "ironclad",
+      "type": "Skill",
+      "rarity": "Rare",
+      "energy_cost": 1,
+      "base_value": 45,
+      "tags": ["strength", "scaling_damage"],
+      "description": "Double your Strength.",
+      "relationships": [
+        {"type": "SCALES_WITH", "target": "strength", "weight": 1.0},
+        {"type": "CORE_PIECE_FOR", "target": "archetype_ironclad_strength", "weight": 0.9}
+      ]
+    },
+    {
+      "id": "inflame",
+      "name": "Inflame",
+      "class": "ironclad",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "energy_cost": 1,
+      "base_value": 67,
+      "tags": ["strength", "scaling_damage"],
+      "description": "Gain Strength.",
+      "relationships": [
+        {"type": "APPLIES", "target": "strength", "weight": 0.9}
+      ]
+    },
+    {
+      "id": "shockwave",
+      "name": "Shockwave",
+      "class": "ironclad",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "energy_cost": 2,
+      "base_value": 75,
+      "tags": ["aoe", "vulnerable", "weak"],
+      "description": "Apply multiple debuffs to all enemies.",
+      "relationships": [
+        {"type": "APPLIES", "target": "aoe", "weight": 0.6}
+      ]
+    },
+    {
+      "id": "glacier",
+      "name": "Glacier",
+      "class": "defect",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "energy_cost": 2,
+      "base_value": 78,
+      "tags": ["block", "orb_frost", "defense"],
+      "description": "Gain Block and channel Frost.",
+      "relationships": [
+        {"type": "APPLIES", "target": "block", "weight": 0.7},
+        {"type": "APPLIES", "target": "orb_frost", "weight": 0.9}
+      ]
+    },
+    {
+      "id": "defragment",
+      "name": "Defragment",
+      "class": "defect",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "energy_cost": 1,
+      "base_value": 72,
+      "tags": ["orb", "scaling_damage", "defense"],
+      "description": "Gain Focus.",
+      "relationships": [
+        {"type": "ENHANCES", "target": "orb_frost", "weight": 0.8},
+        {"type": "ENHANCES", "target": "orb_lightning", "weight": 0.8}
+      ]
+    },
+    {
+      "id": "wallop",
+      "name": "Wallop",
+      "class": "watcher",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "energy_cost": 2,
+      "base_value": 72,
+      "tags": ["block", "stance_wrath", "burst_damage"],
+      "description": "Deal damage and gain Block equal to unblocked damage.",
+      "relationships": [
+        {"type": "SCALES_WITH", "target": "stance_wrath", "weight": 0.8},
+        {"type": "APPLIES", "target": "block", "weight": 0.5}
+      ]
+    },
+    {
+      "id": "mental_fortress",
+      "name": "Mental Fortress",
+      "class": "watcher",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "energy_cost": 1,
+      "base_value": 68,
+      "tags": ["block", "stance_calm", "stance_wrath"],
+      "description": "Gain Block whenever you change stances.",
+      "relationships": [
+        {"type": "SCALES_WITH", "target": "stance_calm", "weight": 0.7},
+        {"type": "SCALES_WITH", "target": "stance_wrath", "weight": 0.7}
+      ]
+    }
+  ],
+  "relics": [
+    {
+      "id": "snecko_skull",
+      "name": "Snecko Skull",
+      "tier": "Common",
+      "class": "silent",
+      "base_value": 74,
+      "tags": ["poison"],
+      "description": "Whenever you apply Poison, apply more.",
+      "relationships": [
+        {"type": "ENHANCES", "target": "poison", "weight": 1.0}
+      ]
+    },
+    {
+      "id": "kunai",
+      "name": "Kunai",
+      "tier": "Uncommon",
+      "class": "any",
+      "base_value": 70,
+      "tags": ["multi_attack", "defense"],
+      "description": "After several Attacks in one turn, gain Dexterity.",
+      "relationships": [
+        {"type": "ENHANCES", "target": "shiv", "weight": 0.85}
+      ]
+    },
+    {
+      "id": "chemical_x",
+      "name": "Chemical X",
+      "tier": "Shop",
+      "class": "any",
+      "base_value": 64,
+      "tags": ["energy"],
+      "description": "X-cost cards are stronger.",
+      "relationships": [
+        {"type": "ENHANCES", "target": "energy", "weight": 0.6}
+      ]
+    }
+  ],
+  "potions": [
+    {
+      "id": "fire_potion",
+      "name": "Fire Potion",
+      "base_value": 52,
+      "tags": ["burst_damage"],
+      "relationships": [
+        {"type": "GOOD_AGAINST", "target": "elite", "weight": 0.45}
+      ]
+    }
+  ],
+  "enemies": [
+    {
+      "id": "gremlin_nob",
+      "name": "Gremlin Nob",
+      "type": "elite",
+      "act": 1,
+      "tags": ["punishes_skills", "damage_race"],
+      "relationships": [
+        {"type": "PUNISHES", "target": "low_frontload", "weight": 0.9},
+        {"type": "GOOD_AGAINST", "target": "frontload_damage", "weight": 0.9}
+      ]
+    },
+    {
+      "id": "sentries",
+      "name": "Sentries",
+      "type": "elite",
+      "act": 1,
+      "tags": ["multi_enemy", "dazed"],
+      "relationships": [
+        {"type": "PUNISHES", "target": "no_aoe", "weight": 0.85},
+        {"type": "GOOD_AGAINST", "target": "aoe", "weight": 0.8}
+      ]
+    },
+    {
+      "id": "slavers",
+      "name": "Slavers",
+      "type": "elite",
+      "act": 2,
+      "tags": ["multi_enemy", "frontload_check"],
+      "relationships": [
+        {"type": "PUNISHES", "target": "no_aoe", "weight": 0.9},
+        {"type": "GOOD_AGAINST", "target": "aoe", "weight": 0.9}
+      ]
+    },
+    {
+      "id": "hexaghost",
+      "name": "Hexaghost",
+      "type": "boss",
+      "act": 1,
+      "tags": ["scaling_check", "hp_sensitive"],
+      "relationships": [
+        {"type": "PUNISHES", "target": "slow_scaling", "weight": 0.7}
+      ]
+    }
+  ],
+  "archetypes": [
+    {
+      "id": "archetype_silent_poison",
+      "name": "Silent Poison",
+      "class": "silent",
+      "core_cards": ["deadly_poison", "bouncing_flask", "catalyst"],
+      "core_relics": ["snecko_skull"],
+      "tags": ["poison", "scaling_damage"]
+    },
+    {
+      "id": "archetype_ironclad_strength",
+      "name": "Ironclad Strength",
+      "class": "ironclad",
+      "core_cards": ["inflame", "limit_break"],
+      "core_relics": [],
+      "tags": ["strength", "scaling_damage"]
+    },
+    {
+      "id": "archetype_defect_frost",
+      "name": "Defect Frost Focus",
+      "class": "defect",
+      "core_cards": ["glacier", "defragment"],
+      "core_relics": [],
+      "tags": ["orb_frost", "block"]
+    },
+    {
+      "id": "archetype_watcher_stance",
+      "name": "Watcher Stance Dance",
+      "class": "watcher",
+      "core_cards": ["mental_fortress", "wallop"],
+      "core_relics": [],
+      "tags": ["stance_calm", "stance_wrath", "block"]
+    }
+  ],
+  "shop_actions": [
+    {"id": "remove_card", "name": "Remove a Card", "base_value": 68, "tags": ["deck_control"]},
+    {"id": "buy_potion", "name": "Buy Potion", "base_value": 48, "tags": ["elite_safety"]},
+    {"id": "skip_shop", "name": "Skip", "base_value": 25, "tags": ["save_gold"]}
+  ],
+  "path_nodes": [
+    {"id": "elite", "name": "Elite", "base_value": 62, "tags": ["reward", "risk"]},
+    {"id": "rest", "name": "Rest Site", "base_value": 54, "tags": ["heal", "upgrade"]},
+    {"id": "shop", "name": "Shop", "base_value": 52, "tags": ["spend_gold"]},
+    {"id": "unknown", "name": "Unknown", "base_value": 45, "tags": ["variance"]},
+    {"id": "monster", "name": "Monster", "base_value": 42, "tags": ["card_reward"]}
+  ]
+}

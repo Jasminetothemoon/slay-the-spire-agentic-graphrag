@@ -1,0 +1,56 @@
+[
+  {
+    "archetype_name": "毒药流 (Poison Build)",
+    "core_cards": [
+      "催化剂",
+      "致命毒药",
+      "弹跳药瓶"
+    ],
+    "core_relics": [
+      "蛇骨",
+      "异蛇之眼"
+    ],
+    "synergies": [
+      {
+        "source_entity": "催化剂",
+        "target_entity": "Poison",
+        "relation_type": "SCALES_WITH",
+        "reason": "催化剂可以将目标的现有中毒层数翻倍甚至三倍，是毒药流绝对核心。"
+      },
+      {
+        "source_entity": "蛇骨",
+        "target_entity": "Poison",
+        "relation_type": "ENHANCES",
+        "reason": "每次给予中毒时，额外给予1层，极大增强叠毒效率。"
+      }
+    ],
+    "class": "Silent"
+  },
+  {
+    "archetype_name": "毒药流 (Poison Build)",
+    "core_cards": [
+      "催化剂",
+      "致命毒药",
+      "弹跳药瓶"
+    ],
+    "core_relics": [
+      "蛇骨",
+      "异蛇之眼"
+    ],
+    "synergies": [
+      {
+        "source_entity": "催化剂",
+        "target_entity": "Poison",
+        "relation_type": "SCALES_WITH",
+        "reason": "催化剂可以将目标的现有中毒层数翻倍甚至三倍，是毒药流绝对核心。"
+      },
+      {
+        "source_entity": "蛇骨",
+        "target_entity": "Poison",
+        "relation_type": "ENHANCES",
+        "reason": "每次给予中毒时，额外给予1层，极大增强叠毒效率。"
+      }
+    ],
+    "class": "Silent"
+  }
+]

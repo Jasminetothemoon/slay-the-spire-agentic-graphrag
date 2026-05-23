@@ -1,0 +1,241 @@
+import uuid
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
+
+from sts_engine.agent import build_graph
+from sts_engine.knowledge_base import load_knowledge_base
+
+
+ROOT = Path(__file__).resolve().parents[1]
+WEB_DIR = ROOT / "web"
+
+app = FastAPI(
+    title="Slay the Spire Agentic GraphRAG API",
+    description="Realtime decision assistant with knowledge graph retrieval, structured scoring, and agent workflow.",
+    version="2.0.0",
+)
+
+if WEB_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(WEB_DIR)), name="static")
+
+engine = build_graph()
+kb = load_knowledge_base()
+active_runs: Dict[str, Dict[str, Any]] = {}
+subscribers: List[WebSocket] = []
+
+
+class StartRunRequest(BaseModel):
+    character_class: str = Field(default="silent")
+    ascension_level: int = Field(default=0, ge=0, le=20)
+    max_hp: int = Field(default=70, gt=0)
+    source: str = Field(default="manual")
+
+
+class UpdateStateRequest(BaseModel):
+    run_id: str
+    source: Optional[str] = None
+    act: Optional[int] = None
+    current_floor: Optional[int] = None
+    current_hp: Optional[int] = None
+    max_hp: Optional[int] = None
+    gold: Optional[int] = None
+    energy: Optional[int] = None
+    deck: Optional[List[str]] = None
+    upgraded_cards: Optional[List[str]] = None
+    relics: Optional[List[str]] = None
+    potions: Optional[List[str]] = None
+    combat_state: Optional[Dict[str, Any]] = None
+    enemies: Optional[List[Dict[str, Any]]] = None
+    hand_cards: Optional[List[str]] = None
+    draw_pile: Optional[List[str]] = None
+    discard_pile: Optional[List[str]] = None
+    map_options: Optional[List[Dict[str, Any]]] = None
+    boss: Optional[str] = None
+
+
+class ModStatePayload(BaseModel):
+    run_id: Optional[str] = None
+    character_class: str = "silent"
+    ascension_level: int = 0
+    act: int = 1
+    current_floor: int = 1
+    current_hp: int = 70
+    max_hp: int = 70
+    gold: int = 99
+    energy: int = 3
+    deck: List[str] = []
+    upgraded_cards: List[str] = []
+    relics: List[str] = []
+    potions: List[str] = []
+    combat_state: Dict[str, Any] = {}
+    enemies: List[Dict[str, Any]] = []
+    hand_cards: List[str] = []
+    draw_pile: List[str] = []
+    discard_pile: List[str] = []
+    map_options: List[Dict[str, Any]] = []
+    boss: Optional[str] = None
+
+
+class RecommendationRequest(BaseModel):
+    run_id: str
+    query_type: str = Field(pattern="^(card_pick|relic_pick|shop|pathing|combat)$")
+    options: List[str] = []
+    user_query: str = ""
+
+
+class RecommendationResponse(BaseModel):
+    recommendation: str
+    reasoning: str
+    option_scores: List[Dict[str, Any]]
+    graph_context: List[Dict[str, Any]]
+    risk_report: Dict[str, Any]
+    latency_ms: float
+    backend: str
+
+
+def default_state(run_id: str, req: StartRunRequest) -> Dict[str, Any]:
+    return {
+        "run_id": run_id,
+        "source": req.source,
+        "game": "sts1",
+        "patch_version": kb.metadata.get("patch_version", "unknown"),
+        "character_class": req.character_class.lower(),
+        "ascension_level": req.ascension_level,
+        "act": 1,
+        "current_floor": 1,
+        "current_hp": req.max_hp,
+        "max_hp": req.max_hp,
+        "gold": 99,
+        "energy": 3,
+        "deck": ["Strike", "Defend"],
+        "upgraded_cards": [],
+        "relics": [],
+        "potions": [],
+        "combat_state": {},
+        "enemies": [],
+        "hand_cards": [],
+        "draw_pile": [],
+        "discard_pile": [],
+        "map_options": [],
+    }
+
+
+async def broadcast(payload: Dict[str, Any]) -> None:
+    disconnected = []
+    for websocket in subscribers:
+        try:
+            await websocket.send_json(payload)
+        except Exception:
+            disconnected.append(websocket)
+    for websocket in disconnected:
+        if websocket in subscribers:
+            subscribers.remove(websocket)
+
+
+@app.get("/")
+def index():
+    index_path = WEB_DIR / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+    return {"message": "Slay the Spire Agentic GraphRAG API is running."}
+
+
+@app.get("/health")
+def health():
+    return {
+        "status": "ok",
+        "knowledge_base": kb.entity_counts(),
+        "graph_backend": getattr(engine, "backend", "langgraph"),
+    }
+
+
+@app.post("/start_run")
+async def start_run(req: StartRunRequest):
+    run_id = f"run_{uuid.uuid4().hex[:8]}"
+    state = default_state(run_id, req)
+    active_runs[run_id] = state
+    await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
+    return {"message": "Run started", "run_id": run_id, "state": state}
+
+
+@app.post("/update_state")
+async def update_state(req: UpdateStateRequest):
+    if req.run_id not in active_runs:
+        raise HTTPException(status_code=404, detail="Run ID not found")
+    state = active_runs[req.run_id]
+    update_data = req.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        if key != "run_id":
+            state[key] = value
+    active_runs[req.run_id] = state
+    await broadcast({"type": "state_updated", "run_id": req.run_id, "state": state})
+    return {"message": "State updated", "current_state": state}
+
+
+@app.post("/mod/state")
+async def mod_state(payload: ModStatePayload):
+    run_id = payload.run_id or "mod_live"
+    state = payload.model_dump()
+    state.update(
+        {
+            "run_id": run_id,
+            "source": "mod_bridge",
+            "game": "sts1",
+            "patch_version": kb.metadata.get("patch_version", "unknown"),
+            "character_class": state.get("character_class", "silent").lower(),
+        }
+    )
+    active_runs[run_id] = state
+    await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
+    return {"message": "Mod state accepted", "run_id": run_id, "state": state}
+
+
+@app.get("/runs/{run_id}")
+def get_run(run_id: str):
+    if run_id not in active_runs:
+        raise HTTPException(status_code=404, detail="Run ID not found")
+    return active_runs[run_id]
+
+
+@app.post("/get_recommendation", response_model=RecommendationResponse)
+async def get_recommendation(req: RecommendationRequest):
+    if req.run_id not in active_runs:
+        raise HTTPException(status_code=404, detail="Run ID not found")
+    current_state = active_runs[req.run_id].copy()
+    current_state.update(
+        {
+            "query_type": req.query_type,
+            "options": req.options,
+            "user_query": req.user_query,
+        }
+    )
+    final_state = engine.invoke(current_state)
+    response = RecommendationResponse(
+        recommendation=final_state.get("recommendation", "skip"),
+        reasoning=final_state.get("reasoning", ""),
+        option_scores=final_state.get("option_scores", []),
+        graph_context=final_state.get("graph_context", []),
+        risk_report=final_state.get("risk_report", {}),
+        latency_ms=final_state.get("latency_ms", 0.0),
+        backend="neo4j_or_local_fallback",
+    )
+    await broadcast({"type": "recommendation", "run_id": req.run_id, "response": response.model_dump()})
+    return response
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    subscribers.append(websocket)
+    try:
+        await websocket.send_json({"type": "connected", "active_runs": list(active_runs.keys())})
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        if websocket in subscribers:
+            subscribers.remove(websocket)

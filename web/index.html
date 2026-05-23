@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spire Agentic GraphRAG</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="topbar">
+        <div>
+          <h1>Spire Agentic GraphRAG</h1>
+          <p>Realtime decision assistant for deck, route, shop, and combat states.</p>
+        </div>
+        <button id="startRun">Start Demo Run</button>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel">
+          <h2>Run State</h2>
+          <label>Run ID <input id="runId" placeholder="run id" /></label>
+          <label>Class <input id="characterClass" value="silent" /></label>
+          <label>HP <input id="hp" type="number" value="40" /></label>
+          <label>Gold <input id="gold" type="number" value="120" /></label>
+          <label>Deck <textarea id="deck">Strike
+Defend
+Deadly Poison
+Bouncing Flask</textarea></label>
+          <label>Relics <textarea id="relics">Snecko Skull</textarea></label>
+          <button id="syncState">Sync State</button>
+        </aside>
+
+        <section class="panel main-panel">
+          <div class="recommendation-header">
+            <div>
+              <h2>Recommendation</h2>
+              <p id="status">Create a run, then request a recommendation.</p>
+            </div>
+            <select id="queryType">
+              <option value="card_pick">Card Pick</option>
+              <option value="relic_pick">Relic Pick</option>
+              <option value="shop">Shop</option>
+              <option value="pathing">Pathing</option>
+              <option value="combat">Combat</option>
+            </select>
+          </div>
+
+          <label>Options <textarea id="options">Catalyst
+Backflip
+Dagger Spray</textarea></label>
+          <button id="recommend">Get Recommendation</button>
+
+          <div id="answer" class="answer"></div>
+          <div id="scores" class="scores"></div>
+          <details>
+            <summary>Graph Evidence</summary>
+            <pre id="evidence">[]</pre>
+          </details>
+        </section>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

@@ -10,51 +10,60 @@
     <main class="app">
       <section class="topbar">
         <div>
-          <h1>Spire Agentic GraphRAG</h1>
-          <p>Realtime decision assistant for deck, route, shop, and combat states.</p>
+          <h1 data-i18n="appTitle">Spire Agentic GraphRAG</h1>
+          <p data-i18n="appSubtitle">Realtime decision assistant for deck, route, shop, and combat states.</p>
         </div>
-        <button id="startRun">Start Demo Run</button>
+        <div class="topbar-actions">
+          <label class="language-control">
+            <span data-i18n="language">Language</span>
+            <select id="languageSelect" aria-label="Language">
+              <option value="en">English</option>
+              <option value="zh">中文</option>
+            </select>
+          </label>
+          <button id="startRun" data-i18n="startRun">Start Demo Run</button>
+        </div>
       </section>
 
       <section class="workspace">
         <aside class="panel">
-          <h2>Run State</h2>
-          <label>Run ID <input id="runId" placeholder="run id" /></label>
-          <label>Class <input id="characterClass" value="silent" /></label>
-          <label>HP <input id="hp" type="number" value="40" /></label>
-          <label>Gold <input id="gold" type="number" value="120" /></label>
-          <label>Deck <textarea id="deck">Strike
+          <h2 data-i18n="runState">Run State</h2>
+          <label><span data-i18n="runId">Run ID</span> <input id="runId" data-i18n-placeholder="runIdPlaceholder" placeholder="run id" /></label>
+          <label><span data-i18n="class">Class</span> <input id="characterClass" value="silent" /></label>
+          <label><span data-i18n="hp">HP</span> <input id="hp" type="number" value="40" /></label>
+          <label><span data-i18n="gold">Gold</span> <input id="gold" type="number" value="120" /></label>
+          <label><span data-i18n="deck">Deck</span> <textarea id="deck">Strike
 Defend
 Deadly Poison
 Bouncing Flask</textarea></label>
-          <label>Relics <textarea id="relics">Snecko Skull</textarea></label>
-          <button id="syncState">Sync State</button>
+          <label><span data-i18n="relics">Relics</span> <textarea id="relics">Snecko Skull</textarea></label>
+          <button id="syncState" data-i18n="syncState">Sync State</button>
         </aside>
 
         <section class="panel main-panel">
           <div class="recommendation-header">
             <div>
-              <h2>Recommendation</h2>
-              <p id="status">Create a run, then request a recommendation.</p>
+              <h2 data-i18n="recommendation">Recommendation</h2>
+              <p id="status" data-i18n="initialStatus">Create a run, then request a recommendation.</p>
             </div>
             <select id="queryType">
-              <option value="card_pick">Card Pick</option>
-              <option value="relic_pick">Relic Pick</option>
-              <option value="shop">Shop</option>
-              <option value="pathing">Pathing</option>
-              <option value="combat">Combat</option>
+              <option value="card_pick" data-i18n="cardPick">Card Pick</option>
+              <option value="relic_pick" data-i18n="relicPick">Relic Pick</option>
+              <option value="shop" data-i18n="shop">Shop</option>
+              <option value="pathing" data-i18n="pathing">Pathing</option>
+              <option value="combat" data-i18n="combat">Combat</option>
             </select>
           </div>
 
-          <label>Options <textarea id="options">Catalyst
+          <label><span data-i18n="options">Options</span> <textarea id="options">Catalyst
 Backflip
 Dagger Spray</textarea></label>
-          <button id="recommend">Get Recommendation</button>
+          <button id="recommend" data-i18n="getRecommendation">Get Recommendation</button>
 
           <div id="answer" class="answer"></div>
           <div id="scores" class="scores"></div>
           <details>
-            <summary>Graph Evidence</summary>
+            <summary data-i18n="graphEvidence">Graph Evidence</summary>
             <pre id="evidence">[]</pre>
           </details>
         </section>

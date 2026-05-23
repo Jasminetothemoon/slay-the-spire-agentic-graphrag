@@ -34,6 +34,17 @@ body {
   padding: 18px 0;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+}
+
+.language-control {
+  margin-top: 0;
+  min-width: 132px;
+}
+
 h1,
 h2 {
   margin: 0;
@@ -114,6 +125,11 @@ button {
   cursor: pointer;
 }
 
+.topbar-actions button {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
 .answer {
   margin-top: 18px;
   padding: 14px;
@@ -171,6 +187,11 @@ pre {
 
   .topbar,
   .recommendation-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar-actions {
     align-items: stretch;
     flex-direction: column;
   }

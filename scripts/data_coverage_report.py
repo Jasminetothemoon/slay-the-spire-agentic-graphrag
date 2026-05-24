@@ -67,6 +67,7 @@ def main() -> None:
     parser.add_argument("--data", required=True)
     parser.add_argument("--targets", default=str(DEFAULT_TARGETS))
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--fail-under", type=float, default=None, help="Exit with status 1 if required Mod MVP coverage is below this percentage.")
     args = parser.parse_args()
 
     data = load_json(Path(args.data))
@@ -76,6 +77,10 @@ def main() -> None:
         print(json.dumps(report, ensure_ascii=False, indent=2))
     else:
         print_human(report)
+    if args.fail_under is not None and report["required_mod_mvp_coverage_pct"] < args.fail_under:
+        raise SystemExit(
+            f"Required Mod MVP coverage {report['required_mod_mvp_coverage_pct']}% is below threshold {args.fail_under}%."
+        )
 
 
 if __name__ == "__main__":

@@ -26,6 +26,12 @@ Coverage against practical Mod MVP targets:
 .\.venv\Scripts\python.exe scripts\data_coverage_report.py --data data\public_full_data.json
 ```
 
+Fail the check if required Mod MVP coverage drops below a threshold:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\data_coverage_report.py --data data\public_full_data.json --fail-under 99
+```
+
 Provenance coverage:
 
 ```powershell
@@ -59,6 +65,7 @@ For portfolio or release claims, the final dataset should meet this standard:
 - Curated strategy rules are stored separately from raw game facts.
 - Graph relationships that represent strategy judgments include either source evidence or a curated-rule marker.
 - Data validation fails on duplicate IDs, missing required fields, and broken relationship targets.
+- `scripts\dev_check.ps1` fails if required Mod MVP coverage drops below 99%.
 
 ## Known Gaps
 

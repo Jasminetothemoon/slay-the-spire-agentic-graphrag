@@ -16,7 +16,7 @@ The project already uses a real public-data snapshot for the main demo dataset, 
 
 Cards, relics, potions, and enemies currently include public source fields such as `source`, `source_url`, and `confidence`.
 
-Mechanics, classes, shop actions, and path nodes are more like internal normalized support entities. They need explicit provenance or should be labeled as derived/system entities.
+Mechanics, classes, shop actions, and path nodes are internal normalized support entities. They are labeled as `derived` or `system` by `scripts/normalize_provenance.py`.
 
 ## Run the Audit
 
@@ -52,6 +52,5 @@ For portfolio or release claims, the final dataset should meet this standard:
 
 - Enemy coverage is not yet full for all normal encounters.
 - Events are not yet represented as a first-class collection.
-- Individual relationship provenance is incomplete.
-- Mechanics and map/shop support nodes need a clearer derived/system-source label.
+- Individual relationships now have derived provenance markers, but they are not yet field-level citations back to exact wiki lines.
 - Real Mod payload names still need live-game validation against the normalized IDs.

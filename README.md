@@ -93,6 +93,7 @@ python scripts/import_public_wiki.py --links-only --output data/public_link_inde
 python scripts/import_public_wiki.py --collections cards --output data/public_cards.json --checkpoint-every 50
 python scripts/import_public_wiki.py --output data/public_full_data.json --checkpoint-every 50
 python scripts/normalize_dataset.py --input data/public_full_data.json --output data/public_full_data.json
+python scripts/normalize_provenance.py --input data/public_full_data.json --output data/public_full_data.json
 python scripts/validate_data.py --data data/public_cards.json
 python scripts/validate_data.py --data data/public_full_data.json
 python scripts/data_quality_report.py --data data/public_full_data.json

@@ -22,7 +22,7 @@ https://www.python.org/downloads/windows/
 ## 2. Check the Environment
 
 ```powershell
-python scripts\dev_check.py
+.\scripts\dev_check.ps1
 ```
 
 Expected result: every check prints `PASS`.
@@ -44,6 +44,12 @@ python -m pip install -r requirements.txt
 ```powershell
 $env:STS_KB_PATH="data\public_full_data.json"
 uvicorn api.main:app --reload
+```
+
+Or use the project helper:
+
+```powershell
+.\scripts\run_api.ps1
 ```
 
 Open:

@@ -84,6 +84,8 @@ python scripts/ingest_graph.py --dry-run
 python scripts/ingest_graph.py
 ```
 
+The dry run validates relationship targets and prints node/relationship counts. Relationship ingestion preserves provenance fields such as `source`, `source_url`, `confidence`, `source_entity_id`, and `target_entity_id`.
+
 ## Public Wiki Data Import
 
 The seed dataset is intentionally small. To build a larger public dataset from `slaythespire.gg`:

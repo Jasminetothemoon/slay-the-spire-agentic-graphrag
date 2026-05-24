@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 import json
 import os
 import sys
@@ -57,17 +58,17 @@ class GraphIngestor:
                 for entity in data.get(collection, []):
                     for relationship in entity.get("relationships", []):
                         rel_type = relationship["type"]
+                        props = self._relationship_props(relationship, entity, metadata)
                         session.run(
                             f"""
                             MATCH (source:{label} {{id: $source_id}})
                             MATCH (target {{id: $target_id}})
                             MERGE (source)-[r:{rel_type}]->(target)
-                            SET r.weight = $weight, r.source = $source
+                            SET r += $props
                             """,
                             source_id=entity["id"],
                             target_id=relationship["target"],
-                            weight=float(relationship.get("weight", 0.5)),
-                            source=metadata.get("source", "unknown"),
+                            props=props,
                         )
 
             self._ingest_archetype_members(session, data)
@@ -79,7 +80,8 @@ class GraphIngestor:
                     """
                     MATCH (c:Card {id: $card_id})
                     MATCH (a:Archetype {id: $archetype_id})
-                    MERGE (c)-[:CORE_PIECE_FOR {weight: 1.0}]->(a)
+                    MERGE (c)-[r:CORE_PIECE_FOR]->(a)
+                    SET r.weight = 1.0, r.source = 'curated_strategy', r.confidence = 0.8
                     """,
                     card_id=card_id,
                     archetype_id=archetype["id"],
@@ -89,7 +91,8 @@ class GraphIngestor:
                     """
                     MATCH (r:Relic {id: $relic_id})
                     MATCH (a:Archetype {id: $archetype_id})
-                    MERGE (r)-[:CORE_PIECE_FOR {weight: 1.0}]->(a)
+                    MERGE (r)-[rel:CORE_PIECE_FOR]->(a)
+                    SET rel.weight = 1.0, rel.source = 'curated_strategy', rel.confidence = 0.8
                     """,
                     relic_id=relic_id,
                     archetype_id=archetype["id"],
@@ -105,9 +108,31 @@ class GraphIngestor:
             else:
                 props[key] = json.dumps(value, ensure_ascii=False)
         props["game"] = metadata.get("game", "sts1")
-        props["patch_version"] = metadata.get("patch_version", "unknown")
-        props["source"] = metadata.get("source", "unknown")
-        props["confidence"] = float(metadata.get("confidence", 0.5))
+        props["patch_version"] = props.get("patch_version") or metadata.get("patch_version", "unknown")
+        props["source"] = props.get("source") or metadata.get("source", "unknown")
+        props["source_url"] = props.get("source_url") or metadata.get("source_url", "")
+        props["confidence"] = float(props.get("confidence", metadata.get("confidence", 0.5)))
+        return props
+
+    def _relationship_props(
+        self, relationship: Dict[str, Any], entity: Dict[str, Any], metadata: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        props = self._serializable_value_dict(relationship)
+        props["weight"] = float(props.get("weight", 0.5))
+        props["source"] = props.get("source") or entity.get("source") or metadata.get("source", "unknown")
+        props["source_url"] = props.get("source_url") or entity.get("source_url") or metadata.get("source_url", "")
+        props["confidence"] = float(props.get("confidence", entity.get("confidence", metadata.get("confidence", 0.5))))
+        props["source_entity_id"] = entity["id"]
+        props["target_entity_id"] = relationship["target"]
+        return props
+
+    def _serializable_value_dict(self, values: Dict[str, Any]) -> Dict[str, Any]:
+        props = {}
+        for key, value in values.items():
+            if isinstance(value, (str, int, float, bool)) or value is None:
+                props[key] = value
+            else:
+                props[key] = json.dumps(value, ensure_ascii=False)
         return props
 
 
@@ -127,6 +152,26 @@ def validate_relationship_targets(data: Dict[str, Any]) -> Iterable[str]:
                     yield f"{entity['id']} -> {relationship.get('target')} is missing"
 
 
+def graph_stats(data: Dict[str, Any]) -> Dict[str, Any]:
+    node_counts = {collection: len(data.get(collection, [])) for collection in LABELS}
+    relationship_counts: Counter[str] = Counter()
+    missing_provenance = 0
+    total_relationships = 0
+    for collection in LABELS:
+        for entity in data.get(collection, []):
+            for relationship in entity.get("relationships", []):
+                total_relationships += 1
+                relationship_counts[relationship.get("type", "missing")] += 1
+                if not relationship.get("source") or not relationship.get("source_url") or relationship.get("confidence") is None:
+                    missing_provenance += 1
+    return {
+        "nodes": node_counts,
+        "relationships": dict(sorted(relationship_counts.items())),
+        "total_relationships": total_relationships,
+        "relationships_missing_provenance": missing_provenance,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Ingest the Slay the Spire knowledge graph into Neo4j.")
     parser.add_argument("--data", default=str(DEFAULT_DATA))
@@ -140,8 +185,7 @@ def main() -> None:
 
     print("Data validation passed.")
     if args.dry_run:
-        for collection in LABELS:
-            print(f"{collection}: {len(data.get(collection, []))}")
+        print(json.dumps(graph_stats(data), ensure_ascii=False, indent=2))
         return
 
     uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")

@@ -52,6 +52,16 @@ MECHANICS = [
     {"id": "frontload_damage", "name": "Frontload Damage", "keywords": ["deal", "damage"]},
     {"id": "low_frontload", "name": "Low Frontload", "keywords": []},
     {"id": "slow_scaling", "name": "Slow Scaling", "keywords": []},
+    {"id": "no_aoe", "name": "No AoE", "keywords": []},
+    {"id": "low_defense", "name": "Low Defense", "keywords": []},
+    {"id": "low_hp", "name": "Low HP", "keywords": []},
+    {"id": "shop_ready", "name": "Shop Ready", "keywords": []},
+    {"id": "scaling_damage", "name": "Scaling Damage", "keywords": []},
+    {"id": "frontload_block", "name": "Frontload Block", "keywords": []},
+    {"id": "deck_control", "name": "Deck Control", "keywords": []},
+    {"id": "card_removal", "name": "Card Removal", "keywords": []},
+    {"id": "artifact_strip", "name": "Artifact Strip", "keywords": []},
+    {"id": "stance_exit", "name": "Stance Exit", "keywords": []},
 ]
 
 RELATION_RULES = {

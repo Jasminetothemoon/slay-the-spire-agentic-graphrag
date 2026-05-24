@@ -12,6 +12,8 @@ try {
   & $Python scripts\dev_check.py
   & $Python -m compileall api sts_engine scripts
   & $Python scripts\data_coverage_report.py --data data\public_full_data.json --fail-under 99
+  & $Python scripts\ingest_graph.py --data data\public_full_data.json --dry-run
+  & $Python scripts\check_graph_fixtures.py --data data\public_full_data.json
   & $Python scripts\evaluate.py --data data\public_full_data.json --eval data\public_eval_cases.json
 }
 finally {

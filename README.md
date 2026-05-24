@@ -103,6 +103,8 @@ python scripts/validate_data.py --data data/public_full_data.json
 python scripts/data_quality_report.py --data data/public_full_data.json
 python scripts/data_coverage_report.py --data data/public_full_data.json --fail-under 99
 python scripts/data_provenance_report.py --data data/public_full_data.json
+python scripts/ingest_graph.py --data data/public_full_data.json --dry-run
+python scripts/check_graph_fixtures.py --data data/public_full_data.json
 ```
 
 To run the app with an imported dataset instead of the seed data:

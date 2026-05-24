@@ -1,0 +1,54 @@
+[
+  {
+    "id": "silent_poison_finds_poison_payoff",
+    "state": {
+      "deck": ["Deadly Poison", "Bouncing Flask", "Noxious Fumes"],
+      "relics": ["Snecko Skull"],
+      "potions": [],
+      "options": ["Catalyst", "Backflip", "Dagger Spray"]
+    },
+    "expected": {
+      "option_ids": ["catalyst"],
+      "mechanics": ["poison"]
+    }
+  },
+  {
+    "id": "defect_lightning_finds_lightning_aoe",
+    "state": {
+      "deck": ["Zap", "Ball Lightning", "Storm"],
+      "relics": ["Cracked Core"],
+      "potions": [],
+      "options": ["Electrodynamics", "Glacier", "Defragment"]
+    },
+    "expected": {
+      "option_ids": ["electrodynamics"],
+      "mechanics": ["orb_lightning"]
+    }
+  },
+  {
+    "id": "ironclad_strength_finds_strength_scaling",
+    "state": {
+      "deck": ["Inflame", "Spot Weakness", "Heavy Blade"],
+      "relics": [],
+      "potions": [],
+      "options": ["Limit Break", "Shrug It Off", "Cleave"]
+    },
+    "expected": {
+      "option_ids": ["limit_break"],
+      "mechanics": ["strength"]
+    }
+  },
+  {
+    "id": "watcher_retain_finds_retain_plan",
+    "state": {
+      "deck": ["Protect", "Sands of Time", "Windmill Strike"],
+      "relics": [],
+      "potions": [],
+      "options": ["Establishment", "Flurry of Blows", "Empty Fist"]
+    },
+    "expected": {
+      "option_ids": ["establishment"],
+      "mechanics": ["retain"]
+    }
+  }
+]

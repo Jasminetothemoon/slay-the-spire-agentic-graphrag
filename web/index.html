@@ -56,11 +56,20 @@ Bouncing Flask</textarea></label>
             </select>
           </div>
 
+          <div class="live-strip" aria-live="polite">
+            <span id="connectionStatus" class="live-pill disconnected">Connecting</span>
+            <span><strong data-i18n="decision">Decision</strong> <span id="decisionTypeLabel">card_pick</span></span>
+            <span><strong data-i18n="lastUpdated">Updated</strong> <span id="lastUpdated">-</span></span>
+          </div>
+
           <div id="stateSummary" class="state-summary"></div>
-          <label><span data-i18n="options">Options</span> <textarea id="options">Catalyst
+          <section id="topRecommendation" class="top-recommendation"></section>
+          <div class="manual-controls">
+            <label><span data-i18n="options">Options</span> <textarea id="options">Catalyst
 Backflip
 Dagger Spray</textarea></label>
-          <button id="recommend" data-i18n="getRecommendation">Get Recommendation</button>
+            <button id="recommend" data-i18n="getRecommendation">Get Recommendation</button>
+          </div>
 
           <div id="answer" class="answer"></div>
           <div id="scores" class="scores"></div>

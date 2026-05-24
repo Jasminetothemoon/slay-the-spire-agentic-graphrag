@@ -6,6 +6,10 @@ const evidenceEl = document.querySelector("#evidence");
 const languageSelect = document.querySelector("#languageSelect");
 const overlayToggle = document.querySelector("#overlayToggle");
 const stateSummaryEl = document.querySelector("#stateSummary");
+const connectionStatusEl = document.querySelector("#connectionStatus");
+const decisionTypeLabelEl = document.querySelector("#decisionTypeLabel");
+const lastUpdatedEl = document.querySelector("#lastUpdated");
+const topRecommendationEl = document.querySelector("#topRecommendation");
 
 const translations = {
   en: {
@@ -34,6 +38,16 @@ const translations = {
     options: "Options",
     getRecommendation: "Get Recommendation",
     graphEvidence: "Graph Evidence",
+    connecting: "Connecting",
+    connected: "Live",
+    disconnected: "Offline",
+    decision: "Decision",
+    lastUpdated: "Updated",
+    confidence: "Confidence",
+    validity: "Validity",
+    valid: "Valid",
+    invalid: "Invalid",
+    keyRisk: "Risk",
     startFirst: "Start a run first.",
     started: (runId) => `Started ${runId}.`,
     stateSynced: "State synced.",
@@ -79,6 +93,16 @@ const translations = {
     options: "候选项",
     getRecommendation: "获取推荐",
     graphEvidence: "图谱证据",
+    connecting: "连接中",
+    connected: "实时",
+    disconnected: "离线",
+    decision: "决策",
+    lastUpdated: "更新",
+    confidence: "置信度",
+    validity: "有效性",
+    valid: "有效",
+    invalid: "无效",
+    keyRisk: "风险",
     startFirst: "请先开始一局。",
     started: (runId) => `已开始 ${runId}。`,
     stateSynced: "状态已同步。",
@@ -103,6 +127,8 @@ const translations = {
 let currentLanguage = localStorage.getItem("spireLanguage") || "en";
 let overlayMode = localStorage.getItem("spireOverlayMode") === "true";
 let latestState = {};
+let lastUpdatedAt = null;
+let connectionState = "connecting";
 window.lastRecommendation = null;
 
 function t(key, ...args) {
@@ -129,7 +155,10 @@ function applyLanguage() {
   });
   languageSelect.value = currentLanguage;
   overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
+  updateConnectionStatus(connectionState);
   renderStateSummary();
+  renderTopRecommendation();
+  updateLiveStrip();
 }
 
 function applyOverlayMode() {
@@ -138,6 +167,7 @@ function applyOverlayMode() {
   overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
   renderScores(window.lastRecommendation?.option_scores || []);
   renderStateSummary();
+  renderTopRecommendation();
 }
 
 languageSelect.addEventListener("change", () => {
@@ -194,8 +224,31 @@ function currentStatePayload() {
   };
 }
 
+function markUpdated() {
+  lastUpdatedAt = new Date();
+  updateLiveStrip();
+}
+
+function updateConnectionStatus(status) {
+  connectionState = status;
+  connectionStatusEl.classList.remove("connected", "disconnected");
+  if (status === "connected") {
+    connectionStatusEl.classList.add("connected");
+    connectionStatusEl.textContent = t("connected");
+    return;
+  }
+  connectionStatusEl.classList.add("disconnected");
+  connectionStatusEl.textContent = status === "connecting" ? t("connecting") : t("disconnected");
+}
+
+function updateLiveStrip() {
+  decisionTypeLabelEl.textContent = document.querySelector("#queryType").value;
+  lastUpdatedEl.textContent = lastUpdatedAt ? lastUpdatedAt.toLocaleTimeString() : "-";
+}
+
 function applyIncomingState(state) {
   latestState = { ...latestState, ...state };
+  markUpdated();
   if (state.run_id) {
     runIdInput.value = state.run_id;
   }
@@ -215,10 +268,12 @@ function applyIncomingState(state) {
 
 function renderRecommendation(data) {
   window.lastRecommendation = data;
+  markUpdated();
   answerEl.textContent = data.reasoning;
   evidenceEl.textContent = JSON.stringify(data.graph_context, null, 2);
   renderScores(data.option_scores || []);
   renderStateSummary();
+  renderTopRecommendation();
 }
 
 function renderStateSummary() {
@@ -240,7 +295,31 @@ function renderStateSummary() {
     </div>
     <div class="top-pick">
       <span>${t("topPick")}</span>
-      <strong>${escapeHtml(topScore ? `${topScore.name} · ${topScore.score}` : t("noScores"))}</strong>
+      <strong>${escapeHtml(topScore ? `${topScore.name} / ${topScore.score}` : t("noScores"))}</strong>
+    </div>
+  `;
+}
+
+function renderTopRecommendation() {
+  const topScore = window.lastRecommendation?.option_scores?.[0];
+  if (!topScore) {
+    topRecommendationEl.innerHTML = `<div class="empty-top">${escapeHtml(t("noScores"))}</div>`;
+    return;
+  }
+  const keyReason = topScore.reasons?.[0] || "";
+  const keyRisk = topScore.risks?.[0] || "";
+  topRecommendationEl.innerHTML = `
+    <div class="top-rank">#1</div>
+    <div class="top-copy">
+      <span>${escapeHtml(t("topPick"))}</span>
+      <strong>${escapeHtml(topScore.name)}</strong>
+      <p>${escapeHtml(keyReason)}</p>
+      ${keyRisk ? `<p class="risk-line">${escapeHtml(t("keyRisk"))}: ${escapeHtml(keyRisk)}</p>` : ""}
+    </div>
+    <div class="top-metrics">
+      <span>${escapeHtml(t("score"))}<strong>${escapeHtml(topScore.score)}</strong></span>
+      <span>${escapeHtml(t("confidence"))}<strong>${escapeHtml(topScore.confidence ?? "-")}</strong></span>
+      <span>${escapeHtml(t("validity"))}<strong>${escapeHtml(topScore.valid === false ? t("invalid") : t("valid"))}</strong></span>
     </div>
   `;
 }
@@ -276,6 +355,7 @@ async function syncState() {
   }
   await postJson("/update_state", currentStatePayload());
   statusEl.textContent = t("stateSynced");
+  markUpdated();
   renderStateSummary();
 }
 
@@ -284,6 +364,8 @@ document.querySelector("#syncState").addEventListener("click", syncState);
 document.querySelectorAll("#characterClass, #hp, #gold, #deck, #relics").forEach((node) => {
   node.addEventListener("input", renderStateSummary);
 });
+
+document.querySelector("#queryType").addEventListener("change", updateLiveStrip);
 
 document.querySelector("#recommend").addEventListener("click", async () => {
   if (!runIdInput.value) {
@@ -311,10 +393,13 @@ function renderScores(optionScores) {
     .map(
       (score, index) => `
       <article class="score-card ${index === 0 ? "top-score" : ""}">
-        <header><span>${escapeHtml(score.name)}</span><span>${t("score")}: ${escapeHtml(score.score)}</span></header>
+        <header>
+          <span>${escapeHtml(score.name)}</span>
+          <span>${t("score")}: ${escapeHtml(score.score)} / ${t("confidence")}: ${escapeHtml(score.confidence ?? "-")}</span>
+        </header>
         <ul>
           <li><strong>${t("reasons")}:</strong></li>
-          ${score.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}
+          ${(score.reasons || []).map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}
           ${(score.risks || []).length ? `<li class="risk"><strong>${t("risks")}:</strong></li>` : ""}
           ${(score.risks || []).map((risk) => `<li class="risk">${escapeHtml(risk)}</li>`).join("")}
         </ul>
@@ -325,7 +410,9 @@ function renderScores(optionScores) {
 
 try {
   const socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
+  updateConnectionStatus("connecting");
   socket.onopen = () => {
+    updateConnectionStatus("connected");
     statusEl.textContent = t("liveConnected");
   };
   socket.onmessage = (event) => {
@@ -341,9 +428,14 @@ try {
       statusEl.textContent = t("realtimeUpdate", data.run_id);
     }
   };
+  socket.onclose = () => updateConnectionStatus("disconnected");
+  socket.onerror = () => updateConnectionStatus("disconnected");
 } catch {
+  updateConnectionStatus("disconnected");
   statusEl.textContent = t("websocketUnavailable");
 }
 
 applyOverlayMode();
 applyLanguage();
+renderTopRecommendation();
+updateLiveStrip();

@@ -45,8 +45,8 @@ The adapter:
 - Converts `floor` to `current_floor`.
 - Converts `choice_list`, `choices`, `cards`, `relic_choices`, or `shop_items` into recommendation options.
 - Infers query type from `screen_type`, for example `CARD_REWARD -> card_pick`.
-- Posts the normalized snapshot to `/mod/state`.
-- Optionally calls `/get_recommendation`.
+- Posts the normalized snapshot and active decision to `/mod/recommend`.
+- Can fall back to `/mod/state` plus `/get_recommendation` with `--legacy-two-step`.
 
 To post only state:
 
@@ -74,12 +74,18 @@ Then play scenario updates:
 python scripts\bridge_demo_player.py --delay 3 --loops 1
 ```
 
-The player posts each scenario to `/mod/state`, requests `/get_recommendation`, and pauses between scenarios. The web overlay receives the state and recommendation through WebSocket events, so the UI changes like a live game companion.
+The player posts each scenario to `/mod/recommend` and pauses between scenarios. The web overlay receives the state and recommendation through WebSocket events, so the UI changes like a live game companion.
 
 Use a faster loop when testing:
 
 ```powershell
 python scripts\bridge_demo_player.py --delay 0 --loops 1
+```
+
+Use the legacy two-step protocol when testing older bridge clients:
+
+```powershell
+python scripts\bridge_demo_player.py --delay 3 --loops 1 --legacy-two-step
 ```
 
 ## Why This Split Helps
@@ -98,8 +104,7 @@ A native BaseMod/ModTheSpire implementation should stay thin:
 
 - Subscribe to relevant game events.
 - Collect deck, relics, potions, hand, enemies, intent, and screen choices.
-- POST snapshots to `http://127.0.0.1:8000/mod/state`.
-- POST choices to `http://127.0.0.1:8000/get_recommendation`.
+- POST snapshots and choices to `http://127.0.0.1:8000/mod/recommend`.
 - Render a compact recommendation panel in-game.
 
 The Java Mod should not own the recommendation algorithm. That logic stays in Python, where GraphRAG, scoring, evaluation, and LLM explanation are easier to iterate.

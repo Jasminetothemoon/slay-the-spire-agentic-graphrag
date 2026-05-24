@@ -110,18 +110,35 @@ def post_json(base_url: str, path: str, payload: Dict[str, Any]) -> Dict[str, An
         raise RuntimeError(f"HTTP {exc.code} from {path}: {detail}") from exc
 
 
-def run_once(raw: Dict[str, Any], base_url: str, recommend: bool) -> Dict[str, Any]:
+def recommendation_payload(raw: Dict[str, Any], run_id: str) -> Dict[str, Any]:
+    query_type = infer_query_type(raw)
+    return {
+        "run_id": run_id,
+        "query_type": query_type,
+        "options": infer_options(raw, query_type),
+        "user_query": raw.get("user_query") or f"CommunicationMod {query_type} decision.",
+    }
+
+
+def run_once(raw: Dict[str, Any], base_url: str, recommend: bool, combined: bool) -> Dict[str, Any]:
     state = normalize_state(raw)
+    if recommend and combined:
+        query_type = infer_query_type(raw)
+        return post_json(
+            base_url,
+            "/mod/recommend",
+            {
+                "state": state,
+                "query_type": query_type,
+                "options": infer_options(raw, query_type),
+                "user_query": raw.get("user_query") or f"CommunicationMod {query_type} decision.",
+            },
+        )
+
     state_response = post_json(base_url, "/mod/state", state)
     result: Dict[str, Any] = {"state": state_response}
     if recommend:
-        query_type = infer_query_type(raw)
-        recommendation_request = {
-            "run_id": state_response["run_id"],
-            "query_type": query_type,
-            "options": infer_options(raw, query_type),
-            "user_query": raw.get("user_query") or f"CommunicationMod {query_type} decision.",
-        }
+        recommendation_request = recommendation_payload(raw, state_response["run_id"])
         result["recommendation_request"] = recommendation_request
         result["recommendation"] = post_json(base_url, "/get_recommendation", recommendation_request)
     return result
@@ -132,10 +149,11 @@ def main() -> None:
     parser.add_argument("--state-file", default=str(DEFAULT_STATE_PATH), help="Path to a CommunicationMod-style state JSON file.")
     parser.add_argument("--base-url", default="http://127.0.0.1:8000", help="Local FastAPI base URL.")
     parser.add_argument("--no-recommend", action="store_true", help="Only post /mod/state; do not request a recommendation.")
+    parser.add_argument("--legacy-two-step", action="store_true", help="Use /mod/state followed by /get_recommendation instead of /mod/recommend.")
     args = parser.parse_args()
 
     raw = read_json(Path(args.state_file))
-    result = run_once(raw, args.base_url, recommend=not args.no_recommend)
+    result = run_once(raw, args.base_url, recommend=not args.no_recommend, combined=not args.legacy_two_step)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

@@ -11,6 +11,14 @@ Game / Mod
   -> UI overlay or companion window renders the response
 ```
 
+For game-integration code, prefer the one-shot endpoint:
+
+```text
+Game / Mod
+  -> POST /mod/recommend
+  -> UI overlay or in-game panel renders the response
+```
+
 ## Endpoint: `POST /mod/state`
 
 Use this endpoint whenever the game state changes: entering a card reward screen, opening shop, choosing a route, starting combat, drawing cards, or enemy intent changes.
@@ -66,6 +74,45 @@ Card reward:
   "user_query": "Card reward after combat."
 }
 ```
+
+## Endpoint: `POST /mod/recommend`
+
+Use this endpoint from a Java Mod or bridge process when you want the lowest-friction integration. It accepts the current game snapshot and active decision in one request.
+
+```json
+{
+  "state": {
+    "run_id": "mod_live",
+    "character_class": "silent",
+    "ascension_level": 20,
+    "act": 2,
+    "current_floor": 21,
+    "current_hp": 44,
+    "max_hp": 70,
+    "gold": 110,
+    "energy": 3,
+    "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask"],
+    "relics": ["Snecko Skull"],
+    "potions": []
+  },
+  "query_type": "card_pick",
+  "options": ["Catalyst", "Corpse Explosion", "Backflip"],
+  "user_query": "Card reward after combat."
+}
+```
+
+Response:
+
+```json
+{
+  "message": "Mod recommendation generated",
+  "run_id": "mod_live",
+  "state": { "...": "..." },
+  "recommendation": { "...": "RecommendationResponse" }
+}
+```
+
+The endpoint also broadcasts both `state_updated` and `recommendation` WebSocket events, so the web overlay updates from a single bridge request.
 
 Shop:
 
@@ -137,5 +184,7 @@ python scripts\communication_mod_adapter.py --state-file data\communication_mod_
 ```
 
 The adapter accepts common bridge fields such as `class`, `floor`, `choice_list`, `screen_type`, and `monsters`, then normalizes them into `/mod/state`.
+
+By default the adapter uses `/mod/recommend`. Pass `--legacy-two-step` to use `/mod/state` followed by `/get_recommendation`.
 
 Use it as the first integration step before investing in a native BaseMod in-game UI.

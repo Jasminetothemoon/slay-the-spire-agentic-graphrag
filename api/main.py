@@ -88,6 +88,13 @@ class RecommendationRequest(BaseModel):
     user_query: str = ""
 
 
+class ModRecommendationRequest(BaseModel):
+    state: ModStatePayload
+    query_type: str = Field(pattern="^(card_pick|relic_pick|shop|pathing|combat)$")
+    options: List[str] = []
+    user_query: str = ""
+
+
 class RecommendationResponse(BaseModel):
     recommendation: str
     reasoning: str
@@ -137,6 +144,34 @@ async def broadcast(payload: Dict[str, Any]) -> None:
             subscribers.remove(websocket)
 
 
+def normalize_mod_state(payload: ModStatePayload) -> Dict[str, Any]:
+    run_id = payload.run_id or "mod_live"
+    state = payload.model_dump()
+    state.update(
+        {
+            "run_id": run_id,
+            "source": "mod_bridge",
+            "game": "sts1",
+            "patch_version": kb.metadata.get("patch_version", "unknown"),
+            "character_class": state.get("character_class", "silent").lower(),
+        }
+    )
+    return state
+
+
+def build_recommendation_response(current_state: Dict[str, Any]) -> RecommendationResponse:
+    final_state = engine.invoke(current_state)
+    return RecommendationResponse(
+        recommendation=final_state.get("recommendation", "skip"),
+        reasoning=final_state.get("reasoning", ""),
+        option_scores=final_state.get("option_scores", []),
+        graph_context=final_state.get("graph_context", []),
+        risk_report=final_state.get("risk_report", {}),
+        latency_ms=final_state.get("latency_ms", 0.0),
+        backend="neo4j_or_local_fallback",
+    )
+
+
 @app.get("/")
 def index():
     index_path = WEB_DIR / "index.html"
@@ -179,20 +214,31 @@ async def update_state(req: UpdateStateRequest):
 
 @app.post("/mod/state")
 async def mod_state(payload: ModStatePayload):
-    run_id = payload.run_id or "mod_live"
-    state = payload.model_dump()
-    state.update(
-        {
-            "run_id": run_id,
-            "source": "mod_bridge",
-            "game": "sts1",
-            "patch_version": kb.metadata.get("patch_version", "unknown"),
-            "character_class": state.get("character_class", "silent").lower(),
-        }
-    )
+    state = normalize_mod_state(payload)
+    run_id = state["run_id"]
     active_runs[run_id] = state
     await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
     return {"message": "Mod state accepted", "run_id": run_id, "state": state}
+
+
+@app.post("/mod/recommend")
+async def mod_recommend(req: ModRecommendationRequest):
+    state = normalize_mod_state(req.state)
+    run_id = state["run_id"]
+    active_runs[run_id] = state
+    await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
+
+    current_state = state.copy()
+    current_state.update(
+        {
+            "query_type": req.query_type,
+            "options": req.options,
+            "user_query": req.user_query,
+        }
+    )
+    response = build_recommendation_response(current_state)
+    await broadcast({"type": "recommendation", "run_id": run_id, "response": response.model_dump()})
+    return {"message": "Mod recommendation generated", "run_id": run_id, "state": state, "recommendation": response}
 
 
 @app.get("/runs/{run_id}")
@@ -214,16 +260,7 @@ async def get_recommendation(req: RecommendationRequest):
             "user_query": req.user_query,
         }
     )
-    final_state = engine.invoke(current_state)
-    response = RecommendationResponse(
-        recommendation=final_state.get("recommendation", "skip"),
-        reasoning=final_state.get("reasoning", ""),
-        option_scores=final_state.get("option_scores", []),
-        graph_context=final_state.get("graph_context", []),
-        risk_report=final_state.get("risk_report", {}),
-        latency_ms=final_state.get("latency_ms", 0.0),
-        backend="neo4j_or_local_fallback",
-    )
+    response = build_recommendation_response(current_state)
     await broadcast({"type": "recommendation", "run_id": req.run_id, "response": response.model_dump()})
     return response
 

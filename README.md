@@ -191,6 +191,14 @@ Replay bridge scenarios with a delay so the web overlay updates like a live comp
 python scripts/bridge_demo_player.py --delay 3 --loops 1
 ```
 
+For Mod clients, the shortest path is the one-shot endpoint:
+
+```text
+POST /mod/recommend
+```
+
+It accepts a game-state snapshot plus the active decision options, then broadcasts both state and recommendation updates to the overlay.
+
 ## Resume-Oriented Targets
 
 The current repository implements the MVP skeleton. The next high-value work is to scale the dataset and evaluation:

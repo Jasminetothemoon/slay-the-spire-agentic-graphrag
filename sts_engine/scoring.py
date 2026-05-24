@@ -24,12 +24,14 @@ class RecommendationScorer:
 
         risk_tags = self.kb.risk_tags(state)
         deck_tags = self._deck_tags(state)
+        strategy_matches = self.kb.strategy_matches(state, state.get("options", []))
         query_type = state.get("query_type", "card_pick")
         scores = []
         for option in self.kb.option_entities(state.get("options", [])):
             option_id = option["id"]
             option_tags = set(option.get("tags", []))
             option_evidence = evidence_by_option.get(option_id, [])
+            option_strategy = strategy_matches.get(option_id, [])
             score = float(option.get("base_value", 35)) + QUERY_BONUSES.get(query_type, {}).get("base", 0)
             reasons: List[str] = []
             risks: List[str] = []
@@ -39,6 +41,11 @@ class RecommendationScorer:
                 score += synergy_bonus
                 mechanics = sorted({item["mechanic_name"] for item in option_evidence})
                 reasons.append(f"Graph synergy with current run: {', '.join(mechanics)}.")
+
+            strategy_bonus = sum(item.get("bonus", 0) for item in option_strategy)
+            if strategy_bonus:
+                score += strategy_bonus
+                reasons.extend(item["reason"] for item in option_strategy[:2])
 
             risk_bonus, risk_reasons = self._risk_adjustment(risk_tags, option_tags, query_type, state)
             score += risk_bonus
@@ -72,7 +79,7 @@ class RecommendationScorer:
                     "confidence": round(confidence, 2),
                     "reasons": reasons[:4],
                     "risks": risks[:3],
-                    "evidence": option_evidence[:5],
+                    "evidence": (option_evidence + option_strategy)[:8],
                 }
             )
 

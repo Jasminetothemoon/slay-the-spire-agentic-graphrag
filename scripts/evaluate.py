@@ -10,8 +10,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from sts_engine.agent import build_graph
-
 DEFAULT_EVAL_PATH = ROOT / "data" / "eval_cases.json"
 
 
@@ -23,6 +21,8 @@ def main() -> None:
 
     if args.data:
         os.environ["STS_KB_PATH"] = args.data
+
+    from sts_engine.agent import build_graph
 
     with open(args.eval, "r", encoding="utf-8") as f:
         cases = json.load(f)

@@ -1,0 +1,199 @@
+{
+  "metadata": {
+    "source": "curated_strategy_seed",
+    "confidence": 0.72,
+    "description": "Curated archetype strategy layer for recommendation scoring. IDs map to public_full_data.json when available."
+  },
+  "archetypes": [
+    {
+      "id": "silent_poison",
+      "name": "Silent Poison",
+      "class": "silent",
+      "tags": ["poison", "single_target_scaling", "boss_damage"],
+      "enablers": ["deadly_poison", "bouncing_flask", "noxious_fumes", "corpse_explosion"],
+      "payoffs": ["catalyst", "burst", "nightmare"],
+      "support": ["well_laid_plans", "backflip", "piercing_wail"],
+      "relics": ["snecko_skull", "the_specimen"],
+      "covers_risks": {
+        "no_aoe": ["corpse_explosion"],
+        "slow_scaling": ["catalyst", "noxious_fumes"]
+      },
+      "rules": [
+        {
+          "id": "poison_payoff_after_source",
+          "when_owned_any": ["deadly_poison", "bouncing_flask", "noxious_fumes", "snecko_skull"],
+          "target_any": ["catalyst", "burst", "nightmare"],
+          "bonus": 24,
+          "reason": "Poison payoff is premium once the deck already applies Poison."
+        },
+        {
+          "id": "corpse_explosion_solves_poison_aoe",
+          "when_owned_any": ["deadly_poison", "bouncing_flask", "noxious_fumes"],
+          "target_any": ["corpse_explosion"],
+          "bonus": 26,
+          "reason": "Corpse Explosion gives Poison decks a high-impact AoE plan."
+        }
+      ]
+    },
+    {
+      "id": "silent_shiv",
+      "name": "Silent Shiv",
+      "class": "silent",
+      "tags": ["shiv", "multi_attack", "zero_cost"],
+      "enablers": ["blade_dance", "infinite_blades", "cloak_and_dagger"],
+      "payoffs": ["accuracy", "after_image", "finisher"],
+      "support": ["backflip", "adrenaline", "well_laid_plans"],
+      "relics": ["kunai", "shuriken", "ornamental_fan"],
+      "covers_risks": {
+        "low_defense": ["after_image", "ornamental_fan"],
+        "slow_scaling": ["accuracy", "shuriken"]
+      },
+      "rules": [
+        {
+          "id": "accuracy_after_shiv_generation",
+          "when_owned_any": ["blade_dance", "infinite_blades", "cloak_and_dagger"],
+          "target_any": ["accuracy", "after_image", "finisher"],
+          "bonus": 20,
+          "reason": "Shiv generation makes attack-count and Shiv payoff cards much stronger."
+        }
+      ]
+    },
+    {
+      "id": "ironclad_strength",
+      "name": "Ironclad Strength",
+      "class": "ironclad",
+      "tags": ["strength", "scaling_damage"],
+      "enablers": ["inflame", "spot_weakness", "demon_form"],
+      "payoffs": ["limit_break", "heavy_blade", "pummel", "sword_boomerang"],
+      "support": ["shockwave", "battle_trance", "offering"],
+      "relics": ["vajra", "shuriken"],
+      "covers_risks": {
+        "slow_scaling": ["inflame", "spot_weakness", "demon_form", "limit_break"]
+      },
+      "rules": [
+        {
+          "id": "limit_break_after_strength",
+          "when_owned_any": ["inflame", "spot_weakness", "demon_form", "vajra"],
+          "target_any": ["limit_break", "heavy_blade", "pummel"],
+          "bonus": 24,
+          "reason": "Strength payoff is much better after the deck already has Strength sources."
+        }
+      ]
+    },
+    {
+      "id": "ironclad_exhaust",
+      "name": "Ironclad Exhaust",
+      "class": "ironclad",
+      "tags": ["exhaust", "deck_control", "block"],
+      "enablers": ["true_grit", "burning_pact", "corruption", "fiend_fire"],
+      "payoffs": ["dark_embrace", "feel_no_pain", "juggernaut"],
+      "support": ["offering", "battle_trance", "shockwave"],
+      "relics": ["dead_branch", "charons_ashes"],
+      "covers_risks": {
+        "low_defense": ["feel_no_pain"],
+        "slow_scaling": ["dark_embrace", "corruption"]
+      },
+      "rules": [
+        {
+          "id": "exhaust_payoff_after_exhaust",
+          "when_owned_any": ["true_grit", "burning_pact", "corruption", "fiend_fire"],
+          "target_any": ["dark_embrace", "feel_no_pain", "corruption"],
+          "bonus": 22,
+          "reason": "Exhaust payoff converts card removal into draw, block, or free Skills."
+        }
+      ]
+    },
+    {
+      "id": "defect_frost_focus",
+      "name": "Defect Frost Focus",
+      "class": "defect",
+      "tags": ["orb_frost", "focus", "block"],
+      "enablers": ["glacier", "coolheaded", "cold_snap", "chill"],
+      "payoffs": ["defragment", "biased_cognition", "capacitor", "loop"],
+      "support": ["seek", "skim", "aggregate"],
+      "relics": ["cracked_core", "data_disk"],
+      "covers_risks": {
+        "low_defense": ["glacier", "coolheaded"],
+        "slow_scaling": ["defragment", "biased_cognition", "capacitor"]
+      },
+      "rules": [
+        {
+          "id": "focus_after_orbs",
+          "when_owned_any": ["glacier", "coolheaded", "cold_snap", "zap", "cracked_core"],
+          "target_any": ["defragment", "biased_cognition", "capacitor"],
+          "bonus": 24,
+          "reason": "Focus and orb slots scale strongly once the deck reliably channels orbs."
+        }
+      ]
+    },
+    {
+      "id": "defect_lightning",
+      "name": "Defect Lightning",
+      "class": "defect",
+      "tags": ["orb_lightning", "aoe", "frontload_damage"],
+      "enablers": ["zap", "ball_lightning", "storm"],
+      "payoffs": ["electrodynamics", "defragment", "biased_cognition"],
+      "support": ["skim", "seek", "glacier"],
+      "relics": ["cracked_core", "data_disk"],
+      "covers_risks": {
+        "no_aoe": ["electrodynamics"],
+        "slow_scaling": ["defragment", "biased_cognition"]
+      },
+      "rules": [
+        {
+          "id": "electrodynamics_solves_lightning_aoe",
+          "when_owned_any": ["zap", "ball_lightning", "storm", "cracked_core"],
+          "target_any": ["electrodynamics"],
+          "bonus": 28,
+          "reason": "Electrodynamics turns Lightning into a strong multi-enemy plan."
+        }
+      ]
+    },
+    {
+      "id": "watcher_stance_dance",
+      "name": "Watcher Stance Dance",
+      "class": "watcher",
+      "tags": ["stance_wrath", "stance_calm", "energy", "block"],
+      "enablers": ["eruption", "vigilance", "fear_no_evil", "inner_peace"],
+      "payoffs": ["rushdown", "mental_fortress", "flurry_of_blows", "talk_to_the_hand"],
+      "support": ["wallop", "empty_fist", "empty_body"],
+      "relics": ["violet_lotus"],
+      "covers_risks": {
+        "low_defense": ["mental_fortress", "talk_to_the_hand", "wallop"],
+        "slow_scaling": ["rushdown", "flurry_of_blows"]
+      },
+      "rules": [
+        {
+          "id": "stance_payoff_after_stance_access",
+          "when_owned_any": ["eruption", "vigilance", "fear_no_evil", "inner_peace"],
+          "target_any": ["rushdown", "mental_fortress", "flurry_of_blows", "talk_to_the_hand"],
+          "bonus": 24,
+          "reason": "Stance payoffs become reliable when the deck can enter and exit stances."
+        }
+      ]
+    },
+    {
+      "id": "watcher_wrath_burst",
+      "name": "Watcher Wrath Burst",
+      "class": "watcher",
+      "tags": ["stance_wrath", "burst_damage"],
+      "enablers": ["eruption", "crescendo", "tantrum"],
+      "payoffs": ["wallop", "ragnarok", "conclude", "wheel_kick"],
+      "support": ["vigilance", "empty_fist", "halt"],
+      "relics": [],
+      "covers_risks": {
+        "no_aoe": ["conclude"],
+        "low_defense": ["wallop", "halt"]
+      },
+      "rules": [
+        {
+          "id": "wrath_payoff_with_exit",
+          "when_owned_any": ["eruption", "vigilance", "empty_fist", "fear_no_evil"],
+          "target_any": ["wallop", "conclude", "wheel_kick"],
+          "bonus": 16,
+          "reason": "Wrath attacks are stronger when the deck can manage stance risk."
+        }
+      ]
+    }
+  ]
+}

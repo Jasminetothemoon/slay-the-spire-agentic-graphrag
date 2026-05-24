@@ -103,6 +103,33 @@ Current public import snapshot:
 - 21 elite/boss enemy entries
 - 25 extracted mechanics/risk nodes
 
+## Strategy Layer
+
+Mechanic extraction alone is not enough for strong recommendations, so the project includes a curated strategy layer:
+
+```text
+data/strategy/archetypes.json
+```
+
+It currently covers 8 archetypes:
+
+- Silent Poison
+- Silent Shiv
+- Ironclad Strength
+- Ironclad Exhaust
+- Defect Frost Focus
+- Defect Lightning
+- Watcher Stance Dance
+- Watcher Wrath Burst
+
+These rules add explicit strategy signals such as enablers, payoffs, support cards, risk coverage, and archetype-specific pick bonuses. Example: `Catalyst` is scored as a Poison payoff only when the deck already has Poison sources, while `Corpse Explosion` is recognized as a Poison deck's AoE solution.
+
+Run public-data strategy evaluation:
+
+```bash
+python scripts/evaluate.py --data data/public_full_data.json --eval data/public_eval_cases.json
+```
+
 ## API Example
 
 ```bash

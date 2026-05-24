@@ -98,5 +98,65 @@
     "options": ["Remove a Card", "Buy Potion", "Skip"],
     "expected_top": "remove_card",
     "acceptable": ["remove_card"]
+  },
+  {
+    "id": "public_poison_needs_aoe_take_corpse_explosion",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_006",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 21,
+      "current_hp": 44,
+      "max_hp": 70,
+      "gold": 110,
+      "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask", "Noxious Fumes"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Corpse Explosion", "Backflip", "Prepared"],
+    "expected_top": "corpse_explosion",
+    "acceptable": ["corpse_explosion"]
+  },
+  {
+    "id": "public_shiv_payoff_take_accuracy",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_007",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 12,
+      "current_hp": 46,
+      "max_hp": 70,
+      "gold": 90,
+      "deck": ["Strike", "Defend", "Blade Dance", "Cloak And Dagger"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Accuracy", "Deadly Poison", "Dagger Spray"],
+    "expected_top": "accuracy",
+    "acceptable": ["accuracy"]
+  },
+  {
+    "id": "public_watcher_stance_take_rushdown",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_008",
+      "character_class": "watcher",
+      "ascension_level": 20,
+      "act": 1,
+      "current_floor": 11,
+      "current_hp": 48,
+      "max_hp": 72,
+      "gold": 100,
+      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Empty Fist"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Rushdown", "Wallop", "Evaluate"],
+    "expected_top": "rushdown",
+    "acceptable": ["rushdown", "wallop"]
   }
 ]

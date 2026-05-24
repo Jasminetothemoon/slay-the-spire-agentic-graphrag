@@ -6,6 +6,7 @@ from typing import Any, Dict, Iterable, List, Optional
 
 
 DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "sample_data.json"
+STRATEGY_PATH = Path(__file__).resolve().parents[1] / "data" / "strategy" / "archetypes.json"
 
 
 ENTITY_COLLECTIONS = (
@@ -26,8 +27,9 @@ def normalize_id(value: str) -> str:
 
 
 class KnowledgeBase:
-    def __init__(self, data: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any], strategy_data: Dict[str, Any] | None = None):
         self.data = data
+        self.strategy_data = strategy_data or {"archetypes": []}
         self.metadata = data.get("metadata", {})
         self.entities: Dict[str, Dict[str, Any]] = {}
         self.name_to_id: Dict[str, str] = {}
@@ -140,6 +142,52 @@ class KnowledgeBase:
                         )
         return evidence
 
+    def strategy_matches(self, state: Dict[str, Any], options: Iterable[str]) -> Dict[str, List[Dict[str, Any]]]:
+        owned_ids = set(self.resolve_many(state.get("deck", [])))
+        owned_ids.update(self.resolve_many(state.get("relics", [])))
+        option_entities = self.option_entities(options)
+        option_ids = {option["id"] for option in option_entities}
+        matches: Dict[str, List[Dict[str, Any]]] = {option["id"]: [] for option in option_entities}
+        character_class = state.get("character_class", "").lower()
+        risk_tags = set(self.risk_tags(state))
+
+        for archetype in self.strategy_data.get("archetypes", []):
+            if archetype.get("class") not in {"any", character_class}:
+                continue
+            for rule in archetype.get("rules", []):
+                owned_any = set(rule.get("when_owned_any", []))
+                target_any = set(rule.get("target_any", []))
+                if owned_any and not owned_ids.intersection(owned_any):
+                    continue
+                for option_id in option_ids.intersection(target_any):
+                    matches.setdefault(option_id, []).append(
+                        {
+                            "type": "archetype_rule",
+                            "archetype_id": archetype["id"],
+                            "archetype_name": archetype["name"],
+                            "rule_id": rule["id"],
+                            "bonus": float(rule.get("bonus", 0)),
+                            "reason": rule.get("reason", "Matches a curated archetype rule."),
+                        }
+                    )
+
+            for risk, targets in archetype.get("covers_risks", {}).items():
+                if risk not in risk_tags:
+                    continue
+                for option_id in option_ids.intersection(set(targets)):
+                    matches.setdefault(option_id, []).append(
+                        {
+                            "type": "risk_cover",
+                            "archetype_id": archetype["id"],
+                            "archetype_name": archetype["name"],
+                            "risk": risk,
+                            "bonus": 10.0,
+                            "reason": f"{self.entities.get(option_id, {}).get('name', option_id)} covers {risk} for {archetype['name']}.",
+                        }
+                    )
+
+        return {option_id: items for option_id, items in matches.items() if items}
+
     def risk_tags(self, state: Dict[str, Any]) -> List[str]:
         deck_ids = self.resolve_many(state.get("deck", []))
         deck_tags = self.tags_for_ids(deck_ids)
@@ -168,4 +216,10 @@ def default_data_path() -> str:
 def load_knowledge_base(path: str | None = None) -> KnowledgeBase:
     path = path or default_data_path()
     with open(path, "r", encoding="utf-8") as f:
-        return KnowledgeBase(json.load(f))
+        data = json.load(f)
+    strategy_path = os.getenv("STS_STRATEGY_PATH", str(STRATEGY_PATH))
+    strategy_data = {"archetypes": []}
+    if strategy_path and Path(strategy_path).exists():
+        with open(strategy_path, "r", encoding="utf-8") as f:
+            strategy_data = json.load(f)
+    return KnowledgeBase(data, strategy_data)

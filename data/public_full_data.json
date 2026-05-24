@@ -14,8 +14,8 @@
       "potions": 42,
       "enemies": 57,
       "archetypes": 0,
-      "shop_actions": 3,
-      "path_nodes": 5
+      "shop_actions": 5,
+      "path_nodes": 7
     },
     "normalized": true,
     "provenance_normalized": true
@@ -23460,6 +23460,32 @@
       "patch_version": "2.3"
     },
     {
+      "id": "buy_card",
+      "name": "Buy Card",
+      "base_value": 56,
+      "tags": [
+        "deck_growth",
+        "spend_gold"
+      ],
+      "source": "system",
+      "source_url": "internal://system-support-entity",
+      "confidence": 1.0,
+      "patch_version": "2.3"
+    },
+    {
+      "id": "buy_relic",
+      "name": "Buy Relic",
+      "base_value": 64,
+      "tags": [
+        "power_spike",
+        "spend_gold"
+      ],
+      "source": "system",
+      "source_url": "internal://system-support-entity",
+      "confidence": 1.0,
+      "patch_version": "2.3"
+    },
+    {
       "id": "buy_potion",
       "name": "Buy Potion",
       "base_value": 48,
@@ -23485,6 +23511,18 @@
     }
   ],
   "path_nodes": [
+    {
+      "id": "monster",
+      "name": "Monster",
+      "base_value": 42,
+      "tags": [
+        "card_reward"
+      ],
+      "source": "system",
+      "source_url": "internal://system-support-entity",
+      "confidence": 1.0,
+      "patch_version": "2.3"
+    },
     {
       "id": "elite",
       "name": "Elite",
@@ -23524,11 +23562,12 @@
       "patch_version": "2.3"
     },
     {
-      "id": "unknown",
-      "name": "Unknown",
-      "base_value": 45,
+      "id": "event",
+      "name": "Event",
+      "base_value": 46,
       "tags": [
-        "variance"
+        "variance",
+        "event"
       ],
       "source": "system",
       "source_url": "internal://system-support-entity",
@@ -23536,11 +23575,23 @@
       "patch_version": "2.3"
     },
     {
-      "id": "monster",
-      "name": "Monster",
-      "base_value": 42,
+      "id": "treasure",
+      "name": "Treasure",
+      "base_value": 58,
       "tags": [
-        "card_reward"
+        "relic_reward"
+      ],
+      "source": "system",
+      "source_url": "internal://system-support-entity",
+      "confidence": 1.0,
+      "patch_version": "2.3"
+    },
+    {
+      "id": "unknown",
+      "name": "Unknown",
+      "base_value": 45,
+      "tags": [
+        "variance"
       ],
       "source": "system",
       "source_url": "internal://system-support-entity",

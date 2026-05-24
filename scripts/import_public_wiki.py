@@ -283,15 +283,19 @@ class PublicWikiImporter:
             "archetypes": [],
             "shop_actions": [
                 {"id": "remove_card", "name": "Remove a Card", "base_value": 68, "tags": ["deck_control"]},
+                {"id": "buy_card", "name": "Buy Card", "base_value": 56, "tags": ["deck_growth", "spend_gold"]},
+                {"id": "buy_relic", "name": "Buy Relic", "base_value": 64, "tags": ["power_spike", "spend_gold"]},
                 {"id": "buy_potion", "name": "Buy Potion", "base_value": 48, "tags": ["elite_safety"]},
                 {"id": "skip_shop", "name": "Skip", "base_value": 25, "tags": ["save_gold"]},
             ],
             "path_nodes": [
+                {"id": "monster", "name": "Monster", "base_value": 42, "tags": ["card_reward"]},
                 {"id": "elite", "name": "Elite", "base_value": 62, "tags": ["reward", "risk"]},
                 {"id": "rest", "name": "Rest Site", "base_value": 54, "tags": ["heal", "upgrade"]},
                 {"id": "shop", "name": "Shop", "base_value": 52, "tags": ["spend_gold"]},
+                {"id": "event", "name": "Event", "base_value": 46, "tags": ["variance", "event"]},
+                {"id": "treasure", "name": "Treasure", "base_value": 58, "tags": ["relic_reward"]},
                 {"id": "unknown", "name": "Unknown", "base_value": 45, "tags": ["variance"]},
-                {"id": "monster", "name": "Monster", "base_value": 42, "tags": ["card_reward"]},
             ],
         }
 

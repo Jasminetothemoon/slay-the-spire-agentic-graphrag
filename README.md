@@ -95,6 +95,7 @@ python scripts/import_public_wiki.py --output data/public_full_data.json --check
 python scripts/import_public_wiki.py --collections monsters --output data/public_monsters.json --checkpoint-every 10
 python scripts/merge_public_enemies.py --base data/public_full_data.json --supplement data/public_monsters.json --output data/public_full_data.json
 python scripts/normalize_dataset.py --input data/public_full_data.json --output data/public_full_data.json
+python scripts/normalize_system_entities.py --input data/public_full_data.json --output data/public_full_data.json
 python scripts/normalize_provenance.py --input data/public_full_data.json --output data/public_full_data.json
 python scripts/validate_data.py --data data/public_cards.json
 python scripts/validate_data.py --data data/public_full_data.json

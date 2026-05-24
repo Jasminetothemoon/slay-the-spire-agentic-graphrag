@@ -127,3 +127,15 @@ Response:
 - Send the full deck/relic/potion state on every update. The API treats `/mod/state` as a snapshot, not a patch.
 - For combat, include enemy intents and current hand when available. The current recommender has only shallow combat support, but this keeps the protocol forward compatible.
 - A desktop overlay can subscribe to `ws://127.0.0.1:8000/ws` to receive state and recommendation updates in realtime.
+
+## CommunicationMod-Style Adapter
+
+This repository includes a thin adapter for state snapshots shaped like an external CommunicationMod bridge:
+
+```powershell
+python scripts\communication_mod_adapter.py --state-file data\communication_mod_sample_state.json
+```
+
+The adapter accepts common bridge fields such as `class`, `floor`, `choice_list`, `screen_type`, and `monsters`, then normalizes them into `/mod/state`.
+
+Use it as the first integration step before investing in a native BaseMod in-game UI.

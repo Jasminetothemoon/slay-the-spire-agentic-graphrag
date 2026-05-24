@@ -96,6 +96,7 @@ python scripts/normalize_dataset.py --input data/public_full_data.json --output 
 python scripts/validate_data.py --data data/public_cards.json
 python scripts/validate_data.py --data data/public_full_data.json
 python scripts/data_quality_report.py --data data/public_full_data.json
+python scripts/data_provenance_report.py --data data/public_full_data.json
 ```
 
 To run the app with an imported dataset instead of the seed data:
@@ -112,6 +113,12 @@ Current public import snapshot:
 - 42 potions
 - 21 elite/boss enemy entries
 - 25 extracted mechanics/risk nodes
+
+For provenance coverage and known data gaps, see:
+
+```text
+docs/data_audit.md
+```
 
 ## Strategy Layer
 

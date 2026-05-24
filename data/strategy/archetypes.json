@@ -82,6 +82,29 @@
       ]
     },
     {
+      "id": "silent_wraith_form",
+      "name": "Silent Wraith Form Defense",
+      "class": "silent",
+      "tags": ["intangible", "defense", "retain"],
+      "enablers": ["wraith_form", "apparition", "nightmare"],
+      "payoffs": ["wraith_form", "nightmare", "well_laid_plans"],
+      "support": ["piercing_wail", "backflip", "blur", "footwork"],
+      "relics": ["incense_burner", "runic_pyramid"],
+      "covers_risks": {
+        "low_defense": ["wraith_form", "apparition", "piercing_wail"],
+        "slow_scaling": ["nightmare"]
+      },
+      "rules": [
+        {
+          "id": "intangible_after_setup_tools",
+          "when_owned_any": ["well_laid_plans", "nightmare", "runic_pyramid", "piercing_wail"],
+          "target_any": ["wraith_form", "apparition", "nightmare"],
+          "bonus": 22,
+          "reason": "Intangible effects are strongest when the deck can retain, copy, or time defensive turns."
+        }
+      ]
+    },
+    {
       "id": "ironclad_strength",
       "name": "Ironclad Strength",
       "class": "ironclad",
@@ -123,6 +146,29 @@
           "target_any": ["barricade", "body_slam", "entrench", "juggernaut"],
           "bonus": 22,
           "reason": "Block payoffs need a deck that can generate large Block totals consistently."
+        }
+      ]
+    },
+    {
+      "id": "ironclad_self_damage",
+      "name": "Ironclad Self Damage",
+      "class": "ironclad",
+      "tags": ["self_damage", "strength", "heal"],
+      "enablers": ["hemokinesis", "bloodletting", "offering", "combust"],
+      "payoffs": ["rupture", "reaper", "limit_break"],
+      "support": ["inflame", "spot_weakness", "shockwave"],
+      "relics": ["red_skull", "runic_cube"],
+      "covers_risks": {
+        "slow_scaling": ["rupture", "reaper", "limit_break"],
+        "low_hp": ["reaper"]
+      },
+      "rules": [
+        {
+          "id": "rupture_after_self_damage",
+          "when_owned_any": ["hemokinesis", "bloodletting", "offering", "combust", "runic_cube"],
+          "target_any": ["rupture", "reaper", "limit_break"],
+          "bonus": 22,
+          "reason": "Self-damage cards turn Rupture and Reaper into a scaling damage and sustain package."
         }
       ]
     },
@@ -169,6 +215,29 @@
           "target_any": ["dualcast", "recursion", "loop", "defragment", "biased_cognition"],
           "bonus": 20,
           "reason": "Dark Orb decks value evoke control and Focus once a Dark source is present."
+        }
+      ]
+    },
+    {
+      "id": "defect_power",
+      "name": "Defect Power",
+      "class": "defect",
+      "tags": ["power", "scaling_damage", "draw"],
+      "enablers": ["storm", "heatsinks", "creative_ai"],
+      "payoffs": ["creative_ai", "echo_form", "amplify", "defragment", "biased_cognition"],
+      "support": ["glacier", "equilibrium", "seek"],
+      "relics": ["mummified_hand", "bird_faced_urn"],
+      "covers_risks": {
+        "slow_scaling": ["creative_ai", "echo_form", "defragment"],
+        "low_defense": ["glacier", "equilibrium"]
+      },
+      "rules": [
+        {
+          "id": "power_payoff_after_power_support",
+          "when_owned_any": ["storm", "heatsinks", "mummified_hand", "creative_ai"],
+          "target_any": ["creative_ai", "echo_form", "amplify", "defragment", "biased_cognition"],
+          "bonus": 22,
+          "reason": "Power payoffs scale harder once the deck has Power support, cost reduction, or Power draw."
         }
       ]
     },
@@ -284,6 +353,29 @@
           "target_any": ["brilliance", "ragnarok", "wheel_kick", "omniscience"],
           "bonus": 20,
           "reason": "Divinity payoffs are stronger once the deck has real Mantra access."
+        }
+      ]
+    },
+    {
+      "id": "watcher_retain",
+      "name": "Watcher Retain",
+      "class": "watcher",
+      "tags": ["retain", "energy", "burst_damage"],
+      "enablers": ["protect", "windmill_strike", "battle_hymn", "meditate"],
+      "payoffs": ["establishment", "sands_of_time", "deva_form", "worship"],
+      "support": ["mental_fortress", "talk_to_the_hand", "wallop"],
+      "relics": ["runic_pyramid"],
+      "covers_risks": {
+        "low_defense": ["protect", "mental_fortress"],
+        "slow_scaling": ["establishment", "sands_of_time"]
+      },
+      "rules": [
+        {
+          "id": "retain_payoff_after_retain_cards",
+          "when_owned_any": ["protect", "windmill_strike", "battle_hymn", "meditate", "runic_pyramid"],
+          "target_any": ["establishment", "sands_of_time", "deva_form", "worship"],
+          "bonus": 20,
+          "reason": "Retain payoffs become meaningful when the deck already holds cards across turns."
         }
       ]
     }

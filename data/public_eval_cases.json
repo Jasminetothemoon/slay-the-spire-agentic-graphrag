@@ -238,5 +238,85 @@
     "options": ["Brilliance", "Wallop", "Evaluate"],
     "expected_top": "brilliance",
     "acceptable": ["brilliance", "wallop"]
+  },
+  {
+    "id": "public_silent_wraith_take_wraith_form",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_013",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 26,
+      "current_hp": 22,
+      "max_hp": 70,
+      "gold": 130,
+      "deck": ["Strike", "Defend", "Well-Laid Plans", "Piercing Wail", "Backflip"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Wraith Form", "Dagger Spray", "Deadly Poison"],
+    "expected_top": "wraith_form",
+    "acceptable": ["wraith_form"]
+  },
+  {
+    "id": "public_ironclad_self_damage_take_rupture",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_014",
+      "character_class": "ironclad",
+      "ascension_level": 18,
+      "act": 2,
+      "current_floor": 20,
+      "current_hp": 48,
+      "max_hp": 82,
+      "gold": 100,
+      "deck": ["Strike", "Defend", "Bash", "Hemokinesis", "Bloodletting", "Offering"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Rupture", "Inflame", "Body Slam"],
+    "expected_top": "rupture",
+    "acceptable": ["rupture", "inflame"]
+  },
+  {
+    "id": "public_defect_power_take_echo_form",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_015",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 24,
+      "current_hp": 40,
+      "max_hp": 75,
+      "gold": 145,
+      "deck": ["Strike", "Defend", "Zap", "Storm", "Heatsinks", "Glacier"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Echo Form", "Dagger Spray", "Wallop"],
+    "expected_top": "echo_form",
+    "acceptable": ["echo_form"]
+  },
+  {
+    "id": "public_watcher_retain_take_establishment",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_016",
+      "character_class": "watcher",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 45,
+      "max_hp": 72,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Protect", "Meditate", "Battle Hymn"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Establishment", "Wallop", "Evaluate"],
+    "expected_top": "establishment",
+    "acceptable": ["establishment", "wallop"]
   }
 ]

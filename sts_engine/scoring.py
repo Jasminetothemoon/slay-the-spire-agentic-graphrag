@@ -86,6 +86,7 @@ class RecommendationScorer:
         scores.sort(
             key=lambda item: (
                 item["score"],
+                self._explicit_strategy_count(item.get("evidence", [])),
                 len(item.get("evidence", [])),
                 item["confidence"],
                 -len(item.get("risks", [])),
@@ -93,6 +94,9 @@ class RecommendationScorer:
             reverse=True,
         )
         return scores
+
+    def _explicit_strategy_count(self, evidence: List[Dict[str, Any]]) -> int:
+        return sum(1 for item in evidence if item.get("type") == "archetype_rule")
 
     def risk_report(self, state: Dict[str, Any]) -> Dict[str, Any]:
         risks = self.kb.risk_tags(state)

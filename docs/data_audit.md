@@ -9,7 +9,7 @@ The project already uses a real public-data snapshot for the main demo dataset, 
 - 361 cards
 - 146 relics
 - 42 potions
-- 21 elite/boss enemy entries
+- 57 enemy entries covering monsters, elites, and bosses
 - 25 mechanics/risk nodes
 - 3 shop actions
 - 5 path node types
@@ -62,7 +62,7 @@ For portfolio or release claims, the final dataset should meet this standard:
 
 ## Known Gaps
 
-- Enemy coverage is not yet full for all normal encounters.
+- Enemy coverage is close to the current Mod MVP target, but a few minions/summons and encounter variants may still need live-game validation.
 - Events are not yet represented as a first-class collection.
 - Individual relationships now have derived provenance markers, but they are not yet field-level citations back to exact wiki lines.
 - Real Mod payload names still need live-game validation against the normalized IDs.

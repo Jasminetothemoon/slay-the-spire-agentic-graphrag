@@ -21,6 +21,7 @@ CARD_CLASSES = ["ironclad", "silent", "defect", "watcher", "colorless", "curse",
 LIST_PAGES = {
     "relics": "/relics",
     "potions": "/potions",
+    "monsters": "/monsters",
     "elites": "/elites",
     "bosses": "/bosses",
 }
@@ -143,7 +144,7 @@ class PublicWikiImporter:
         output_path: Optional[Path] = None,
         checkpoint_every: int = 25,
     ) -> Dict[str, Any]:
-        collections = collections or {"cards", "relics", "potions", "elites", "bosses"}
+        collections = collections or {"cards", "relics", "potions", "monsters", "elites", "bosses"}
         data = self._base_dataset()
 
         if "cards" in collections:
@@ -160,7 +161,7 @@ class PublicWikiImporter:
             parsed = self._parse_with_checkpoints(
                 [(collection, link) for link in self._limit(links, limit)], data, output_path, checkpoint_every
             )
-            if collection in ("elites", "bosses"):
+            if collection in ("monsters", "elites", "bosses"):
                 data["enemies"].extend(self._dedupe_entities(parsed))
             else:
                 data[collection] = self._dedupe_entities(parsed)
@@ -250,8 +251,8 @@ class PublicWikiImporter:
             entity.update({"tier": rarity or "Unknown", "class": slugify(class_name or "any")})
         elif collection == "potions":
             entity.update({"rarity": self._first_non_field_line(text_lines, fallback="Unknown")})
-        elif collection in ("elites", "bosses"):
-            entity.update({"type": "elite" if collection == "elites" else "boss", "act": self._parse_act(body)})
+        elif collection in ("monsters", "elites", "bosses"):
+            entity.update({"type": self._enemy_type(collection), "act": self._parse_act(body)})
             entity["relationships"].extend(self._enemy_risk_relationships(body))
         return entity
 
@@ -453,7 +454,10 @@ class PublicWikiImporter:
         return score
 
     def _base_value_for(self, collection: str) -> int:
-        return {"relics": 64, "potions": 48, "elites": 55, "bosses": 70}.get(collection, 45)
+        return {"relics": 64, "potions": 48, "monsters": 45, "elites": 55, "bosses": 70}.get(collection, 45)
+
+    def _enemy_type(self, collection: str) -> str:
+        return {"monsters": "monster", "elites": "elite", "bosses": "boss"}.get(collection, "enemy")
 
     def _strip_card_link_label(self, value: str, card_class: str) -> str:
         for rarity in ("Starter", "Common", "Uncommon", "Rare"):
@@ -509,8 +513,8 @@ def main() -> None:
     parser.add_argument("--delay", type=float, default=0.05)
     parser.add_argument(
         "--collections",
-        default="cards,relics,potions,elites,bosses",
-        help="Comma-separated subset: cards,relics,potions,elites,bosses.",
+        default="cards,relics,potions,monsters,elites,bosses",
+        help="Comma-separated subset: cards,relics,potions,monsters,elites,bosses.",
     )
     parser.add_argument("--links-only", action="store_true", help="Only collect list-page links and write them as JSON.")
     parser.add_argument("--checkpoint-every", type=int, default=25)

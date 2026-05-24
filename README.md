@@ -92,6 +92,8 @@ The seed dataset is intentionally small. To build a larger public dataset from `
 python scripts/import_public_wiki.py --links-only --output data/public_link_index.json
 python scripts/import_public_wiki.py --collections cards --output data/public_cards.json --checkpoint-every 50
 python scripts/import_public_wiki.py --output data/public_full_data.json --checkpoint-every 50
+python scripts/import_public_wiki.py --collections monsters --output data/public_monsters.json --checkpoint-every 10
+python scripts/merge_public_enemies.py --base data/public_full_data.json --supplement data/public_monsters.json --output data/public_full_data.json
 python scripts/normalize_dataset.py --input data/public_full_data.json --output data/public_full_data.json
 python scripts/normalize_provenance.py --input data/public_full_data.json --output data/public_full_data.json
 python scripts/validate_data.py --data data/public_cards.json
@@ -113,7 +115,7 @@ Current public import snapshot:
 - 361 cards
 - 146 relics
 - 42 potions
-- 21 elite/boss enemy entries
+- 57 enemy entries covering monsters, elites, and bosses
 - 25 extracted mechanics/risk nodes
 
 For provenance coverage and known data gaps, see:

@@ -124,6 +124,7 @@ def validate_events(result: Dict[str, Any], scenario: Dict[str, Any]) -> List[st
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run a local API and verify bridge HTTP requests broadcast overlay WebSocket events.")
     parser.add_argument("--scenario-index", type=int, default=0)
+    parser.add_argument("--all-scenarios", action="store_true", help="Verify every scenario in the scenario file.")
     parser.add_argument("--scenarios", default=str(DEFAULT_SCENARIOS))
     parser.add_argument("--data", default=str(DEFAULT_DATA))
     parser.add_argument("--port", type=int, default=0, help="Port to use. Defaults to a free ephemeral port.")
@@ -132,23 +133,34 @@ def main() -> None:
     port = args.port or free_port()
     base_url = f"http://127.0.0.1:{port}"
     scenarios = load_json(Path(args.scenarios))
-    scenario = scenarios[args.scenario_index]
     process = start_api(port, Path(args.data))
     try:
         wait_for_health(base_url, timeout_s=20)
-        result = asyncio.run(collect_bridge_events(base_url, scenario))
-        errors = validate_events(result, scenario)
-        if errors:
-            raise SystemExit("\n".join(errors))
+        selected = scenarios if args.all_scenarios else [scenarios[args.scenario_index]]
+        reports = []
+        all_errors = []
+        for scenario in selected:
+            result = asyncio.run(collect_bridge_events(base_url, scenario))
+            errors = validate_events(result, scenario)
+            if errors:
+                all_errors.extend(f"{scenario['id']}: {error}" for error in errors)
+                continue
+            reports.append(
+                {
+                    "scenario_id": scenario["id"],
+                    "event_types": [event.get("type") for event in result["events"]],
+                    "recommendation": result["http_response"]["recommendation"]["recommendation"],
+                    "top_option": result["http_response"]["recommendation"]["option_scores"][0]["name"],
+                }
+            )
+        if all_errors:
+            raise SystemExit("\n".join(all_errors))
         print(
             json.dumps(
                 {
                     "status": "passed",
                     "base_url": base_url,
-                    "scenario_id": scenario["id"],
-                    "event_types": [event.get("type") for event in result["events"]],
-                    "recommendation": result["http_response"]["recommendation"]["recommendation"],
-                    "top_option": result["http_response"]["recommendation"]["option_scores"][0]["name"],
+                    "scenarios": reports,
                 },
                 indent=2,
             )

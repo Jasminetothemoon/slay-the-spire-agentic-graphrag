@@ -153,8 +153,11 @@ class RecommendationScorer:
             if "low_hp" in risk_tags and "risk" in option_tags:
                 score -= 20
                 reasons.append("Low HP makes this route riskier.")
+            if "low_hp" in risk_tags and "heal" in option_tags:
+                score += 14
+                reasons.append("Rest site is prioritized because current HP is low.")
             if "shop_ready" in risk_tags and "spend_gold" in option_tags:
-                score += 15
+                score += 10 if "low_hp" in risk_tags else 15
                 reasons.append("Gold total makes a shop route attractive.")
         if query_type == "shop":
             if "deck_control" in option_tags and len(state.get("deck", [])) >= 12:

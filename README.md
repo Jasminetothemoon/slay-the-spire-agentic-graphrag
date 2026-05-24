@@ -220,10 +220,10 @@ Replay bridge scenarios with a delay so the web overlay updates like a live comp
 python scripts/bridge_demo_player.py --delay 3 --loops 1
 ```
 
-Verify the full local bridge path in one command. This starts a temporary API server, connects to `/ws`, posts a `/mod/recommend` payload, and checks that both `state_updated` and `recommendation` events are broadcast for the overlay:
+Verify the full local bridge path in one command. This starts a temporary API server, connects to `/ws`, posts `/mod/recommend` payloads for card, relic, shop, pathing, and combat scenarios, and checks that both `state_updated` and `recommendation` events are broadcast for the overlay:
 
 ```bash
-python scripts/check_live_bridge.py --data data/public_full_data.json
+python scripts/check_live_bridge.py --data data/public_full_data.json --all-scenarios
 ```
 
 For Mod clients, the shortest path is the one-shot endpoint:

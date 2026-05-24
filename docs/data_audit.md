@@ -20,6 +20,14 @@ Mechanics, classes, shop actions, and path nodes are internal normalized support
 
 ## Run the Audit
 
+Coverage against practical Mod MVP targets:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\data_coverage_report.py --data data\public_full_data.json
+```
+
+Provenance coverage:
+
 ```powershell
 .\.venv\Scripts\python.exe scripts\data_provenance_report.py --data data\public_full_data.json
 ```
@@ -31,6 +39,10 @@ Machine-readable output:
 ```
 
 ## What the Report Means
+
+`data_coverage_report.py` answers whether the dataset is broad enough for the Mod MVP.
+
+`data_provenance_report.py` answers whether the existing entities are traceable.
 
 - `source` coverage tells whether an entity has a named source.
 - `source_url` coverage tells whether the entity can be traced to a concrete page or artifact.

@@ -97,6 +97,7 @@ python scripts/normalize_provenance.py --input data/public_full_data.json --outp
 python scripts/validate_data.py --data data/public_cards.json
 python scripts/validate_data.py --data data/public_full_data.json
 python scripts/data_quality_report.py --data data/public_full_data.json
+python scripts/data_coverage_report.py --data data/public_full_data.json
 python scripts/data_provenance_report.py --data data/public_full_data.json
 ```
 

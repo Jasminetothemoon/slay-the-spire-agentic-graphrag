@@ -158,5 +158,85 @@
     "options": ["Rushdown", "Wallop", "Evaluate"],
     "expected_top": "rushdown",
     "acceptable": ["rushdown", "wallop"]
+  },
+  {
+    "id": "public_silent_discard_take_tactician",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_009",
+      "character_class": "silent",
+      "ascension_level": 18,
+      "act": 2,
+      "current_floor": 20,
+      "current_hp": 43,
+      "max_hp": 70,
+      "gold": 130,
+      "deck": ["Strike", "Defend", "Calculated Gamble", "Acrobatics", "Prepared"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Tactician", "Deadly Poison", "Dagger Spray"],
+    "expected_top": "tactician",
+    "acceptable": ["tactician", "dagger_spray"]
+  },
+  {
+    "id": "public_ironclad_block_take_barricade",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_010",
+      "character_class": "ironclad",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 24,
+      "current_hp": 52,
+      "max_hp": 80,
+      "gold": 100,
+      "deck": ["Strike", "Defend", "Bash", "Impervious", "Flame Barrier", "Shrug It Off"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Barricade", "Limit Break", "Inflame"],
+    "expected_top": "barricade",
+    "acceptable": ["barricade"]
+  },
+  {
+    "id": "public_defect_dark_take_recursion",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_011",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 23,
+      "current_hp": 39,
+      "max_hp": 75,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Zap", "Darkness", "Doom and Gloom"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Recursion", "Glacier", "Dagger Spray"],
+    "expected_top": "recursion",
+    "acceptable": ["recursion", "glacier"]
+  },
+  {
+    "id": "public_watcher_divinity_take_brilliance",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_012",
+      "character_class": "watcher",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 21,
+      "current_hp": 46,
+      "max_hp": 72,
+      "gold": 105,
+      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Prostrate", "Worship"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Brilliance", "Wallop", "Evaluate"],
+    "expected_top": "brilliance",
+    "acceptable": ["brilliance", "wallop"]
   }
 ]

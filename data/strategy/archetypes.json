@@ -59,6 +59,29 @@
       ]
     },
     {
+      "id": "silent_discard",
+      "name": "Silent Discard",
+      "class": "silent",
+      "tags": ["discard", "draw", "energy", "deck_control"],
+      "enablers": ["calculated_gamble", "acrobatics", "prepared", "dagger_throw"],
+      "payoffs": ["reflex", "tactician", "eviscerate", "sneaky_strike"],
+      "support": ["backflip", "well_laid_plans", "adrenaline"],
+      "relics": ["tough_bandages", "tingha"],
+      "covers_risks": {
+        "slow_scaling": ["reflex", "tactician"],
+        "low_defense": ["tough_bandages"]
+      },
+      "rules": [
+        {
+          "id": "discard_payoff_after_discard",
+          "when_owned_any": ["calculated_gamble", "acrobatics", "prepared", "dagger_throw"],
+          "target_any": ["reflex", "tactician", "eviscerate", "sneaky_strike"],
+          "bonus": 22,
+          "reason": "Discard payoffs become reliable once the deck has repeatable discard outlets."
+        }
+      ]
+    },
+    {
       "id": "ironclad_strength",
       "name": "Ironclad Strength",
       "class": "ironclad",
@@ -77,6 +100,29 @@
           "target_any": ["limit_break", "heavy_blade", "pummel"],
           "bonus": 24,
           "reason": "Strength payoff is much better after the deck already has Strength sources."
+        }
+      ]
+    },
+    {
+      "id": "ironclad_block_barricade",
+      "name": "Ironclad Barricade Block",
+      "class": "ironclad",
+      "tags": ["block", "defense", "scaling_damage"],
+      "enablers": ["impervious", "flame_barrier", "shrug_it_off", "ghostly_armor"],
+      "payoffs": ["barricade", "body_slam", "entrench", "juggernaut"],
+      "support": ["feel_no_pain", "dark_embrace", "corruption"],
+      "relics": ["calipers", "thread_and_needle"],
+      "covers_risks": {
+        "low_defense": ["impervious", "flame_barrier", "barricade"],
+        "slow_scaling": ["body_slam", "entrench"]
+      },
+      "rules": [
+        {
+          "id": "block_payoff_after_block_density",
+          "when_owned_any": ["impervious", "flame_barrier", "shrug_it_off", "ghostly_armor", "feel_no_pain"],
+          "target_any": ["barricade", "body_slam", "entrench", "juggernaut"],
+          "bonus": 22,
+          "reason": "Block payoffs need a deck that can generate large Block totals consistently."
         }
       ]
     },
@@ -100,6 +146,29 @@
           "target_any": ["dark_embrace", "feel_no_pain", "corruption"],
           "bonus": 22,
           "reason": "Exhaust payoff converts card removal into draw, block, or free Skills."
+        }
+      ]
+    },
+    {
+      "id": "defect_dark_orb",
+      "name": "Defect Dark Orb",
+      "class": "defect",
+      "tags": ["orb_dark", "single_target_scaling", "focus"],
+      "enablers": ["darkness", "doom_and_gloom", "recursion"],
+      "payoffs": ["dualcast", "recursion", "loop", "defragment", "biased_cognition"],
+      "support": ["glacier", "coolheaded", "seek"],
+      "relics": ["data_disk"],
+      "covers_risks": {
+        "slow_scaling": ["darkness", "doom_and_gloom", "loop"],
+        "low_defense": ["glacier"]
+      },
+      "rules": [
+        {
+          "id": "dark_payoff_after_dark_source",
+          "when_owned_any": ["darkness", "doom_and_gloom"],
+          "target_any": ["dualcast", "recursion", "loop", "defragment", "biased_cognition"],
+          "bonus": 20,
+          "reason": "Dark Orb decks value evoke control and Focus once a Dark source is present."
         }
       ]
     },
@@ -192,6 +261,29 @@
           "target_any": ["wallop", "conclude", "wheel_kick"],
           "bonus": 16,
           "reason": "Wrath attacks are stronger when the deck can manage stance risk."
+        }
+      ]
+    },
+    {
+      "id": "watcher_divinity",
+      "name": "Watcher Divinity",
+      "class": "watcher",
+      "tags": ["mantra", "burst_damage", "energy"],
+      "enablers": ["prostrate", "pray", "worship", "devotion"],
+      "payoffs": ["brilliance", "ragnarok", "wheel_kick", "omniscience"],
+      "support": ["mental_fortress", "talk_to_the_hand", "wallop"],
+      "relics": ["damaru"],
+      "covers_risks": {
+        "slow_scaling": ["devotion", "worship", "brilliance"],
+        "low_defense": ["prostrate", "mental_fortress"]
+      },
+      "rules": [
+        {
+          "id": "divinity_payoff_after_mantra",
+          "when_owned_any": ["prostrate", "pray", "worship", "devotion", "damaru"],
+          "target_any": ["brilliance", "ragnarok", "wheel_kick", "omniscience"],
+          "bonus": 20,
+          "reason": "Divinity payoffs are stronger once the deck has real Mantra access."
         }
       ]
     }

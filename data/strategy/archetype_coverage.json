@@ -12,28 +12,28 @@
     "silent": [
       {"id": "silent_poison", "name": "Poison", "status": "seeded", "priority": 1},
       {"id": "silent_shiv", "name": "Shiv", "status": "seeded", "priority": 1},
-      {"id": "silent_discard", "name": "Discard", "status": "needs_rules", "priority": 1},
+      {"id": "silent_discard", "name": "Discard", "status": "seeded", "priority": 1},
       {"id": "silent_wraith_form", "name": "Wraith Form / Apparition Defense", "status": "needs_rules", "priority": 2},
       {"id": "silent_grand_finale", "name": "Grand Finale / Deck Control", "status": "backlog", "priority": 3}
     ],
     "ironclad": [
       {"id": "ironclad_strength", "name": "Strength", "status": "seeded", "priority": 1},
       {"id": "ironclad_exhaust", "name": "Exhaust / Corruption", "status": "seeded", "priority": 1},
-      {"id": "ironclad_block_barricade", "name": "Barricade Block", "status": "needs_rules", "priority": 2},
+      {"id": "ironclad_block_barricade", "name": "Barricade Block", "status": "seeded", "priority": 2},
       {"id": "ironclad_self_damage", "name": "Self Damage", "status": "needs_rules", "priority": 2},
       {"id": "ironclad_searing_blow", "name": "Searing Blow", "status": "backlog", "priority": 3}
     ],
     "defect": [
       {"id": "defect_frost_focus", "name": "Frost Focus", "status": "seeded", "priority": 1},
       {"id": "defect_lightning", "name": "Lightning / Electrodynamics", "status": "seeded", "priority": 1},
-      {"id": "defect_dark_orb", "name": "Dark Orb", "status": "needs_rules", "priority": 2},
+      {"id": "defect_dark_orb", "name": "Dark Orb", "status": "seeded", "priority": 2},
       {"id": "defect_power", "name": "Power / Creative AI", "status": "needs_rules", "priority": 2},
       {"id": "defect_claw_zero_cost", "name": "Claw / Zero Cost", "status": "backlog", "priority": 3}
     ],
     "watcher": [
       {"id": "watcher_stance_dance", "name": "Stance Dance", "status": "seeded", "priority": 1},
       {"id": "watcher_wrath_burst", "name": "Wrath Burst", "status": "seeded", "priority": 1},
-      {"id": "watcher_divinity", "name": "Divinity / Mantra", "status": "needs_rules", "priority": 2},
+      {"id": "watcher_divinity", "name": "Divinity / Mantra", "status": "seeded", "priority": 2},
       {"id": "watcher_pressure_points", "name": "Pressure Points", "status": "backlog", "priority": 3},
       {"id": "watcher_retain", "name": "Retain", "status": "needs_rules", "priority": 2}
     ]

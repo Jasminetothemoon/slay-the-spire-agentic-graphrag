@@ -148,10 +148,12 @@ button {
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+  min-width: 0;
 }
 
 .state-label,
 .state-chip {
+  max-width: 100%;
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 5px 8px;
@@ -159,6 +161,7 @@ button {
   background: #fff;
   font-size: 12px;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .state-label {
@@ -335,6 +338,11 @@ pre {
   overflow: auto;
   margin-top: 8px;
   font-size: 12px;
+}
+
+.overlay-mode .state-chip-row {
+  max-height: 78px;
+  overflow: auto;
 }
 
 @media (max-width: 820px) {

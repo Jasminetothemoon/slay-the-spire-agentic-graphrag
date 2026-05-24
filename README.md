@@ -130,6 +130,14 @@ Run public-data strategy evaluation:
 python scripts/evaluate.py --data data/public_full_data.json --eval data/public_eval_cases.json
 ```
 
+Track strategy coverage:
+
+```bash
+python scripts/strategy_coverage_report.py
+```
+
+The strategy layer is intentionally measured as coverage, not claimed as complete. The current coverage inventory tracks 20 archetypes across four classes; 8 have seeded scoring rules, while the rest are marked as `needs_rules`, `needs_eval`, or `backlog`.
+
 ## API Example
 
 ```bash

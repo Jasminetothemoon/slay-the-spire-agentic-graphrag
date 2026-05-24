@@ -1,0 +1,95 @@
+[
+  {
+    "id": "silent_poison_card_reward",
+    "description": "Silent Poison deck sees a card reward.",
+    "state": {
+      "run_id": "bridge_demo_silent",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 21,
+      "current_hp": 44,
+      "max_hp": 70,
+      "gold": 110,
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask", "Noxious Fumes"],
+      "upgraded_cards": [],
+      "relics": ["Snecko Skull"],
+      "potions": [],
+      "hand_cards": [],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [],
+      "combat_state": {},
+      "map_options": [],
+      "boss": "The Champ"
+    },
+    "decision": {
+      "query_type": "card_pick",
+      "options": ["Catalyst", "Corpse Explosion", "Backflip"],
+      "user_query": "Card reward after combat."
+    }
+  },
+  {
+    "id": "defect_lightning_card_reward",
+    "description": "Defect Lightning deck needs Act 2 AoE.",
+    "state": {
+      "run_id": "bridge_demo_defect",
+      "character_class": "defect",
+      "ascension_level": 18,
+      "act": 2,
+      "current_floor": 21,
+      "current_hp": 44,
+      "max_hp": 75,
+      "gold": 115,
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Zap", "Ball Lightning", "Storm"],
+      "upgraded_cards": [],
+      "relics": ["Cracked Core"],
+      "potions": [],
+      "hand_cards": [],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [],
+      "combat_state": {},
+      "map_options": [],
+      "boss": "Collector"
+    },
+    "decision": {
+      "query_type": "card_pick",
+      "options": ["Electrodynamics", "Glacier", "Defragment"],
+      "user_query": "Card reward before Act 2 fights."
+    }
+  },
+  {
+    "id": "shop_remove_card",
+    "description": "Ironclad shop decision with enough gold and a large starter-heavy deck.",
+    "state": {
+      "run_id": "bridge_demo_shop",
+      "character_class": "ironclad",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 18,
+      "current_hp": 50,
+      "max_hp": 80,
+      "gold": 180,
+      "energy": 3,
+      "deck": ["Strike", "Strike", "Strike", "Defend", "Defend", "Bash", "Inflame", "Shockwave", "Defend", "Strike", "Strike", "Defend"],
+      "upgraded_cards": [],
+      "relics": [],
+      "potions": [],
+      "hand_cards": [],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [],
+      "combat_state": {},
+      "map_options": [],
+      "boss": "Automaton"
+    },
+    "decision": {
+      "query_type": "shop",
+      "options": ["Remove a Card", "Buy Potion", "Skip"],
+      "user_query": "Shop decision."
+    }
+  }
+]

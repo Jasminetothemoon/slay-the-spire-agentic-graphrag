@@ -161,6 +161,30 @@ The response includes:
 - `risk_report`
 - `latency_ms`
 
+## Game-State Bridge
+
+The bridge protocol is documented in:
+
+```text
+docs/bridge_protocol.md
+```
+
+Run bridge scenarios without starting FastAPI:
+
+```bash
+python scripts/bridge_simulator.py --mode offline --data data/public_full_data.json
+```
+
+Run against a local API server:
+
+```bash
+set STS_KB_PATH=data/public_full_data.json
+uvicorn api.main:app --reload
+python scripts/bridge_simulator.py --mode http --base-url http://127.0.0.1:8000
+```
+
+The simulator posts full run-state snapshots in the same shape a future Mod/CommunicationMod bridge should send to `/mod/state`, then requests a recommendation for the active decision.
+
 ## Resume-Oriented Targets
 
 The current repository implements the MVP skeleton. The next high-value work is to scale the dataset and evaluation:

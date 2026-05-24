@@ -53,14 +53,27 @@ data/eval_cases.json        Seed evaluation cases
 
 ## Quick Start
 
-```bash
-pip install -r requirements.txt
-python scripts/validate_data.py
-python scripts/evaluate.py
+Use Python 3.11 or 3.12. On Windows:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python scripts\dev_check.py
+python scripts\validate_data.py
+python scripts\evaluate.py
+$env:STS_KB_PATH="data\public_full_data.json"
 uvicorn api.main:app --reload
 ```
 
 Open `http://127.0.0.1:8000` and start a demo run.
+
+For detailed Windows setup and troubleshooting, see:
+
+```text
+docs/windows_setup.md
+```
 
 ## Neo4j Ingestion
 

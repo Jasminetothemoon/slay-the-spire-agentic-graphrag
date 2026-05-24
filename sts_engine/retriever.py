@@ -35,21 +35,30 @@ class GraphRAGRetriever:
         options = state.get("options", [])
         if self.driver:
             try:
-                return self._retrieve_neo4j(owned_items, options)
+                character_class = state.get("character_class", "").lower()
+                owned_ids = self.kb.resolve_many(owned_items, character_class)
+                option_ids = [item["id"] for item in self.kb.option_entities(options, character_class)]
+                return self._retrieve_neo4j(owned_ids, option_ids)
             except Exception:
                 self.backend = "local_json"
-        return self.kb.find_synergies(owned_items, options)
+        return self.kb.find_synergies(owned_items, options, state.get("character_class", "").lower())
 
     def _retrieve_neo4j(self, owned_items: Iterable[str], options: Iterable[str]) -> List[Dict[str, Any]]:
         query = """
         MATCH (owned)-[r1:APPLIES|SCALES_WITH|ENHANCES|COUNTERS|CORE_PIECE_FOR]->(m)
-        WHERE owned.id IN $owned_items OR owned.name IN $owned_items
+        WHERE owned.id IN $owned_items
         MATCH (option)-[r2:APPLIES|SCALES_WITH|ENHANCES|COUNTERS|CORE_PIECE_FOR]->(m)
-        WHERE option.id IN $options OR option.name IN $options
+        WHERE option.id IN $options
         RETURN owned.id AS owned_id, owned.name AS owned_name, type(r1) AS owned_relationship,
                option.id AS option_id, option.name AS option_name, type(r2) AS option_relationship,
                m.id AS mechanic, m.name AS mechanic_name,
-               coalesce(r1.weight, 0.5) AS owned_weight, coalesce(r2.weight, 0.5) AS option_weight
+               coalesce(r1.weight, 0.5) AS owned_weight, coalesce(r2.weight, 0.5) AS option_weight,
+               coalesce(r1.source, owned.source, 'unknown') AS owned_source,
+               coalesce(r1.source_url, owned.source_url, '') AS owned_source_url,
+               coalesce(r1.confidence, owned.confidence, 0.5) AS owned_confidence,
+               coalesce(r2.source, option.source, 'unknown') AS option_source,
+               coalesce(r2.source_url, option.source_url, '') AS option_source_url,
+               coalesce(r2.confidence, option.confidence, 0.5) AS option_confidence
         LIMIT 100
         """
         evidence = []
@@ -68,6 +77,12 @@ class GraphRAGRetriever:
                         "mechanic": record["mechanic"],
                         "mechanic_name": record["mechanic_name"],
                         "weight": round((float(record["owned_weight"]) + float(record["option_weight"])) / 2, 3),
+                        "owned_source": record["owned_source"],
+                        "owned_source_url": record["owned_source_url"],
+                        "owned_confidence": float(record["owned_confidence"]),
+                        "option_source": record["option_source"],
+                        "option_source_url": record["option_source_url"],
+                        "option_confidence": float(record["option_confidence"]),
                     }
                 )
         return evidence

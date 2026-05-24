@@ -1,0 +1,42 @@
+{
+  "cards": {
+    "target_count": 361,
+    "required_for_mod_mvp": true,
+    "notes": "All base-game cards across characters, colorless, curses, and statuses."
+  },
+  "relics": {
+    "target_count": 146,
+    "required_for_mod_mvp": true,
+    "notes": "Current public snapshot relic count."
+  },
+  "potions": {
+    "target_count": 42,
+    "required_for_mod_mvp": true,
+    "notes": "Current public snapshot potion count."
+  },
+  "enemies": {
+    "target_count": 60,
+    "required_for_mod_mvp": true,
+    "notes": "Approximate target covering normal enemies, elites, bosses, Act 4, and major minions."
+  },
+  "events": {
+    "target_count": 50,
+    "required_for_mod_mvp": false,
+    "notes": "Approximate target for base-game events. Events are useful for pathing/shop advice but can follow the first Mod MVP."
+  },
+  "mechanics": {
+    "target_count": 35,
+    "required_for_mod_mvp": true,
+    "notes": "Keywords, deck mechanics, risk markers, and combat concepts used by scoring."
+  },
+  "shop_actions": {
+    "target_count": 5,
+    "required_for_mod_mvp": true,
+    "notes": "Remove, buy card, buy relic, buy potion, skip."
+  },
+  "path_nodes": {
+    "target_count": 7,
+    "required_for_mod_mvp": true,
+    "notes": "Monster, elite, shop, rest, event, treasure, boss/unknown."
+  }
+}

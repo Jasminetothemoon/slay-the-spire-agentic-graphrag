@@ -9,11 +9,13 @@ except Exception:
 
 from sts_engine.retriever import GraphRAGRetriever
 from sts_engine.scoring import RecommendationScorer
+from sts_engine.combat import CombatAdvisor
 from sts_engine.state import RunState
 
 
 retriever = GraphRAGRetriever()
 scorer = RecommendationScorer(retriever.kb)
+combat_advisor = CombatAdvisor(retriever.kb)
 
 
 def validate_state_node(state: RunState) -> Dict[str, Any]:
@@ -42,6 +44,8 @@ def risk_assessment_node(state: RunState) -> Dict[str, Any]:
 def score_options_node(state: RunState) -> Dict[str, Any]:
     if state.get("validation_errors"):
         return {"option_scores": []}
+    if state.get("query_type") == "combat":
+        return {"option_scores": combat_advisor.advise(state)}
     option_scores = scorer.score(state, state.get("graph_context", []))
     return {"option_scores": option_scores}
 

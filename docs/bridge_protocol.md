@@ -114,6 +114,14 @@ Response:
 
 The endpoint also broadcasts both `state_updated` and `recommendation` WebSocket events, so the web overlay updates from a single bridge request.
 
+Local verification:
+
+```powershell
+python scripts\check_live_bridge.py --data data\public_full_data.json
+```
+
+The check starts a temporary API server, subscribes to `/ws`, posts one bridge scenario to `/mod/recommend`, and fails if the overlay event stream does not receive both state and recommendation updates.
+
 Shop:
 
 ```json

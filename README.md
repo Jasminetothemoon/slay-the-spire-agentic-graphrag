@@ -218,6 +218,12 @@ Replay bridge scenarios with a delay so the web overlay updates like a live comp
 python scripts/bridge_demo_player.py --delay 3 --loops 1
 ```
 
+Verify the full local bridge path in one command. This starts a temporary API server, connects to `/ws`, posts a `/mod/recommend` payload, and checks that both `state_updated` and `recommendation` events are broadcast for the overlay:
+
+```bash
+python scripts/check_live_bridge.py --data data/public_full_data.json
+```
+
 For Mod clients, the shortest path is the one-shot endpoint:
 
 ```text
@@ -228,28 +234,29 @@ It accepts a game-state snapshot plus the active decision options, then broadcas
 
 ## Resume-Oriented Targets
 
-The current repository implements the MVP skeleton. The next high-value work is to scale the dataset and evaluation:
+The current repository implements a runnable first version with real public data, local graph fallback, a FastAPI bridge, WebSocket overlay updates, and deterministic scoring. The next high-value work is to deepen evaluation and game-side integration:
 
-- 400+ entities and 1000+ graph relationships.
+- 600+ entities and 1400+ graph relationships.
 - 200+ labeled evaluation cases.
 - P95 recommendation latency below 500ms for non-LLM recommendations.
 - Comparison report: rules only vs pure LLM vs vector RAG vs GraphRAG + scoring.
-- Mod bridge that posts live game state into `/mod/state`.
+- Thin Java/CommunicationMod bridge that posts live game state into `/mod/recommend`.
 
 ## Current Status
 
 Implemented:
 
-- UTF-8 schema and seed data.
+- UTF-8 schema plus real public data snapshot for cards, relics, potions, enemies, mechanics, shops, and path nodes.
 - Agentic GraphRAG workflow.
 - Structured scoring and explanations.
 - Neo4j ingestion script and local fallback.
-- FastAPI, WebSocket, mod-state stub, and demo UI.
-- Data validation and evaluation harness.
+- FastAPI, WebSocket, mod-state bridge contract, and compact overlay HUD.
+- CommunicationMod-style adapter with offline debug mode.
+- Data validation, graph fixture checks, live bridge e2e check, and evaluation harness.
 
 Still to expand:
 
-- Full-game crawler and normalization.
-- Larger strategy knowledge base.
-- Real ModTheSpire/BaseMod or CommunicationMod bridge.
+- Base-game event coverage and live-game validation for a few enemy/minion variants.
+- Larger strategy/evaluation knowledge base.
+- Real ModTheSpire/BaseMod bridge or direct CommunicationMod integration.
 - Deeper combat search and potion planning.

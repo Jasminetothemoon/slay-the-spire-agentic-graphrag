@@ -74,6 +74,14 @@ python scripts\bridge_demo_player.py --delay 3 --loops 1
 
 The overlay should update as each state and recommendation is pushed.
 
+To verify the bridge path without watching the browser, run:
+
+```powershell
+python scripts\check_live_bridge.py --data data\public_full_data.json
+```
+
+Expected output includes `state_updated`, `recommendation`, and a top option. This is the fastest smoke test for the API-to-overlay event path.
+
 ## 5. Common Problems
 
 ### `ModuleNotFoundError: No module named 'anyio'`

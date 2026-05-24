@@ -4,12 +4,16 @@ const answerEl = document.querySelector("#answer");
 const scoresEl = document.querySelector("#scores");
 const evidenceEl = document.querySelector("#evidence");
 const languageSelect = document.querySelector("#languageSelect");
+const overlayToggle = document.querySelector("#overlayToggle");
+const stateSummaryEl = document.querySelector("#stateSummary");
 
 const translations = {
   en: {
     appTitle: "Spire Agentic GraphRAG",
     appSubtitle: "Realtime decision assistant for deck, route, shop, and combat states.",
     language: "Language",
+    overlayMode: "Overlay Mode",
+    fullMode: "Full Mode",
     startRun: "Start Demo Run",
     runState: "Run State",
     runId: "Run ID",
@@ -39,11 +43,17 @@ const translations = {
     score: "Score",
     reasons: "Reasons",
     risks: "Risks",
+    stateSummary: "State",
+    topPick: "Top pick",
+    noScores: "No recommendation yet.",
+    floor: "Floor",
   },
   zh: {
     appTitle: "尖塔 Agentic GraphRAG",
     appSubtitle: "面向卡组、路线、商店与战斗状态的实时决策助手。",
     language: "语言",
+    overlayMode: "覆盖层模式",
+    fullMode: "完整模式",
     startRun: "开始演示局",
     runState: "当前局面",
     runId: "局面 ID",
@@ -73,14 +83,29 @@ const translations = {
     score: "分数",
     reasons: "理由",
     risks: "风险",
+    stateSummary: "状态",
+    topPick: "首选",
+    noScores: "还没有推荐。",
+    floor: "楼层",
   },
 };
 
 let currentLanguage = localStorage.getItem("spireLanguage") || "en";
+let overlayMode = localStorage.getItem("spireOverlayMode") === "true";
+window.lastRecommendation = null;
 
 function t(key, ...args) {
   const value = translations[currentLanguage][key] || translations.en[key] || key;
   return typeof value === "function" ? value(...args) : value;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function applyLanguage() {
@@ -92,6 +117,16 @@ function applyLanguage() {
     node.placeholder = t(node.dataset.i18nPlaceholder);
   });
   languageSelect.value = currentLanguage;
+  overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
+  renderStateSummary();
+}
+
+function applyOverlayMode() {
+  document.body.classList.toggle("overlay-mode", overlayMode);
+  localStorage.setItem("spireOverlayMode", String(overlayMode));
+  overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
+  renderScores(window.lastRecommendation?.option_scores || []);
+  renderStateSummary();
 }
 
 languageSelect.addEventListener("change", () => {
@@ -102,6 +137,11 @@ languageSelect.addEventListener("change", () => {
   if (window.lastRecommendation) {
     statusEl.textContent = t("returned", window.lastRecommendation.latency_ms);
   }
+});
+
+overlayToggle.addEventListener("click", () => {
+  overlayMode = !overlayMode;
+  applyOverlayMode();
 });
 
 function lines(id) {
@@ -125,6 +165,28 @@ function currentStatePayload() {
     relics: lines("#relics"),
     potions: [],
   };
+}
+
+function renderStateSummary() {
+  const state = currentStatePayload();
+  const topScore = window.lastRecommendation?.option_scores?.[0];
+  const chips = [
+    `${t("class")}: ${state.character_class || "-"}`,
+    `${t("hp")}: ${state.current_hp}/${state.max_hp}`,
+    `${t("gold")}: ${state.gold}`,
+    `${t("floor")}: ${state.current_floor}`,
+  ];
+
+  stateSummaryEl.innerHTML = `
+    <div class="state-chip-row">
+      <span class="state-label">${t("stateSummary")}</span>
+      ${chips.map((chip) => `<span class="state-chip">${escapeHtml(chip)}</span>`).join("")}
+    </div>
+    <div class="top-pick">
+      <span>${t("topPick")}</span>
+      <strong>${escapeHtml(topScore ? `${topScore.name} · ${topScore.score}` : t("noScores"))}</strong>
+    </div>
+  `;
 }
 
 async function postJson(url, payload) {
@@ -158,9 +220,14 @@ async function syncState() {
   }
   await postJson("/update_state", currentStatePayload());
   statusEl.textContent = t("stateSynced");
+  renderStateSummary();
 }
 
 document.querySelector("#syncState").addEventListener("click", syncState);
+
+document.querySelectorAll("#characterClass, #hp, #gold, #deck, #relics").forEach((node) => {
+  node.addEventListener("input", renderStateSummary);
+});
 
 document.querySelector("#recommend").addEventListener("click", async () => {
   if (!runIdInput.value) {
@@ -178,20 +245,26 @@ document.querySelector("#recommend").addEventListener("click", async () => {
   answerEl.textContent = data.reasoning;
   evidenceEl.textContent = JSON.stringify(data.graph_context, null, 2);
   renderScores(data.option_scores);
+  renderStateSummary();
   statusEl.textContent = t("returned", data.latency_ms);
 });
 
 function renderScores(optionScores) {
+  if (!optionScores.length) {
+    scoresEl.innerHTML = "";
+    return;
+  }
+
   scoresEl.innerHTML = optionScores
     .map(
-      (score) => `
-      <article class="score-card">
-        <header><span>${score.name}</span><span>${t("score")}: ${score.score}</span></header>
+      (score, index) => `
+      <article class="score-card ${index === 0 ? "top-score" : ""}">
+        <header><span>${escapeHtml(score.name)}</span><span>${t("score")}: ${escapeHtml(score.score)}</span></header>
         <ul>
           <li><strong>${t("reasons")}:</strong></li>
-          ${score.reasons.map((reason) => `<li>${reason}</li>`).join("")}
+          ${score.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}
           ${(score.risks || []).length ? `<li class="risk"><strong>${t("risks")}:</strong></li>` : ""}
-          ${(score.risks || []).map((risk) => `<li class="risk">${risk}</li>`).join("")}
+          ${(score.risks || []).map((risk) => `<li class="risk">${escapeHtml(risk)}</li>`).join("")}
         </ul>
       </article>`
     )
@@ -210,4 +283,5 @@ try {
   statusEl.textContent = t("websocketUnavailable");
 }
 
+applyOverlayMode();
 applyLanguage();

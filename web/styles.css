@@ -6,6 +6,7 @@
   --muted: #667085;
   --line: #d7dde5;
   --accent: #2563eb;
+  --accent-soft: #eff6ff;
   --good: #0f766e;
   --risk: #b45309;
 }
@@ -125,9 +126,61 @@ button {
   cursor: pointer;
 }
 
+.secondary-action {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+}
+
 .topbar-actions button {
   margin-top: 0;
   white-space: nowrap;
+}
+
+.state-summary {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.state-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.state-label,
+.state-chip {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 8px;
+  color: #344054;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.state-label {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: #bfdbfe;
+}
+
+.top-pick {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #1e3a8a;
+  background: var(--accent-soft);
+  font-size: 13px;
+}
+
+.top-pick strong {
+  text-align: right;
 }
 
 .answer {
@@ -149,6 +202,11 @@ button {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
+}
+
+.top-score {
+  border-color: #93c5fd;
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .score-card header {
@@ -178,6 +236,105 @@ pre {
   color: #e5edf8;
   padding: 12px;
   border-radius: 8px;
+}
+
+.overlay-mode {
+  background: #eef1f5;
+}
+
+.overlay-mode .app {
+  width: min(430px, calc(100vw - 16px));
+  margin: 8px auto;
+}
+
+.overlay-mode .topbar {
+  align-items: stretch;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.overlay-mode .topbar > div:first-child p,
+.overlay-mode aside.panel,
+.overlay-mode details {
+  display: none;
+}
+
+.overlay-mode h1 {
+  font-size: 18px;
+}
+
+.overlay-mode h2 {
+  font-size: 15px;
+}
+
+.overlay-mode .topbar,
+.overlay-mode .topbar-actions,
+.overlay-mode .recommendation-header {
+  flex-direction: column;
+}
+
+.overlay-mode .topbar-actions {
+  align-items: stretch;
+  gap: 8px;
+}
+
+.overlay-mode .language-control {
+  min-width: 0;
+}
+
+.overlay-mode .workspace {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.overlay-mode .panel {
+  padding: 12px;
+}
+
+.overlay-mode .recommendation-header {
+  align-items: stretch;
+  gap: 10px;
+}
+
+.overlay-mode label {
+  margin-top: 10px;
+}
+
+.overlay-mode textarea {
+  min-height: 68px;
+}
+
+.overlay-mode button,
+.overlay-mode input,
+.overlay-mode textarea,
+.overlay-mode select {
+  padding: 8px 10px;
+}
+
+.overlay-mode .answer {
+  margin-top: 12px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.overlay-mode .scores {
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.overlay-mode .score-card {
+  padding: 10px;
+}
+
+.overlay-mode .score-card header {
+  font-size: 13px;
+}
+
+.overlay-mode .score-card ul {
+  max-height: 116px;
+  overflow: auto;
+  margin-top: 8px;
+  font-size: 12px;
 }
 
 @media (max-width: 820px) {

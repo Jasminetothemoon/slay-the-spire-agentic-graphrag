@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT))
 
 from sts_engine.agent import build_graph
 from sts_engine.knowledge_base import load_knowledge_base
+from scripts.communication_mod_adapter import read_json, run_offline
 
 
 DEFAULT_DATA = ROOT / "data" / "public_full_data.json"
@@ -60,6 +61,26 @@ def check_legality_filter() -> List[str]:
     return errors
 
 
+def check_communication_mod_adapter() -> List[str]:
+    sample = read_json(ROOT / "data" / "communication_mod_sample_state.json")
+    result = run_offline(sample, recommend=True)
+    state = result["state"]
+    recommendation = result.get("recommendation", {})
+    errors = []
+    if state.get("character_class") != "silent":
+        errors.append(f"CommunicationMod class should normalize to silent, got {state.get('character_class')}")
+    if result.get("recommendation_request", {}).get("query_type") != "card_pick":
+        errors.append("CARD_REWARD screen should infer card_pick query_type.")
+    if recommendation.get("recommendation") not in {"catalyst", "corpse_explosion"}:
+        errors.append(
+            "Sample CommunicationMod recommendation should be a strong poison/AoE payoff, "
+            f"got {recommendation.get('recommendation')}"
+        )
+    if not recommendation.get("option_scores"):
+        errors.append("CommunicationMod offline recommendation should include option_scores.")
+    return errors
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Check decision-engine invariants needed for live Mod state ingestion.")
     parser.add_argument("--data", default=str(DEFAULT_DATA))
@@ -72,13 +93,17 @@ def main() -> None:
     errors = []
     errors.extend(check_class_aware_resolution(kb))
     errors.extend(check_legality_filter())
+    errors.extend(check_communication_mod_adapter())
     if errors:
         raise SystemExit("\n".join(errors))
-    report = {"checks": ["class_aware_resolution", "decision_legality_filter"], "status": "passed"}
+    report = {
+        "checks": ["class_aware_resolution", "decision_legality_filter", "communication_mod_adapter"],
+        "status": "passed",
+    }
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print("Decision engine checks passed: class-aware resolution, decision legality filter")
+        print("Decision engine checks passed: class-aware resolution, decision legality filter, CommunicationMod adapter")
 
 
 if __name__ == "__main__":

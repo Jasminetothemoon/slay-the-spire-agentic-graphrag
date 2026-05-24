@@ -1,9 +1,16 @@
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 from urllib import request
 from urllib.error import HTTPError
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from sts_engine.agent import build_graph
 
 DEFAULT_STATE_PATH = Path("data") / "communication_mod_sample_state.json"
 
@@ -144,16 +151,50 @@ def run_once(raw: Dict[str, Any], base_url: str, recommend: bool, combined: bool
     return result
 
 
+def run_offline(raw: Dict[str, Any], recommend: bool) -> Dict[str, Any]:
+    state = normalize_state(raw)
+    result: Dict[str, Any] = {"state": state}
+    if recommend:
+        query_type = infer_query_type(raw)
+        current_state = dict(state)
+        current_state.update(
+            {
+                "query_type": query_type,
+                "options": infer_options(raw, query_type),
+                "user_query": raw.get("user_query") or f"CommunicationMod {query_type} decision.",
+            }
+        )
+        recommendation = build_graph().invoke(current_state)
+        result["recommendation_request"] = {
+            "run_id": state["run_id"],
+            "query_type": query_type,
+            "options": current_state["options"],
+            "user_query": current_state["user_query"],
+        }
+        result["recommendation"] = {
+            "recommendation": recommendation.get("recommendation", "skip"),
+            "reasoning": recommendation.get("reasoning", ""),
+            "option_scores": recommendation.get("option_scores", []),
+            "risk_report": recommendation.get("risk_report", {}),
+            "latency_ms": recommendation.get("latency_ms", 0.0),
+        }
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Adapt a CommunicationMod-style state JSON into the local recommender API.")
     parser.add_argument("--state-file", default=str(DEFAULT_STATE_PATH), help="Path to a CommunicationMod-style state JSON file.")
     parser.add_argument("--base-url", default="http://127.0.0.1:8000", help="Local FastAPI base URL.")
     parser.add_argument("--no-recommend", action="store_true", help="Only post /mod/state; do not request a recommendation.")
     parser.add_argument("--legacy-two-step", action="store_true", help="Use /mod/state followed by /get_recommendation instead of /mod/recommend.")
+    parser.add_argument("--offline", action="store_true", help="Normalize and recommend locally without posting to FastAPI.")
     args = parser.parse_args()
 
     raw = read_json(Path(args.state_file))
-    result = run_once(raw, args.base_url, recommend=not args.no_recommend, combined=not args.legacy_two_step)
+    if args.offline:
+        result = run_offline(raw, recommend=not args.no_recommend)
+    else:
+        result = run_once(raw, args.base_url, recommend=not args.no_recommend, combined=not args.legacy_two_step)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

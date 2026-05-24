@@ -29,12 +29,27 @@ def check_fixture(kb: Any, fixture: Dict[str, Any]) -> List[str]:
     option_ids = {item["option_id"] for item in evidence}
     mechanics = {item["mechanic"] for item in evidence}
     errors = []
+    required_fields = {
+        "owned_source",
+        "owned_source_url",
+        "owned_confidence",
+        "option_source",
+        "option_source_url",
+        "option_confidence",
+    }
     for option_id in fixture["expected"].get("option_ids", []):
         if option_id not in option_ids:
             errors.append(f"{fixture['id']}: missing option evidence for {option_id}")
     for mechanic in fixture["expected"].get("mechanics", []):
         if mechanic not in mechanics:
             errors.append(f"{fixture['id']}: missing mechanic evidence for {mechanic}")
+    for item in evidence:
+        missing_fields = [field for field in required_fields if item.get(field) in (None, "")]
+        if missing_fields:
+            errors.append(f"{fixture['id']}: evidence missing provenance fields {missing_fields}")
+        for field in ("owned_id", "option_id"):
+            if item.get(field) in {"derived_relationship", "public_dataset", "manual_strategy"}:
+                errors.append(f"{fixture['id']}: {field} contains provenance marker {item[field]}")
     return errors
 
 

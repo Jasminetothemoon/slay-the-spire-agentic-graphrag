@@ -49,7 +49,13 @@ class GraphRAGRetriever:
         RETURN owned.id AS owned_id, owned.name AS owned_name, type(r1) AS owned_relationship,
                option.id AS option_id, option.name AS option_name, type(r2) AS option_relationship,
                m.id AS mechanic, m.name AS mechanic_name,
-               coalesce(r1.weight, 0.5) AS owned_weight, coalesce(r2.weight, 0.5) AS option_weight
+               coalesce(r1.weight, 0.5) AS owned_weight, coalesce(r2.weight, 0.5) AS option_weight,
+               coalesce(r1.source, owned.source, 'unknown') AS owned_source,
+               coalesce(r1.source_url, owned.source_url, '') AS owned_source_url,
+               coalesce(r1.confidence, owned.confidence, 0.5) AS owned_confidence,
+               coalesce(r2.source, option.source, 'unknown') AS option_source,
+               coalesce(r2.source_url, option.source_url, '') AS option_source_url,
+               coalesce(r2.confidence, option.confidence, 0.5) AS option_confidence
         LIMIT 100
         """
         evidence = []
@@ -68,6 +74,12 @@ class GraphRAGRetriever:
                         "mechanic": record["mechanic"],
                         "mechanic_name": record["mechanic_name"],
                         "weight": round((float(record["owned_weight"]) + float(record["option_weight"])) / 2, 3),
+                        "owned_source": record["owned_source"],
+                        "owned_source_url": record["owned_source_url"],
+                        "owned_confidence": float(record["owned_confidence"]),
+                        "option_source": record["option_source"],
+                        "option_source_url": record["option_source_url"],
+                        "option_confidence": float(record["option_confidence"]),
                     }
                 )
         return evidence

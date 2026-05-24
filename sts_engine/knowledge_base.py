@@ -97,6 +97,9 @@ class KnowledgeBase:
                         "mechanic": target,
                         "mechanic_name": target_entity.get("name", target),
                         "weight": float(relationship.get("weight", 0.5)),
+                        "provenance_source": relationship.get("source", entity.get("source", "unknown")),
+                        "source_url": relationship.get("source_url", entity.get("source_url", "")),
+                        "confidence": float(relationship.get("confidence", entity.get("confidence", 0.5))),
                     }
                 )
         return mechanics
@@ -138,6 +141,12 @@ class KnowledgeBase:
                                 "mechanic": owned["mechanic"],
                                 "mechanic_name": owned["mechanic_name"],
                                 "weight": round((owned["weight"] + opt["weight"]) / 2, 3),
+                                "owned_source": owned.get("provenance_source", "unknown"),
+                                "owned_source_url": owned.get("source_url", ""),
+                                "owned_confidence": owned.get("confidence", 0.5),
+                                "option_source": opt.get("provenance_source", "unknown"),
+                                "option_source_url": opt.get("source_url", ""),
+                                "option_confidence": opt.get("confidence", 0.5),
                             }
                         )
         return evidence

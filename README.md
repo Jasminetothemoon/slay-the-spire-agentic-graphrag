@@ -185,6 +185,12 @@ python scripts/bridge_simulator.py --mode http --base-url http://127.0.0.1:8000
 
 The simulator posts full run-state snapshots in the same shape a future Mod/CommunicationMod bridge should send to `/mod/state`, then requests a recommendation for the active decision.
 
+Replay bridge scenarios with a delay so the web overlay updates like a live companion:
+
+```bash
+python scripts/bridge_demo_player.py --delay 3 --loops 1
+```
+
 ## Resume-Oriented Targets
 
 The current repository implements the MVP skeleton. The next high-value work is to scale the dataset and evaluation:

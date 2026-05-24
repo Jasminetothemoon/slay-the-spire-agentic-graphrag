@@ -54,6 +54,34 @@ To post only state:
 python scripts\communication_mod_adapter.py --state-file data\communication_mod_sample_state.json --no-recommend
 ```
 
+## Overlay Demo Player
+
+For a recording-friendly demo, run the web app and replay bridge scenarios over HTTP:
+
+```powershell
+uvicorn api.main:app --reload
+```
+
+Open the overlay:
+
+```text
+http://127.0.0.1:8000
+```
+
+Then play scenario updates:
+
+```powershell
+python scripts\bridge_demo_player.py --delay 3 --loops 1
+```
+
+The player posts each scenario to `/mod/state`, requests `/get_recommendation`, and pauses between scenarios. The web overlay receives the state and recommendation through WebSocket events, so the UI changes like a live game companion.
+
+Use a faster loop when testing:
+
+```powershell
+python scripts\bridge_demo_player.py --delay 0 --loops 1
+```
+
 ## Why This Split Helps
 
 The web overlay is the fastest and most stable demonstration surface. The Mod bridge proves the project can read real game state. Keeping them separate avoids blocking the AI application demo on Java UI complexity.

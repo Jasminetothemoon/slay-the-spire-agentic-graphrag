@@ -2,6 +2,8 @@ import argparse
 import json
 import os
 import sys
+from urllib import request
+from urllib.error import HTTPError
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -45,11 +47,19 @@ def run_offline(scenarios: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def post_json(base_url: str, path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-    import requests
-
-    response = requests.post(f"{base_url.rstrip('/')}{path}", json=payload, timeout=15)
-    response.raise_for_status()
-    return response.json()
+    body = json.dumps(payload).encode("utf-8")
+    req = request.Request(
+        f"{base_url.rstrip('/')}{path}",
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with request.urlopen(req, timeout=15) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} from {path}: {detail}") from exc
 
 
 def run_http(base_url: str, scenarios: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

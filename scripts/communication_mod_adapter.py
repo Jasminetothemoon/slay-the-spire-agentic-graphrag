@@ -2,6 +2,8 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
+from urllib import request
+from urllib.error import HTTPError
 
 DEFAULT_STATE_PATH = Path("data") / "communication_mod_sample_state.json"
 
@@ -93,11 +95,19 @@ def infer_options(raw: Dict[str, Any], query_type: str) -> List[str]:
 
 
 def post_json(base_url: str, path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-    import requests
-
-    response = requests.post(f"{base_url.rstrip('/')}{path}", json=payload, timeout=15)
-    response.raise_for_status()
-    return response.json()
+    body = json.dumps(payload).encode("utf-8")
+    req = request.Request(
+        f"{base_url.rstrip('/')}{path}",
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with request.urlopen(req, timeout=15) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} from {path}: {detail}") from exc
 
 
 def run_once(raw: Dict[str, Any], base_url: str, recommend: bool) -> Dict[str, Any]:

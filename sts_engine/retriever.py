@@ -35,17 +35,20 @@ class GraphRAGRetriever:
         options = state.get("options", [])
         if self.driver:
             try:
-                return self._retrieve_neo4j(owned_items, options)
+                character_class = state.get("character_class", "").lower()
+                owned_ids = self.kb.resolve_many(owned_items, character_class)
+                option_ids = [item["id"] for item in self.kb.option_entities(options, character_class)]
+                return self._retrieve_neo4j(owned_ids, option_ids)
             except Exception:
                 self.backend = "local_json"
-        return self.kb.find_synergies(owned_items, options)
+        return self.kb.find_synergies(owned_items, options, state.get("character_class", "").lower())
 
     def _retrieve_neo4j(self, owned_items: Iterable[str], options: Iterable[str]) -> List[Dict[str, Any]]:
         query = """
         MATCH (owned)-[r1:APPLIES|SCALES_WITH|ENHANCES|COUNTERS|CORE_PIECE_FOR]->(m)
-        WHERE owned.id IN $owned_items OR owned.name IN $owned_items
+        WHERE owned.id IN $owned_items
         MATCH (option)-[r2:APPLIES|SCALES_WITH|ENHANCES|COUNTERS|CORE_PIECE_FOR]->(m)
-        WHERE option.id IN $options OR option.name IN $options
+        WHERE option.id IN $options
         RETURN owned.id AS owned_id, owned.name AS owned_name, type(r1) AS owned_relationship,
                option.id AS option_id, option.name AS option_name, type(r2) AS option_relationship,
                m.id AS mechanic, m.name AS mechanic_name,

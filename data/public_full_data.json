@@ -9,7 +9,7 @@
     "entity_counts": {
       "classes": 7,
       "mechanics": 35,
-      "cards": 361,
+      "cards": 367,
       "relics": 146,
       "potions": 42,
       "enemies": 57,
@@ -12252,6 +12252,168 @@
           "source": "derived_relationship",
           "source_url": "internal://relationship-extraction/cards/void",
           "confidence": 0.72
+        }
+      ],
+      "patch_version": "2.3"
+    },
+    {
+      "id": "strike_ironclad",
+      "name": "Strike",
+      "class": "ironclad",
+      "type": "Attack",
+      "rarity": "Starter",
+      "energy_cost": 1,
+      "base_value": 42,
+      "tags": [
+        "frontload_damage"
+      ],
+      "description": "Starter attack card. Deal 6(9) damage.",
+      "source_url": "internal://system-support-entity/cards/strike_ironclad",
+      "source": "system",
+      "confidence": 1.0,
+      "relationships": [
+        {
+          "type": "APPLIES",
+          "target": "frontload_damage",
+          "weight": 0.65,
+          "source": "system",
+          "source_url": "internal://system-support-entity/cards/strike_ironclad",
+          "confidence": 1.0
+        }
+      ],
+      "patch_version": "2.3"
+    },
+    {
+      "id": "defend_ironclad",
+      "name": "Defend",
+      "class": "ironclad",
+      "type": "Skill",
+      "rarity": "Starter",
+      "energy_cost": 1,
+      "base_value": 42,
+      "tags": [
+        "block"
+      ],
+      "description": "Starter skill card. Gain 5(8) Block.",
+      "source_url": "internal://system-support-entity/cards/defend_ironclad",
+      "source": "system",
+      "confidence": 1.0,
+      "relationships": [
+        {
+          "type": "APPLIES",
+          "target": "block",
+          "weight": 0.65,
+          "source": "system",
+          "source_url": "internal://system-support-entity/cards/defend_ironclad",
+          "confidence": 1.0
+        }
+      ],
+      "patch_version": "2.3"
+    },
+    {
+      "id": "strike_silent",
+      "name": "Strike",
+      "class": "silent",
+      "type": "Attack",
+      "rarity": "Starter",
+      "energy_cost": 1,
+      "base_value": 42,
+      "tags": [
+        "frontload_damage"
+      ],
+      "description": "Starter attack card. Deal 6(9) damage.",
+      "source_url": "internal://system-support-entity/cards/strike_silent",
+      "source": "system",
+      "confidence": 1.0,
+      "relationships": [
+        {
+          "type": "APPLIES",
+          "target": "frontload_damage",
+          "weight": 0.65,
+          "source": "system",
+          "source_url": "internal://system-support-entity/cards/strike_silent",
+          "confidence": 1.0
+        }
+      ],
+      "patch_version": "2.3"
+    },
+    {
+      "id": "defend_silent",
+      "name": "Defend",
+      "class": "silent",
+      "type": "Skill",
+      "rarity": "Starter",
+      "energy_cost": 1,
+      "base_value": 42,
+      "tags": [
+        "block"
+      ],
+      "description": "Starter skill card. Gain 5(8) Block.",
+      "source_url": "internal://system-support-entity/cards/defend_silent",
+      "source": "system",
+      "confidence": 1.0,
+      "relationships": [
+        {
+          "type": "APPLIES",
+          "target": "block",
+          "weight": 0.65,
+          "source": "system",
+          "source_url": "internal://system-support-entity/cards/defend_silent",
+          "confidence": 1.0
+        }
+      ],
+      "patch_version": "2.3"
+    },
+    {
+      "id": "strike_watcher",
+      "name": "Strike",
+      "class": "watcher",
+      "type": "Attack",
+      "rarity": "Starter",
+      "energy_cost": 1,
+      "base_value": 42,
+      "tags": [
+        "frontload_damage"
+      ],
+      "description": "Starter attack card. Deal 6(9) damage.",
+      "source_url": "internal://system-support-entity/cards/strike_watcher",
+      "source": "system",
+      "confidence": 1.0,
+      "relationships": [
+        {
+          "type": "APPLIES",
+          "target": "frontload_damage",
+          "weight": 0.65,
+          "source": "system",
+          "source_url": "internal://system-support-entity/cards/strike_watcher",
+          "confidence": 1.0
+        }
+      ],
+      "patch_version": "2.3"
+    },
+    {
+      "id": "defend_watcher",
+      "name": "Defend",
+      "class": "watcher",
+      "type": "Skill",
+      "rarity": "Starter",
+      "energy_cost": 1,
+      "base_value": 42,
+      "tags": [
+        "block"
+      ],
+      "description": "Starter skill card. Gain 5(8) Block.",
+      "source_url": "internal://system-support-entity/cards/defend_watcher",
+      "source": "system",
+      "confidence": 1.0,
+      "relationships": [
+        {
+          "type": "APPLIES",
+          "target": "block",
+          "weight": 0.65,
+          "source": "system",
+          "source_url": "internal://system-support-entity/cards/defend_watcher",
+          "confidence": 1.0
         }
       ],
       "patch_version": "2.3"

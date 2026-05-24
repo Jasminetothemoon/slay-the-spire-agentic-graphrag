@@ -21,6 +21,7 @@ CARD_CLASSES = ["ironclad", "silent", "defect", "watcher", "colorless", "curse",
 LIST_PAGES = {
     "relics": "/relics",
     "potions": "/potions",
+    "monsters": "/monsters",
     "elites": "/elites",
     "bosses": "/bosses",
 }
@@ -51,6 +52,16 @@ MECHANICS = [
     {"id": "frontload_damage", "name": "Frontload Damage", "keywords": ["deal", "damage"]},
     {"id": "low_frontload", "name": "Low Frontload", "keywords": []},
     {"id": "slow_scaling", "name": "Slow Scaling", "keywords": []},
+    {"id": "no_aoe", "name": "No AoE", "keywords": []},
+    {"id": "low_defense", "name": "Low Defense", "keywords": []},
+    {"id": "low_hp", "name": "Low HP", "keywords": []},
+    {"id": "shop_ready", "name": "Shop Ready", "keywords": []},
+    {"id": "scaling_damage", "name": "Scaling Damage", "keywords": []},
+    {"id": "frontload_block", "name": "Frontload Block", "keywords": []},
+    {"id": "deck_control", "name": "Deck Control", "keywords": []},
+    {"id": "card_removal", "name": "Card Removal", "keywords": []},
+    {"id": "artifact_strip", "name": "Artifact Strip", "keywords": []},
+    {"id": "stance_exit", "name": "Stance Exit", "keywords": []},
 ]
 
 RELATION_RULES = {
@@ -143,7 +154,7 @@ class PublicWikiImporter:
         output_path: Optional[Path] = None,
         checkpoint_every: int = 25,
     ) -> Dict[str, Any]:
-        collections = collections or {"cards", "relics", "potions", "elites", "bosses"}
+        collections = collections or {"cards", "relics", "potions", "monsters", "elites", "bosses"}
         data = self._base_dataset()
 
         if "cards" in collections:
@@ -160,7 +171,7 @@ class PublicWikiImporter:
             parsed = self._parse_with_checkpoints(
                 [(collection, link) for link in self._limit(links, limit)], data, output_path, checkpoint_every
             )
-            if collection in ("elites", "bosses"):
+            if collection in ("monsters", "elites", "bosses"):
                 data["enemies"].extend(self._dedupe_entities(parsed))
             else:
                 data[collection] = self._dedupe_entities(parsed)
@@ -250,8 +261,8 @@ class PublicWikiImporter:
             entity.update({"tier": rarity or "Unknown", "class": slugify(class_name or "any")})
         elif collection == "potions":
             entity.update({"rarity": self._first_non_field_line(text_lines, fallback="Unknown")})
-        elif collection in ("elites", "bosses"):
-            entity.update({"type": "elite" if collection == "elites" else "boss", "act": self._parse_act(body)})
+        elif collection in ("monsters", "elites", "bosses"):
+            entity.update({"type": self._enemy_type(collection), "act": self._parse_act(body)})
             entity["relationships"].extend(self._enemy_risk_relationships(body))
         return entity
 
@@ -282,15 +293,19 @@ class PublicWikiImporter:
             "archetypes": [],
             "shop_actions": [
                 {"id": "remove_card", "name": "Remove a Card", "base_value": 68, "tags": ["deck_control"]},
+                {"id": "buy_card", "name": "Buy Card", "base_value": 56, "tags": ["deck_growth", "spend_gold"]},
+                {"id": "buy_relic", "name": "Buy Relic", "base_value": 64, "tags": ["power_spike", "spend_gold"]},
                 {"id": "buy_potion", "name": "Buy Potion", "base_value": 48, "tags": ["elite_safety"]},
                 {"id": "skip_shop", "name": "Skip", "base_value": 25, "tags": ["save_gold"]},
             ],
             "path_nodes": [
+                {"id": "monster", "name": "Monster", "base_value": 42, "tags": ["card_reward"]},
                 {"id": "elite", "name": "Elite", "base_value": 62, "tags": ["reward", "risk"]},
                 {"id": "rest", "name": "Rest Site", "base_value": 54, "tags": ["heal", "upgrade"]},
                 {"id": "shop", "name": "Shop", "base_value": 52, "tags": ["spend_gold"]},
+                {"id": "event", "name": "Event", "base_value": 46, "tags": ["variance", "event"]},
+                {"id": "treasure", "name": "Treasure", "base_value": 58, "tags": ["relic_reward"]},
                 {"id": "unknown", "name": "Unknown", "base_value": 45, "tags": ["variance"]},
-                {"id": "monster", "name": "Monster", "base_value": 42, "tags": ["card_reward"]},
             ],
         }
 
@@ -453,7 +468,10 @@ class PublicWikiImporter:
         return score
 
     def _base_value_for(self, collection: str) -> int:
-        return {"relics": 64, "potions": 48, "elites": 55, "bosses": 70}.get(collection, 45)
+        return {"relics": 64, "potions": 48, "monsters": 45, "elites": 55, "bosses": 70}.get(collection, 45)
+
+    def _enemy_type(self, collection: str) -> str:
+        return {"monsters": "monster", "elites": "elite", "bosses": "boss"}.get(collection, "enemy")
 
     def _strip_card_link_label(self, value: str, card_class: str) -> str:
         for rarity in ("Starter", "Common", "Uncommon", "Rare"):
@@ -509,8 +527,8 @@ def main() -> None:
     parser.add_argument("--delay", type=float, default=0.05)
     parser.add_argument(
         "--collections",
-        default="cards,relics,potions,elites,bosses",
-        help="Comma-separated subset: cards,relics,potions,elites,bosses.",
+        default="cards,relics,potions,monsters,elites,bosses",
+        help="Comma-separated subset: cards,relics,potions,monsters,elites,bosses.",
     )
     parser.add_argument("--links-only", action="store_true", help="Only collect list-page links and write them as JSON.")
     parser.add_argument("--checkpoint-every", type=int, default=25)

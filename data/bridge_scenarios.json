@@ -91,5 +91,105 @@
       "options": ["Remove a Card", "Buy Potion", "Skip"],
       "user_query": "Shop decision."
     }
+  },
+  {
+    "id": "relic_reward_energy_choice",
+    "description": "Defect relic reward after an elite fight.",
+    "state": {
+      "run_id": "bridge_demo_relic",
+      "character_class": "defect",
+      "ascension_level": 12,
+      "act": 2,
+      "current_floor": 24,
+      "current_hp": 39,
+      "max_hp": 75,
+      "gold": 130,
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Zap", "Ball Lightning", "Glacier", "Defragment"],
+      "upgraded_cards": [],
+      "relics": ["Cracked Core"],
+      "potions": [],
+      "hand_cards": [],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [],
+      "combat_state": {},
+      "map_options": [],
+      "boss": "Collector"
+    },
+    "decision": {
+      "query_type": "relic_pick",
+      "options": ["Data Disk", "Orichalcum", "Tiny Chest"],
+      "user_query": "Choose a relic reward."
+    }
+  },
+  {
+    "id": "pathing_low_hp_choose_rest",
+    "description": "Low HP route decision before a risky elite path.",
+    "state": {
+      "run_id": "bridge_demo_pathing",
+      "character_class": "ironclad",
+      "ascension_level": 18,
+      "act": 2,
+      "current_floor": 23,
+      "current_hp": 21,
+      "max_hp": 80,
+      "gold": 165,
+      "energy": 3,
+      "deck": ["Strike", "Strike", "Defend", "Defend", "Bash", "Inflame", "Shockwave"],
+      "upgraded_cards": [],
+      "relics": ["Burning Blood"],
+      "potions": [],
+      "hand_cards": [],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [],
+      "combat_state": {},
+      "map_options": [
+        {"node_type": "elite", "act": 2, "floor": 24, "elite_count_after": 1, "rest_count_after": 0, "shop_count_after": 0},
+        {"node_type": "rest", "act": 2, "floor": 24, "elite_count_after": 0, "rest_count_after": 1, "shop_count_after": 0},
+        {"node_type": "shop", "act": 2, "floor": 24, "elite_count_after": 0, "rest_count_after": 0, "shop_count_after": 1}
+      ],
+      "boss": "Automaton"
+    },
+    "decision": {
+      "query_type": "pathing",
+      "options": ["Elite", "Rest Site", "Shop"],
+      "user_query": "Choose the next map node."
+    }
+  },
+  {
+    "id": "silent_combat_block_and_attack",
+    "description": "Silent combat turn with incoming damage and a mixed hand.",
+    "state": {
+      "run_id": "bridge_demo_combat",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 11,
+      "current_hp": 32,
+      "max_hp": 70,
+      "gold": 95,
+      "energy": 3,
+      "deck": ["Strike", "Strike", "Defend", "Defend", "Neutralize", "Survivor", "Dagger Spray", "Backflip"],
+      "upgraded_cards": [],
+      "relics": [],
+      "potions": ["Block Potion"],
+      "hand_cards": ["Neutralize", "Survivor", "Strike", "Dagger Spray", "Defend"],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [
+        {"id": "slaver_blue", "name": "Blue Slaver", "hp": 13, "max_hp": 48, "intent": "attack", "intent_damage": 12, "block": 0},
+        {"id": "slaver_red", "name": "Red Slaver", "hp": 33, "max_hp": 48, "intent": "attack", "intent_damage": 8, "block": 0}
+      ],
+      "combat_state": {"incoming_damage": 20},
+      "map_options": [],
+      "boss": "Hexaghost"
+    },
+    "decision": {
+      "query_type": "combat",
+      "options": [],
+      "user_query": "Find a safe play sequence for this turn."
+    }
   }
 ]

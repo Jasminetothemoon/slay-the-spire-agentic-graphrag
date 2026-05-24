@@ -1,0 +1,31 @@
+{
+  "run_id": "communication_mod_demo",
+  "class": "THE_SILENT",
+  "ascension_level": 20,
+  "act": 2,
+  "floor": 21,
+  "current_hp": 44,
+  "max_hp": 70,
+  "gold": 110,
+  "energy": 3,
+  "deck": [
+    "Strike",
+    "Defend",
+    "Deadly Poison",
+    "Bouncing Flask",
+    "Noxious Fumes"
+  ],
+  "relics": [
+    "Snecko Skull"
+  ],
+  "potions": [],
+  "choice_available": true,
+  "screen_type": "CARD_REWARD",
+  "choice_list": [
+    "Catalyst",
+    "Corpse Explosion",
+    "Backflip"
+  ],
+  "boss": "The Champ",
+  "monsters": []
+}

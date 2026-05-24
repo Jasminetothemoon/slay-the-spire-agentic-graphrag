@@ -6,6 +6,10 @@ const evidenceEl = document.querySelector("#evidence");
 const languageSelect = document.querySelector("#languageSelect");
 const overlayToggle = document.querySelector("#overlayToggle");
 const stateSummaryEl = document.querySelector("#stateSummary");
+const connectionStatusEl = document.querySelector("#connectionStatus");
+const decisionTypeLabelEl = document.querySelector("#decisionTypeLabel");
+const lastUpdatedEl = document.querySelector("#lastUpdated");
+const topRecommendationEl = document.querySelector("#topRecommendation");
 
 const translations = {
   en: {
@@ -34,6 +38,16 @@ const translations = {
     options: "Options",
     getRecommendation: "Get Recommendation",
     graphEvidence: "Graph Evidence",
+    connecting: "Connecting",
+    connected: "Live",
+    disconnected: "Offline",
+    decision: "Decision",
+    lastUpdated: "Updated",
+    confidence: "Confidence",
+    validity: "Validity",
+    valid: "Valid",
+    invalid: "Invalid",
+    keyRisk: "Risk",
     startFirst: "Start a run first.",
     started: (runId) => `Started ${runId}.`,
     stateSynced: "State synced.",
@@ -46,7 +60,12 @@ const translations = {
     stateSummary: "State",
     topPick: "Top pick",
     noScores: "No recommendation yet.",
+    act: "Act",
     floor: "Floor",
+    source: "Source",
+    liveConnected: "Live bridge connected.",
+    liveState: (runId) => `Live state synced from ${runId}.`,
+    liveRecommendation: (runId) => `Live recommendation rendered for ${runId}.`,
   },
   zh: {
     appTitle: "尖塔 Agentic GraphRAG",
@@ -74,6 +93,16 @@ const translations = {
     options: "候选项",
     getRecommendation: "获取推荐",
     graphEvidence: "图谱证据",
+    connecting: "连接中",
+    connected: "实时",
+    disconnected: "离线",
+    decision: "决策",
+    lastUpdated: "更新",
+    confidence: "置信度",
+    validity: "有效性",
+    valid: "有效",
+    invalid: "无效",
+    keyRisk: "风险",
     startFirst: "请先开始一局。",
     started: (runId) => `已开始 ${runId}。`,
     stateSynced: "状态已同步。",
@@ -86,12 +115,20 @@ const translations = {
     stateSummary: "状态",
     topPick: "首选",
     noScores: "还没有推荐。",
+    act: "阶段",
     floor: "楼层",
+    source: "来源",
+    liveConnected: "实时桥接已连接。",
+    liveState: (runId) => `已同步 ${runId} 的实时状态。`,
+    liveRecommendation: (runId) => `已渲染 ${runId} 的实时推荐。`,
   },
 };
 
 let currentLanguage = localStorage.getItem("spireLanguage") || "en";
 let overlayMode = localStorage.getItem("spireOverlayMode") === "true";
+let latestState = {};
+let lastUpdatedAt = null;
+let connectionState = "connecting";
 window.lastRecommendation = null;
 
 function t(key, ...args) {
@@ -118,7 +155,10 @@ function applyLanguage() {
   });
   languageSelect.value = currentLanguage;
   overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
+  updateConnectionStatus(connectionState);
   renderStateSummary();
+  renderTopRecommendation();
+  updateLiveStrip();
 }
 
 function applyOverlayMode() {
@@ -127,6 +167,7 @@ function applyOverlayMode() {
   overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
   renderScores(window.lastRecommendation?.option_scores || []);
   renderStateSummary();
+  renderTopRecommendation();
 }
 
 languageSelect.addEventListener("change", () => {
@@ -152,19 +193,87 @@ function lines(id) {
     .filter(Boolean);
 }
 
+function setLines(id, values) {
+  if (Array.isArray(values)) {
+    document.querySelector(id).value = values.join("\n");
+  }
+}
+
 function currentStatePayload() {
   return {
     run_id: runIdInput.value,
+    source: latestState.source || "web_demo",
     character_class: document.querySelector("#characterClass").value,
     current_hp: Number(document.querySelector("#hp").value),
-    max_hp: 70,
+    max_hp: Number(latestState.max_hp || 70),
     gold: Number(document.querySelector("#gold").value),
-    act: 1,
-    current_floor: 10,
+    act: Number(latestState.act || 1),
+    current_floor: Number(latestState.current_floor || 10),
+    energy: Number(latestState.energy || 3),
     deck: lines("#deck"),
+    upgraded_cards: latestState.upgraded_cards || [],
     relics: lines("#relics"),
-    potions: [],
+    potions: latestState.potions || [],
+    combat_state: latestState.combat_state || {},
+    enemies: latestState.enemies || [],
+    hand_cards: latestState.hand_cards || [],
+    draw_pile: latestState.draw_pile || [],
+    discard_pile: latestState.discard_pile || [],
+    map_options: latestState.map_options || [],
+    boss: latestState.boss || null,
   };
+}
+
+function markUpdated() {
+  lastUpdatedAt = new Date();
+  updateLiveStrip();
+}
+
+function updateConnectionStatus(status) {
+  connectionState = status;
+  connectionStatusEl.classList.remove("connected", "disconnected");
+  if (status === "connected") {
+    connectionStatusEl.classList.add("connected");
+    connectionStatusEl.textContent = t("connected");
+    return;
+  }
+  connectionStatusEl.classList.add("disconnected");
+  connectionStatusEl.textContent = status === "connecting" ? t("connecting") : t("disconnected");
+}
+
+function updateLiveStrip() {
+  decisionTypeLabelEl.textContent = document.querySelector("#queryType").value;
+  lastUpdatedEl.textContent = lastUpdatedAt ? lastUpdatedAt.toLocaleTimeString() : "-";
+}
+
+function applyIncomingState(state) {
+  latestState = { ...latestState, ...state };
+  markUpdated();
+  if (state.run_id) {
+    runIdInput.value = state.run_id;
+  }
+  if (state.character_class) {
+    document.querySelector("#characterClass").value = state.character_class;
+  }
+  if (Number.isFinite(Number(state.current_hp))) {
+    document.querySelector("#hp").value = state.current_hp;
+  }
+  if (Number.isFinite(Number(state.gold))) {
+    document.querySelector("#gold").value = state.gold;
+  }
+  setLines("#deck", state.deck);
+  setLines("#relics", state.relics);
+  renderStateSummary();
+}
+
+function renderRecommendation(data) {
+  window.lastRecommendation = data;
+  markUpdated();
+  answerEl.textContent = data.reasoning;
+  evidenceEl.textContent = JSON.stringify(data.graph_context, null, 2);
+  renderScores(data.option_scores || []);
+  renderStateSummary();
+  renderTopRecommendation();
 }
 
 function renderStateSummary() {
@@ -174,7 +283,9 @@ function renderStateSummary() {
     `${t("class")}: ${state.character_class || "-"}`,
     `${t("hp")}: ${state.current_hp}/${state.max_hp}`,
     `${t("gold")}: ${state.gold}`,
+    `${t("act")}: ${state.act}`,
     `${t("floor")}: ${state.current_floor}`,
+    `${t("source")}: ${state.source}`,
   ];
 
   stateSummaryEl.innerHTML = `
@@ -184,7 +295,31 @@ function renderStateSummary() {
     </div>
     <div class="top-pick">
       <span>${t("topPick")}</span>
-      <strong>${escapeHtml(topScore ? `${topScore.name} · ${topScore.score}` : t("noScores"))}</strong>
+      <strong>${escapeHtml(topScore ? `${topScore.name} / ${topScore.score}` : t("noScores"))}</strong>
+    </div>
+  `;
+}
+
+function renderTopRecommendation() {
+  const topScore = window.lastRecommendation?.option_scores?.[0];
+  if (!topScore) {
+    topRecommendationEl.innerHTML = `<div class="empty-top">${escapeHtml(t("noScores"))}</div>`;
+    return;
+  }
+  const keyReason = topScore.reasons?.[0] || "";
+  const keyRisk = topScore.risks?.[0] || "";
+  topRecommendationEl.innerHTML = `
+    <div class="top-rank">#1</div>
+    <div class="top-copy">
+      <span>${escapeHtml(t("topPick"))}</span>
+      <strong>${escapeHtml(topScore.name)}</strong>
+      <p>${escapeHtml(keyReason)}</p>
+      ${keyRisk ? `<p class="risk-line">${escapeHtml(t("keyRisk"))}: ${escapeHtml(keyRisk)}</p>` : ""}
+    </div>
+    <div class="top-metrics">
+      <span>${escapeHtml(t("score"))}<strong>${escapeHtml(topScore.score)}</strong></span>
+      <span>${escapeHtml(t("confidence"))}<strong>${escapeHtml(topScore.confidence ?? "-")}</strong></span>
+      <span>${escapeHtml(t("validity"))}<strong>${escapeHtml(topScore.valid === false ? t("invalid") : t("valid"))}</strong></span>
     </div>
   `;
 }
@@ -220,6 +355,7 @@ async function syncState() {
   }
   await postJson("/update_state", currentStatePayload());
   statusEl.textContent = t("stateSynced");
+  markUpdated();
   renderStateSummary();
 }
 
@@ -228,6 +364,8 @@ document.querySelector("#syncState").addEventListener("click", syncState);
 document.querySelectorAll("#characterClass, #hp, #gold, #deck, #relics").forEach((node) => {
   node.addEventListener("input", renderStateSummary);
 });
+
+document.querySelector("#queryType").addEventListener("change", updateLiveStrip);
 
 document.querySelector("#recommend").addEventListener("click", async () => {
   if (!runIdInput.value) {
@@ -241,11 +379,7 @@ document.querySelector("#recommend").addEventListener("click", async () => {
     options: lines("#options"),
     user_query: "Recommend the best option.",
   });
-  window.lastRecommendation = data;
-  answerEl.textContent = data.reasoning;
-  evidenceEl.textContent = JSON.stringify(data.graph_context, null, 2);
-  renderScores(data.option_scores);
-  renderStateSummary();
+  renderRecommendation(data);
   statusEl.textContent = t("returned", data.latency_ms);
 });
 
@@ -259,10 +393,13 @@ function renderScores(optionScores) {
     .map(
       (score, index) => `
       <article class="score-card ${index === 0 ? "top-score" : ""}">
-        <header><span>${escapeHtml(score.name)}</span><span>${t("score")}: ${escapeHtml(score.score)}</span></header>
+        <header>
+          <span>${escapeHtml(score.name)}</span>
+          <span>${t("score")}: ${escapeHtml(score.score)} / ${t("confidence")}: ${escapeHtml(score.confidence ?? "-")}</span>
+        </header>
         <ul>
           <li><strong>${t("reasons")}:</strong></li>
-          ${score.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}
+          ${(score.reasons || []).map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}
           ${(score.risks || []).length ? `<li class="risk"><strong>${t("risks")}:</strong></li>` : ""}
           ${(score.risks || []).map((risk) => `<li class="risk">${escapeHtml(risk)}</li>`).join("")}
         </ul>
@@ -273,15 +410,32 @@ function renderScores(optionScores) {
 
 try {
   const socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
+  updateConnectionStatus("connecting");
+  socket.onopen = () => {
+    updateConnectionStatus("connected");
+    statusEl.textContent = t("liveConnected");
+  };
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    if (data.type === "recommendation") {
+    if (data.type === "state_updated") {
+      applyIncomingState(data.state || {});
+      statusEl.textContent = t("liveState", data.run_id);
+    }
+    if (data.type === "recommendation" && data.response) {
+      renderRecommendation(data.response);
+      statusEl.textContent = t("liveRecommendation", data.run_id);
+    } else if (data.type === "recommendation") {
       statusEl.textContent = t("realtimeUpdate", data.run_id);
     }
   };
+  socket.onclose = () => updateConnectionStatus("disconnected");
+  socket.onerror = () => updateConnectionStatus("disconnected");
 } catch {
+  updateConnectionStatus("disconnected");
   statusEl.textContent = t("websocketUnavailable");
 }
 
 applyOverlayMode();
 applyLanguage();
+renderTopRecommendation();
+updateLiveStrip();

@@ -7,7 +7,7 @@ This project is a realtime AI decision assistant for **Slay the Spire 1**. The g
 - Models cards, relics, potions, enemies, bosses, mechanics, shops, routes, and archetypes as a knowledge graph.
 - Uses GraphRAG retrieval to find multi-hop synergies and risks for the current run state.
 - Uses a LangGraph workflow to validate state, retrieve graph context, assess risks, score options, and explain decisions.
-- Returns structured recommendations for card picks, relic picks, shops, routes, and combat-oriented states.
+- Returns structured recommendations for card picks, relic picks, shops, routes, and shallow combat play sequences.
 - Provides a FastAPI service, WebSocket updates, and a lightweight web demo.
 - Runs without Neo4j by falling back to the local JSON knowledge base; Neo4j remains the preferred graph backend for larger data.
 
@@ -47,20 +47,38 @@ scripts/ingest_graph.py     Neo4j ingestion
 scripts/validate_data.py    Data integrity checks
 scripts/evaluate.py         Recommendation evaluation harness
 web/                        Lightweight demo UI
-data/sample_data.json       Seed schema and curated MVP data
-data/eval_cases.json        Seed evaluation cases
+data/public_full_data.json  Real public-data snapshot used by the default app
+data/public_eval_cases.json Public-data evaluation scenarios
 ```
 
 ## Quick Start
 
-```bash
-pip install -r requirements.txt
-python scripts/validate_data.py
-python scripts/evaluate.py
-uvicorn api.main:app --reload
+Use Python 3.11 or 3.12. On Windows:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+.\scripts\dev_check.ps1
+.\scripts\run_api.ps1
 ```
 
 Open `http://127.0.0.1:8000` and start a demo run.
+
+To run the first-version demo path on Windows:
+
+```powershell
+.\scripts\run_demo.ps1
+```
+
+This starts the API if needed, verifies the live bridge event path, and replays card, relic, shop, pathing, and combat scenarios into the overlay.
+
+For detailed Windows setup and troubleshooting, see:
+
+```text
+docs/windows_setup.md
+```
 
 ## Neo4j Ingestion
 
@@ -74,6 +92,8 @@ python scripts/ingest_graph.py --dry-run
 python scripts/ingest_graph.py
 ```
 
+The dry run validates relationship targets and prints node/relationship counts. Relationship ingestion preserves provenance fields such as `source`, `source_url`, `confidence`, `source_entity_id`, and `target_entity_id`.
+
 ## Public Wiki Data Import
 
 The seed dataset is intentionally small. To build a larger public dataset from `slaythespire.gg`:
@@ -82,26 +102,43 @@ The seed dataset is intentionally small. To build a larger public dataset from `
 python scripts/import_public_wiki.py --links-only --output data/public_link_index.json
 python scripts/import_public_wiki.py --collections cards --output data/public_cards.json --checkpoint-every 50
 python scripts/import_public_wiki.py --output data/public_full_data.json --checkpoint-every 50
+python scripts/import_public_wiki.py --collections monsters --output data/public_monsters.json --checkpoint-every 10
+python scripts/merge_public_enemies.py --base data/public_full_data.json --supplement data/public_monsters.json --output data/public_full_data.json
 python scripts/normalize_dataset.py --input data/public_full_data.json --output data/public_full_data.json
+python scripts/normalize_system_entities.py --input data/public_full_data.json --output data/public_full_data.json
+python scripts/normalize_mechanics.py --input data/public_full_data.json --output data/public_full_data.json
+python scripts/normalize_provenance.py --input data/public_full_data.json --output data/public_full_data.json
 python scripts/validate_data.py --data data/public_cards.json
 python scripts/validate_data.py --data data/public_full_data.json
 python scripts/data_quality_report.py --data data/public_full_data.json
+python scripts/data_coverage_report.py --data data/public_full_data.json --fail-under 99
+python scripts/data_provenance_report.py --data data/public_full_data.json
+python scripts/ingest_graph.py --data data/public_full_data.json --dry-run
+python scripts/check_graph_fixtures.py --data data/public_full_data.json
 ```
 
-To run the app with an imported dataset instead of the seed data:
+To run the app with the public dataset explicitly:
 
 ```bash
-set STS_KB_PATH=data/public_cards.json
+set STS_KB_PATH=data/public_full_data.json
 uvicorn api.main:app --reload
 ```
 
 Current public import snapshot:
 
-- 361 cards
+- 367 cards, including class-specific starter Strike/Defend aliases for live state resolution
 - 146 relics
 - 42 potions
-- 21 elite/boss enemy entries
-- 25 extracted mechanics/risk nodes
+- 57 enemy entries covering monsters, elites, and bosses
+- 35 extracted and normalized mechanics/risk nodes
+- 5 shop actions
+- 7 path node types
+
+For provenance coverage and known data gaps, see:
+
+```text
+docs/data_audit.md
+```
 
 ## Strategy Layer
 
@@ -185,30 +222,52 @@ python scripts/bridge_simulator.py --mode http --base-url http://127.0.0.1:8000
 
 The simulator posts full run-state snapshots in the same shape a future Mod/CommunicationMod bridge should send to `/mod/state`, then requests a recommendation for the active decision.
 
+Replay bridge scenarios with a delay so the web overlay updates like a live companion:
+
+```bash
+python scripts/bridge_demo_player.py --delay 3 --loops 1
+```
+
+Verify the full local bridge path in one command. This starts a temporary API server, connects to `/ws`, posts `/mod/recommend` payloads for card, relic, shop, pathing, and combat scenarios, and checks that both `state_updated` and `recommendation` events are broadcast for the overlay:
+
+```bash
+python scripts/check_live_bridge.py --data data/public_full_data.json --all-scenarios
+```
+
+For Mod clients, the shortest path is the one-shot endpoint:
+
+```text
+POST /mod/recommend
+```
+
+It accepts a game-state snapshot plus the active decision options, then broadcasts both state and recommendation updates to the overlay.
+
 ## Resume-Oriented Targets
 
-The current repository implements the MVP skeleton. The next high-value work is to scale the dataset and evaluation:
+The current repository implements a runnable first version with real public data, local graph fallback, a FastAPI bridge, WebSocket overlay updates, and deterministic scoring. The next high-value work is to deepen evaluation and game-side integration:
 
-- 400+ entities and 1000+ graph relationships.
+- 600+ entities and 1400+ graph relationships.
 - 200+ labeled evaluation cases.
 - P95 recommendation latency below 500ms for non-LLM recommendations.
 - Comparison report: rules only vs pure LLM vs vector RAG vs GraphRAG + scoring.
-- Mod bridge that posts live game state into `/mod/state`.
+- Thin Java/CommunicationMod bridge that posts live game state into `/mod/recommend`.
 
 ## Current Status
 
 Implemented:
 
-- UTF-8 schema and seed data.
+- UTF-8 schema plus real public data snapshot for cards, relics, potions, enemies, mechanics, shops, and path nodes.
 - Agentic GraphRAG workflow.
 - Structured scoring and explanations.
 - Neo4j ingestion script and local fallback.
-- FastAPI, WebSocket, mod-state stub, and demo UI.
-- Data validation and evaluation harness.
+- FastAPI, WebSocket, mod-state bridge contract, and compact overlay HUD.
+- CommunicationMod-style adapter with offline debug mode.
+- Data validation, graph fixture checks, live bridge e2e check, and evaluation harness.
+- Shallow combat advisor for current hand, energy, incoming damage, enemy board, and defensive potion prompts.
 
 Still to expand:
 
-- Full-game crawler and normalization.
-- Larger strategy knowledge base.
-- Real ModTheSpire/BaseMod or CommunicationMod bridge.
-- Deeper combat search and potion planning.
+- Base-game event coverage and live-game validation for a few enemy/minion variants.
+- Larger strategy/evaluation knowledge base.
+- Real ModTheSpire/BaseMod bridge or direct CommunicationMod integration.
+- Deeper combat search, exact card text parsing, and broader potion planning.

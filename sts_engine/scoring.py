@@ -12,6 +12,14 @@ QUERY_BONUSES = {
     "combat": {"base": 0},
 }
 
+VALID_OPTION_TYPES = {
+    "card_pick": {"card", "unknown"},
+    "relic_pick": {"relic", "unknown"},
+    "shop": {"shop_action", "card", "relic", "potion", "unknown"},
+    "pathing": {"path_node", "unknown"},
+    "combat": {"card", "potion", "unknown"},
+}
+
 
 class RecommendationScorer:
     def __init__(self, knowledge_base: KnowledgeBase | None = None):
@@ -27,7 +35,7 @@ class RecommendationScorer:
         strategy_matches = self.kb.strategy_matches(state, state.get("options", []))
         query_type = state.get("query_type", "card_pick")
         scores = []
-        for option in self.kb.option_entities(state.get("options", [])):
+        for option in self.kb.option_entities(state.get("options", []), state.get("character_class", "").lower()):
             option_id = option["id"]
             option_tags = set(option.get("tags", []))
             option_evidence = evidence_by_option.get(option_id, [])
@@ -35,6 +43,16 @@ class RecommendationScorer:
             score = float(option.get("base_value", 35)) + QUERY_BONUSES.get(query_type, {}).get("base", 0)
             reasons: List[str] = []
             risks: List[str] = []
+            valid = True
+
+            legality_adjustment, legality_reason, legality_risk, valid = self._legality_adjustment(
+                option, query_type, state
+            )
+            score += legality_adjustment
+            if legality_reason:
+                reasons.append(legality_reason)
+            if legality_risk:
+                risks.append(legality_risk)
 
             synergy_bonus = sum(self._synergy_weight(item) for item in option_evidence)
             if synergy_bonus:
@@ -70,13 +88,15 @@ class RecommendationScorer:
 
             if not reasons:
                 reasons.append("Solid baseline value, but no decisive graph signal was found.")
-            confidence = min(0.95, 0.42 + len(option_evidence) * 0.12 + len(reasons) * 0.05)
+            confidence = self._confidence(option, option_evidence, option_strategy, reasons, risks, valid)
             scores.append(
                 {
                     "option_id": option_id,
                     "name": option.get("name", option_id),
+                    "decision_type": query_type,
+                    "valid": valid,
                     "score": round(max(0.0, min(score, 100.0)), 2),
-                    "confidence": round(confidence, 2),
+                    "confidence": confidence,
                     "reasons": reasons[:4],
                     "risks": risks[:3],
                     "evidence": (option_evidence + option_strategy)[:8],
@@ -85,13 +105,13 @@ class RecommendationScorer:
 
         scores.sort(
             key=lambda item: (
-                item["score"],
-                self._explicit_strategy_count(item.get("evidence", [])),
-                len(item.get("evidence", [])),
-                item["confidence"],
-                -len(item.get("risks", [])),
-            ),
-            reverse=True,
+                -item["score"],
+                -self._explicit_strategy_count(item.get("evidence", [])),
+                -len(item.get("evidence", [])),
+                -item["confidence"],
+                len(item.get("risks", [])),
+                item["option_id"],
+            )
         )
         return scores
 
@@ -107,8 +127,9 @@ class RecommendationScorer:
         }
 
     def _deck_tags(self, state: Dict[str, Any]) -> List[str]:
-        deck_ids = self.kb.resolve_many(state.get("deck", []))
-        relic_ids = self.kb.resolve_many(state.get("relics", []))
+        character_class = state.get("character_class", "").lower()
+        deck_ids = self.kb.resolve_many(state.get("deck", []), character_class)
+        relic_ids = self.kb.resolve_many(state.get("relics", []), character_class)
         return self.kb.tags_for_ids(deck_ids + relic_ids)
 
     def _risk_adjustment(
@@ -132,8 +153,11 @@ class RecommendationScorer:
             if "low_hp" in risk_tags and "risk" in option_tags:
                 score -= 20
                 reasons.append("Low HP makes this route riskier.")
+            if "low_hp" in risk_tags and "heal" in option_tags:
+                score += 14
+                reasons.append("Rest site is prioritized because current HP is low.")
             if "shop_ready" in risk_tags and "spend_gold" in option_tags:
-                score += 15
+                score += 10 if "low_hp" in risk_tags else 15
                 reasons.append("Gold total makes a shop route attractive.")
         if query_type == "shop":
             if "deck_control" in option_tags and len(state.get("deck", [])) >= 12:
@@ -167,6 +191,26 @@ class RecommendationScorer:
             return -45.0, "Off-class card detected; likely invalid unless a modded run allows it."
         return 0.0, ""
 
+    def _legality_adjustment(
+        self, option: Dict[str, Any], query_type: str, state: Dict[str, Any]
+    ) -> tuple[float, str, str, bool]:
+        entity_type = option.get("entity_type", "unknown")
+        valid_types = VALID_OPTION_TYPES.get(query_type, {"unknown"})
+        if entity_type not in valid_types:
+            return (
+                -60.0,
+                "",
+                f"{option.get('name', option.get('id', 'Option'))} is a {entity_type}, not a normal {query_type} option.",
+                False,
+            )
+
+        if query_type == "shop" and "spend_gold" in option.get("tags", []) and state.get("gold", 0) < 75:
+            return -12.0, "", "Gold is low, so paid shop actions are less attractive.", True
+        if query_type == "pathing" and entity_type == "path_node" and option["id"] == "elite":
+            if state.get("current_hp", state.get("max_hp", 1)) / max(state.get("max_hp", 1), 1) < 0.45:
+                return -18.0, "", "Elite path is dangerous at the current HP total.", True
+        return 0.0, "", "", True
+
     def _synergy_weight(self, item: Dict[str, Any]) -> float:
         base = item.get("weight", 0.5) * 18
         option_rel = item.get("option_relationship")
@@ -186,6 +230,36 @@ class RecommendationScorer:
         tag_counts = Counter(deck_tags)
         saturated = sum(1 for tag in option_tags if tag_counts[tag] >= 5)
         return float(saturated * 3)
+
+    def _confidence(
+        self,
+        option: Dict[str, Any],
+        evidence: List[Dict[str, Any]],
+        strategy_matches: List[Dict[str, Any]],
+        reasons: List[str],
+        risks: List[str],
+        valid: bool,
+    ) -> float:
+        evidence_confidences = []
+        for item in evidence:
+            evidence_confidences.append(float(item.get("owned_confidence", 0.5)))
+            evidence_confidences.append(float(item.get("option_confidence", 0.5)))
+        if evidence_confidences:
+            evidence_quality = sum(evidence_confidences) / len(evidence_confidences)
+        else:
+            evidence_quality = float(option.get("confidence", 0.5))
+
+        confidence = 0.34
+        confidence += min(0.24, len(evidence) * 0.06)
+        confidence += min(0.18, len(strategy_matches) * 0.09)
+        confidence += min(0.12, len(reasons) * 0.03)
+        confidence += max(0.0, min(0.14, (evidence_quality - 0.5) * 0.4))
+        confidence -= min(0.12, len(risks) * 0.04)
+        if option.get("entity_type") == "unknown":
+            confidence -= 0.12
+        if not valid:
+            confidence -= 0.2
+        return round(max(0.1, min(0.95, confidence)), 2)
 
     def _risk_summary(self, risks: List[str]) -> str:
         if not risks:

@@ -5,7 +5,10 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 
-DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "sample_data.json"
+ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_DATA_PATH = ROOT / "data" / "public_full_data.json"
+SEED_DATA_PATH = ROOT / "data" / "sample_data.json"
+DATA_PATH = PUBLIC_DATA_PATH if PUBLIC_DATA_PATH.exists() else SEED_DATA_PATH
 STRATEGY_PATH = Path(__file__).resolve().parents[1] / "data" / "strategy" / "archetypes.json"
 
 
@@ -33,6 +36,7 @@ class KnowledgeBase:
         self.metadata = data.get("metadata", {})
         self.entities: Dict[str, Dict[str, Any]] = {}
         self.name_to_id: Dict[str, str] = {}
+        self.name_to_ids: Dict[str, List[str]] = {}
         self._index_entities()
 
     def _index_entities(self) -> None:
@@ -42,31 +46,46 @@ class KnowledgeBase:
                 entity["entity_type"] = collection[:-1] if collection.endswith("s") else collection
                 entity_id = entity["id"]
                 self.entities[entity_id] = entity
-                self.name_to_id[normalize_id(entity_id)] = entity_id
-                self.name_to_id[normalize_id(entity.get("name", entity_id))] = entity_id
+                for key in {normalize_id(entity_id), normalize_id(entity.get("name", entity_id))}:
+                    self.name_to_id[key] = entity_id
+                    self.name_to_ids.setdefault(key, []).append(entity_id)
 
-    def resolve_id(self, value: str) -> Optional[str]:
+    def resolve_id(self, value: str, character_class: str | None = None) -> Optional[str]:
         if not value:
             return None
-        return self.name_to_id.get(normalize_id(value))
+        key = normalize_id(value)
+        candidates = self.name_to_ids.get(key, [])
+        if not candidates:
+            return None
+        if character_class:
+            character_class = character_class.lower()
+            for entity_id in candidates:
+                entity = self.entities.get(entity_id, {})
+                if entity.get("class") == character_class:
+                    return entity_id
+            for entity_id in candidates:
+                entity = self.entities.get(entity_id, {})
+                if entity.get("class") in {"any", "colorless", None}:
+                    return entity_id
+        return candidates[0]
 
-    def resolve_many(self, values: Iterable[str]) -> List[str]:
+    def resolve_many(self, values: Iterable[str], character_class: str | None = None) -> List[str]:
         resolved = []
         for value in values:
-            entity_id = self.resolve_id(value)
+            entity_id = self.resolve_id(value, character_class)
             if entity_id:
                 resolved.append(entity_id)
         return resolved
 
-    def get(self, value: str) -> Optional[Dict[str, Any]]:
-        entity_id = self.resolve_id(value) or value
+    def get(self, value: str, character_class: str | None = None) -> Optional[Dict[str, Any]]:
+        entity_id = self.resolve_id(value, character_class) or value
         entity = self.entities.get(entity_id)
         return dict(entity) if entity else None
 
-    def option_entities(self, options: Iterable[str]) -> List[Dict[str, Any]]:
+    def option_entities(self, options: Iterable[str], character_class: str | None = None) -> List[Dict[str, Any]]:
         entities = []
         for option in options:
-            entity = self.get(option)
+            entity = self.get(option, character_class)
             if entity:
                 entities.append(entity)
             else:
@@ -97,6 +116,9 @@ class KnowledgeBase:
                         "mechanic": target,
                         "mechanic_name": target_entity.get("name", target),
                         "weight": float(relationship.get("weight", 0.5)),
+                        "provenance_source": relationship.get("source", entity.get("source", "unknown")),
+                        "source_url": relationship.get("source_url", entity.get("source_url", "")),
+                        "confidence": float(relationship.get("confidence", entity.get("confidence", 0.5))),
                     }
                 )
         return mechanics
@@ -113,9 +135,11 @@ class KnowledgeBase:
                     tags.append(target)
         return sorted(set(tags))
 
-    def find_synergies(self, owned_items: Iterable[str], options: Iterable[str]) -> List[Dict[str, Any]]:
-        owned_ids = self.resolve_many(owned_items)
-        option_entities = self.option_entities(options)
+    def find_synergies(
+        self, owned_items: Iterable[str], options: Iterable[str], character_class: str | None = None
+    ) -> List[Dict[str, Any]]:
+        owned_ids = self.resolve_many(owned_items, character_class)
+        option_entities = self.option_entities(options, character_class)
         owned_mechanics = []
         for entity_id in owned_ids:
             owned_mechanics.extend(self.mechanics_for(entity_id))
@@ -138,17 +162,23 @@ class KnowledgeBase:
                                 "mechanic": owned["mechanic"],
                                 "mechanic_name": owned["mechanic_name"],
                                 "weight": round((owned["weight"] + opt["weight"]) / 2, 3),
+                                "owned_source": owned.get("provenance_source", "unknown"),
+                                "owned_source_url": owned.get("source_url", ""),
+                                "owned_confidence": owned.get("confidence", 0.5),
+                                "option_source": opt.get("provenance_source", "unknown"),
+                                "option_source_url": opt.get("source_url", ""),
+                                "option_confidence": opt.get("confidence", 0.5),
                             }
                         )
         return evidence
 
     def strategy_matches(self, state: Dict[str, Any], options: Iterable[str]) -> Dict[str, List[Dict[str, Any]]]:
-        owned_ids = set(self.resolve_many(state.get("deck", [])))
-        owned_ids.update(self.resolve_many(state.get("relics", [])))
-        option_entities = self.option_entities(options)
+        character_class = state.get("character_class", "").lower()
+        owned_ids = set(self.resolve_many(state.get("deck", []), character_class))
+        owned_ids.update(self.resolve_many(state.get("relics", []), character_class))
+        option_entities = self.option_entities(options, character_class)
         option_ids = {option["id"] for option in option_entities}
         matches: Dict[str, List[Dict[str, Any]]] = {option["id"]: [] for option in option_entities}
-        character_class = state.get("character_class", "").lower()
         risk_tags = set(self.risk_tags(state))
 
         for archetype in self.strategy_data.get("archetypes", []):
@@ -189,7 +219,7 @@ class KnowledgeBase:
         return {option_id: items for option_id, items in matches.items() if items}
 
     def risk_tags(self, state: Dict[str, Any]) -> List[str]:
-        deck_ids = self.resolve_many(state.get("deck", []))
+        deck_ids = self.resolve_many(state.get("deck", []), state.get("character_class", "").lower())
         deck_tags = self.tags_for_ids(deck_ids)
         risks = []
         if "aoe" not in deck_tags:

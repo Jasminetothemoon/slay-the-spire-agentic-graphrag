@@ -6,13 +6,13 @@ The project already uses a real public-data snapshot for the main demo dataset, 
 
 `data/public_full_data.json` currently contains:
 
-- 361 cards
+- 367 cards, including class-specific starter Strike/Defend aliases for live state resolution
 - 146 relics
 - 42 potions
 - 57 enemy entries covering monsters, elites, and bosses
-- 25 mechanics/risk nodes
-- 3 shop actions
-- 5 path node types
+- 35 mechanics/risk nodes
+- 5 shop actions
+- 7 path node types
 
 Cards, relics, potions, and enemies currently include public source fields such as `source`, `source_url`, and `confidence`.
 

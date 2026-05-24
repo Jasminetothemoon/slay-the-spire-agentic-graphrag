@@ -47,8 +47,8 @@ scripts/ingest_graph.py     Neo4j ingestion
 scripts/validate_data.py    Data integrity checks
 scripts/evaluate.py         Recommendation evaluation harness
 web/                        Lightweight demo UI
-data/sample_data.json       Seed schema and curated MVP data
-data/eval_cases.json        Seed evaluation cases
+data/public_full_data.json  Real public-data snapshot used by the default app
+data/public_eval_cases.json Public-data evaluation scenarios
 ```
 
 ## Quick Start
@@ -109,20 +109,22 @@ python scripts/ingest_graph.py --data data/public_full_data.json --dry-run
 python scripts/check_graph_fixtures.py --data data/public_full_data.json
 ```
 
-To run the app with an imported dataset instead of the seed data:
+To run the app with the public dataset explicitly:
 
 ```bash
-set STS_KB_PATH=data/public_cards.json
+set STS_KB_PATH=data/public_full_data.json
 uvicorn api.main:app --reload
 ```
 
 Current public import snapshot:
 
-- 361 cards
+- 367 cards, including class-specific starter Strike/Defend aliases for live state resolution
 - 146 relics
 - 42 potions
 - 57 enemy entries covering monsters, elites, and bosses
-- 25 extracted mechanics/risk nodes
+- 35 extracted and normalized mechanics/risk nodes
+- 5 shop actions
+- 7 path node types
 
 For provenance coverage and known data gaps, see:
 

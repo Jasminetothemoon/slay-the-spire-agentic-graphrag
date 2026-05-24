@@ -318,5 +318,145 @@
     "options": ["Establishment", "Wallop", "Evaluate"],
     "expected_top": "establishment",
     "acceptable": ["establishment", "wallop"]
+  },
+  {
+    "id": "public_silent_grand_finale_after_control",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_017",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 46,
+      "max_hp": 70,
+      "gold": 115,
+      "deck": ["Strike", "Defend", "Calculated Gamble", "Expertise", "Well-Laid Plans"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Grand Finale", "Deadly Poison", "Dagger Spray"],
+    "expected_top": "grand_finale",
+    "acceptable": ["grand_finale", "dagger_spray"]
+  },
+  {
+    "id": "public_ironclad_searing_blow_after_upgrade_plan",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_018",
+      "character_class": "ironclad",
+      "ascension_level": 10,
+      "act": 1,
+      "current_floor": 9,
+      "current_hp": 58,
+      "max_hp": 80,
+      "gold": 100,
+      "deck": ["Strike", "Defend", "Bash", "Searing Blow", "Armaments"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Searing Blow", "Inflame", "Body Slam"],
+    "expected_top": "searing_blow",
+    "acceptable": ["searing_blow", "inflame"]
+  },
+  {
+    "id": "public_defect_claw_after_zero_cost_density",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_019",
+      "character_class": "defect",
+      "ascension_level": 12,
+      "act": 1,
+      "current_floor": 12,
+      "current_hp": 48,
+      "max_hp": 75,
+      "gold": 90,
+      "deck": ["Strike", "Defend", "Zap", "Claw", "Scrape", "Hologram"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["All For One", "Glacier", "Defragment"],
+    "expected_top": "all_for_one",
+    "acceptable": ["all_for_one", "glacier"]
+  },
+  {
+    "id": "public_watcher_pressure_points_second_copy",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_020",
+      "character_class": "watcher",
+      "ascension_level": 10,
+      "act": 1,
+      "current_floor": 8,
+      "current_hp": 54,
+      "max_hp": 72,
+      "gold": 80,
+      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Pressure Points", "Third Eye"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Pressure Points", "Wallop", "Evaluate"],
+    "expected_top": "pressure_points",
+    "acceptable": ["pressure_points", "wallop"]
+  },
+  {
+    "id": "public_ironclad_exhaust_take_dark_embrace",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_021",
+      "character_class": "ironclad",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 25,
+      "current_hp": 50,
+      "max_hp": 80,
+      "gold": 110,
+      "deck": ["Strike", "Defend", "Bash", "True Grit", "Burning Pact", "Fiend Fire"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Dark Embrace", "Inflame", "Body Slam"],
+    "expected_top": "dark_embrace",
+    "acceptable": ["dark_embrace"]
+  },
+  {
+    "id": "public_defect_lightning_take_electrodynamics",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_022",
+      "character_class": "defect",
+      "ascension_level": 18,
+      "act": 2,
+      "current_floor": 21,
+      "current_hp": 44,
+      "max_hp": 75,
+      "gold": 115,
+      "deck": ["Strike", "Defend", "Zap", "Ball Lightning", "Storm"],
+      "relics": ["Cracked Core"],
+      "potions": []
+    },
+    "options": ["Electrodynamics", "Glacier", "Defragment"],
+    "expected_top": "electrodynamics",
+    "acceptable": ["electrodynamics", "defragment"]
+  },
+  {
+    "id": "public_watcher_wrath_burst_take_wallop",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "public_eval_023",
+      "character_class": "watcher",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 12,
+      "current_hp": 42,
+      "max_hp": 72,
+      "gold": 90,
+      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Empty Fist"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Wallop", "Evaluate", "Pressure Points"],
+    "expected_top": "wallop",
+    "acceptable": ["wallop"]
   }
 ]

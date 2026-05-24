@@ -42,7 +42,7 @@ class RecommendationScorer:
                 mechanics = sorted({item["mechanic_name"] for item in option_evidence})
                 reasons.append(f"Graph synergy with current run: {', '.join(mechanics)}.")
 
-            strategy_bonus = sum(item.get("bonus", 0) for item in option_strategy)
+            strategy_bonus = min(36.0, sum(item.get("bonus", 0) for item in option_strategy))
             if strategy_bonus:
                 score += strategy_bonus
                 reasons.extend(item["reason"] for item in option_strategy[:2])

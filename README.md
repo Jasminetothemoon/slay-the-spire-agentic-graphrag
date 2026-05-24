@@ -136,7 +136,7 @@ Track strategy coverage:
 python scripts/strategy_coverage_report.py
 ```
 
-The strategy layer is intentionally measured as coverage, not claimed as complete. The current coverage inventory tracks 20 archetypes across four classes; 16 have seeded scoring rules, while the remaining long-tail archetypes are marked as `backlog`.
+The strategy layer is intentionally measured as coverage, not claimed as complete. The current coverage inventory tracks 20 archetypes across four classes; all 20 now have seeded scoring rules and evaluation signals.
 
 ## API Example
 

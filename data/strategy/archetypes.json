@@ -105,6 +105,28 @@
       ]
     },
     {
+      "id": "silent_grand_finale",
+      "name": "Silent Grand Finale",
+      "class": "silent",
+      "tags": ["deck_control", "draw", "finisher"],
+      "enablers": ["calculated_gamble", "expertise", "setup", "prepared", "well_laid_plans"],
+      "payoffs": ["grand_finale"],
+      "support": ["backflip", "acrobatics", "adrenaline"],
+      "relics": ["runic_pyramid"],
+      "covers_risks": {
+        "slow_scaling": ["grand_finale"]
+      },
+      "rules": [
+        {
+          "id": "grand_finale_after_deck_control",
+          "when_owned_any": ["calculated_gamble", "expertise", "setup", "well_laid_plans", "runic_pyramid"],
+          "target_any": ["grand_finale"],
+          "bonus": 30,
+          "reason": "Grand Finale is only realistic when the deck already has strong draw, retain, or deck-control tools."
+        }
+      ]
+    },
+    {
       "id": "ironclad_strength",
       "name": "Ironclad Strength",
       "class": "ironclad",
@@ -169,6 +191,28 @@
           "target_any": ["rupture", "reaper", "limit_break"],
           "bonus": 22,
           "reason": "Self-damage cards turn Rupture and Reaper into a scaling damage and sustain package."
+        }
+      ]
+    },
+    {
+      "id": "ironclad_searing_blow",
+      "name": "Ironclad Searing Blow",
+      "class": "ironclad",
+      "tags": ["upgrade_scaling", "single_card_plan"],
+      "enablers": ["searing_blow", "armaments", "headbutt"],
+      "payoffs": ["searing_blow"],
+      "support": ["shrug_it_off", "battle_trance", "offering"],
+      "relics": ["molten_egg"],
+      "covers_risks": {
+        "slow_scaling": ["searing_blow"]
+      },
+      "rules": [
+        {
+          "id": "searing_blow_after_upgrade_plan",
+          "when_owned_any": ["searing_blow", "armaments", "headbutt", "molten_egg"],
+          "target_any": ["searing_blow", "armaments", "headbutt"],
+          "bonus": 18,
+          "reason": "Searing Blow is a narrow plan that needs repeated upgrades, recursion, or upgrade support."
         }
       ]
     },
@@ -238,6 +282,28 @@
           "target_any": ["creative_ai", "echo_form", "amplify", "defragment", "biased_cognition"],
           "bonus": 22,
           "reason": "Power payoffs scale harder once the deck has Power support, cost reduction, or Power draw."
+        }
+      ]
+    },
+    {
+      "id": "defect_claw_zero_cost",
+      "name": "Defect Claw / Zero Cost",
+      "class": "defect",
+      "tags": ["zero_cost", "draw", "frontload_damage"],
+      "enablers": ["claw", "scrape", "hologram", "turbo"],
+      "payoffs": ["claw", "all_for_one"],
+      "support": ["go_for_the_eyes", "beam_cell", "skim"],
+      "relics": ["sundial"],
+      "covers_risks": {
+        "slow_scaling": ["claw", "all_for_one"]
+      },
+      "rules": [
+        {
+          "id": "zero_cost_payoff_after_zero_cost_density",
+          "when_owned_any": ["claw", "scrape", "hologram", "turbo", "go_for_the_eyes"],
+          "target_any": ["claw", "all_for_one", "scrape", "hologram"],
+          "bonus": 18,
+          "reason": "Zero-cost payoff needs enough cheap cards, recursion, or draw to outpace normal card picks."
         }
       ]
     },
@@ -376,6 +442,29 @@
           "target_any": ["establishment", "sands_of_time", "deva_form", "worship"],
           "bonus": 20,
           "reason": "Retain payoffs become meaningful when the deck already holds cards across turns."
+        }
+      ]
+    },
+    {
+      "id": "watcher_pressure_points",
+      "name": "Watcher Pressure Points",
+      "class": "watcher",
+      "tags": ["mark", "single_target_scaling"],
+      "enablers": ["pressure_points"],
+      "payoffs": ["pressure_points"],
+      "support": ["like_water", "empty_mind", "third_eye", "evaluate"],
+      "relics": [],
+      "covers_risks": {
+        "slow_scaling": ["pressure_points"],
+        "low_defense": ["like_water", "third_eye"]
+      },
+      "rules": [
+        {
+          "id": "pressure_points_after_existing_mark",
+          "when_owned_any": ["pressure_points"],
+          "target_any": ["pressure_points", "like_water", "empty_mind", "third_eye"],
+          "bonus": 18,
+          "reason": "Pressure Points usually needs multiple copies or strong control support to become a real plan."
         }
       ]
     }

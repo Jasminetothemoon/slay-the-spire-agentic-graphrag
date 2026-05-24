@@ -183,6 +183,27 @@ Response:
 - For combat, include enemy intents and current hand when available. The current recommender has only shallow combat support, but this keeps the protocol forward compatible.
 - A desktop overlay can subscribe to `ws://127.0.0.1:8000/ws` to receive state and recommendation updates in realtime.
 
+Minimal combat payload fields:
+
+```json
+{
+  "query_type": "combat",
+  "state": {
+    "character_class": "silent",
+    "energy": 3,
+    "hand_cards": ["Neutralize", "Survivor", "Strike", "Dagger Spray", "Defend"],
+    "potions": ["Block Potion"],
+    "enemies": [
+      {"name": "Blue Slaver", "hp": 13, "intent": "attack", "intent_damage": 12},
+      {"name": "Red Slaver", "hp": 33, "intent": "attack", "intent_damage": 8}
+    ],
+    "combat_state": {"incoming_damage": 20}
+  }
+}
+```
+
+The first combat implementation is intentionally shallow: it estimates damage/block from known hand cards, prioritizes legal energy-bounded play sequences, and only promotes potion use when incoming damage is meaningfully dangerous.
+
 ## CommunicationMod-Style Adapter
 
 This repository includes a thin adapter for state snapshots shaped like an external CommunicationMod bridge:

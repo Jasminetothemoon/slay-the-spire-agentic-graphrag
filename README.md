@@ -7,7 +7,7 @@ This project is a realtime AI decision assistant for **Slay the Spire 1**. The g
 - Models cards, relics, potions, enemies, bosses, mechanics, shops, routes, and archetypes as a knowledge graph.
 - Uses GraphRAG retrieval to find multi-hop synergies and risks for the current run state.
 - Uses a LangGraph workflow to validate state, retrieve graph context, assess risks, score options, and explain decisions.
-- Returns structured recommendations for card picks, relic picks, shops, routes, and combat-oriented states.
+- Returns structured recommendations for card picks, relic picks, shops, routes, and shallow combat play sequences.
 - Provides a FastAPI service, WebSocket updates, and a lightweight web demo.
 - Runs without Neo4j by falling back to the local JSON knowledge base; Neo4j remains the preferred graph backend for larger data.
 
@@ -255,10 +255,11 @@ Implemented:
 - FastAPI, WebSocket, mod-state bridge contract, and compact overlay HUD.
 - CommunicationMod-style adapter with offline debug mode.
 - Data validation, graph fixture checks, live bridge e2e check, and evaluation harness.
+- Shallow combat advisor for current hand, energy, incoming damage, enemy board, and defensive potion prompts.
 
 Still to expand:
 
 - Base-game event coverage and live-game validation for a few enemy/minion variants.
 - Larger strategy/evaluation knowledge base.
 - Real ModTheSpire/BaseMod bridge or direct CommunicationMod integration.
-- Deeper combat search and potion planning.
+- Deeper combat search, exact card text parsing, and broader potion planning.

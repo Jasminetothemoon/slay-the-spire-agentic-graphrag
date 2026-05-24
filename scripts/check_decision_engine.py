@@ -81,6 +81,39 @@ def check_communication_mod_adapter() -> List[str]:
     return errors
 
 
+def check_combat_advice() -> List[str]:
+    engine = build_graph()
+    state: Dict[str, Any] = {
+        "run_id": "combat_check",
+        "character_class": "silent",
+        "query_type": "combat",
+        "energy": 3,
+        "deck": ["Strike", "Defend", "Neutralize", "Survivor", "Dagger Spray"],
+        "relics": [],
+        "potions": ["Block Potion"],
+        "hand_cards": ["Neutralize", "Survivor", "Strike", "Dagger Spray", "Defend"],
+        "enemies": [
+            {"name": "Blue Slaver", "hp": 13, "intent": "attack", "intent_damage": 12},
+            {"name": "Red Slaver", "hp": 33, "intent": "attack", "intent_damage": 8},
+        ],
+        "combat_state": {"incoming_damage": 20},
+    }
+    result = engine.invoke(state)
+    scores = result.get("option_scores", [])
+    errors = []
+    if not scores:
+        errors.append("Combat query should return play sequence scores.")
+        return errors
+    top = scores[0]
+    if top.get("decision_type") != "combat":
+        errors.append("Combat top score should be tagged with decision_type=combat.")
+    if "->" not in top.get("name", "") and not top.get("name", "").startswith("Use "):
+        errors.append(f"Combat top score should name a play sequence or potion use, got {top.get('name')}")
+    if not top.get("evidence") or top["evidence"][0].get("type") not in {"combat_estimate", "combat_potion"}:
+        errors.append("Combat top score should include combat evidence.")
+    return errors
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Check decision-engine invariants needed for live Mod state ingestion.")
     parser.add_argument("--data", default=str(DEFAULT_DATA))
@@ -94,16 +127,20 @@ def main() -> None:
     errors.extend(check_class_aware_resolution(kb))
     errors.extend(check_legality_filter())
     errors.extend(check_communication_mod_adapter())
+    errors.extend(check_combat_advice())
     if errors:
         raise SystemExit("\n".join(errors))
     report = {
-        "checks": ["class_aware_resolution", "decision_legality_filter", "communication_mod_adapter"],
+        "checks": ["class_aware_resolution", "decision_legality_filter", "communication_mod_adapter", "combat_advice"],
         "status": "passed",
     }
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print("Decision engine checks passed: class-aware resolution, decision legality filter, CommunicationMod adapter")
+        print(
+            "Decision engine checks passed: class-aware resolution, decision legality filter, "
+            "CommunicationMod adapter, combat advice"
+        )
 
 
 if __name__ == "__main__":

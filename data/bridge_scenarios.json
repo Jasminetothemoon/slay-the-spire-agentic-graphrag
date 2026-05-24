@@ -91,5 +91,39 @@
       "options": ["Remove a Card", "Buy Potion", "Skip"],
       "user_query": "Shop decision."
     }
+  },
+  {
+    "id": "silent_combat_block_and_attack",
+    "description": "Silent combat turn with incoming damage and a mixed hand.",
+    "state": {
+      "run_id": "bridge_demo_combat",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 11,
+      "current_hp": 32,
+      "max_hp": 70,
+      "gold": 95,
+      "energy": 3,
+      "deck": ["Strike", "Strike", "Defend", "Defend", "Neutralize", "Survivor", "Dagger Spray", "Backflip"],
+      "upgraded_cards": [],
+      "relics": [],
+      "potions": ["Block Potion"],
+      "hand_cards": ["Neutralize", "Survivor", "Strike", "Dagger Spray", "Defend"],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [
+        {"id": "slaver_blue", "name": "Blue Slaver", "hp": 13, "max_hp": 48, "intent": "attack", "intent_damage": 12, "block": 0},
+        {"id": "slaver_red", "name": "Red Slaver", "hp": 33, "max_hp": 48, "intent": "attack", "intent_damage": 8, "block": 0}
+      ],
+      "combat_state": {"incoming_damage": 20},
+      "map_options": [],
+      "boss": "Hexaghost"
+    },
+    "decision": {
+      "query_type": "combat",
+      "options": [],
+      "user_query": "Find a safe play sequence for this turn."
+    }
   }
 ]

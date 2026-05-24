@@ -66,6 +66,14 @@ Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8000/health
 
 ## 4. Run the Bridge Demo
 
+For the fastest first-version demo:
+
+```powershell
+.\scripts\run_demo.ps1
+```
+
+This starts the API if needed, verifies the live bridge event path, and replays all bundled bridge scenarios into the overlay.
+
 In another terminal with the same virtual environment activated:
 
 ```powershell
@@ -77,7 +85,7 @@ The overlay should update as each state and recommendation is pushed.
 To verify the bridge path without watching the browser, run:
 
 ```powershell
-python scripts\check_live_bridge.py --data data\public_full_data.json
+python scripts\check_live_bridge.py --data data\public_full_data.json --all-scenarios
 ```
 
 Expected output includes `state_updated`, `recommendation`, and a top option. This is the fastest smoke test for the API-to-overlay event path.

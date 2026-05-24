@@ -66,6 +66,14 @@ python -m pip install -r requirements.txt
 
 Open `http://127.0.0.1:8000` and start a demo run.
 
+To run the first-version demo path on Windows:
+
+```powershell
+.\scripts\run_demo.ps1
+```
+
+This starts the API if needed, verifies the live bridge event path, and replays card, relic, shop, pathing, and combat scenarios into the overlay.
+
 For detailed Windows setup and troubleshooting, see:
 
 ```text

@@ -21,3 +21,5 @@ logs/
 *.log
 .gh-config/
 tmp*.png
+mod-bridge/libs/*.jar
+!mod-bridge/libs/README.md

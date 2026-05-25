@@ -1,0 +1,10 @@
+{
+  "modid": "sts-agent-bridge",
+  "name": "STS Agent Bridge",
+  "author_list": ["Jasminetothemoon", "Codex"],
+  "description": "Thin bridge that sends live Slay the Spire state snapshots to the local Agentic GraphRAG recommendation service.",
+  "version": "0.1.0",
+  "sts_version": "12-22-2020",
+  "mts_version": "3.30.0",
+  "dependencies": ["basemod"]
+}

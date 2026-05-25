@@ -206,6 +206,14 @@ The bridge protocol is documented in:
 docs/bridge_protocol.md
 ```
 
+The first native ModTheSpire/BaseMod bridge scaffold is documented in:
+
+```text
+docs/java_mod_bridge.md
+```
+
+It lives under `mod-bridge` and sends live game snapshots to the existing `/mod/state` and `/mod/recommend` endpoints. The Java bridge requires local Slay the Spire, ModTheSpire, and BaseMod jars in `mod-bridge/libs` before it can be compiled.
+
 Run bridge scenarios without starting FastAPI:
 
 ```bash

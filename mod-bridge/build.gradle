@@ -1,0 +1,41 @@
+plugins {
+    id "java"
+}
+
+group = "com.stsagent"
+version = "0.1.0"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs "libs"
+    }
+}
+
+dependencies {
+    compileOnly fileTree(dir: "libs", include: ["*.jar"])
+}
+
+jar {
+    archiveBaseName = "sts-agent-bridge"
+    from("src/main/resources") {
+        include "**/*"
+    }
+    manifest {
+        attributes(
+            "Implementation-Title": "STS Agent Bridge",
+            "Implementation-Version": project.version
+        )
+    }
+}
+
+tasks.register("copyJarToMods", Copy) {
+    dependsOn jar
+    from jar.archiveFile
+    into providers.gradleProperty("stsModsDir").orElse("${System.properties['user.home']}/Desktop")
+}

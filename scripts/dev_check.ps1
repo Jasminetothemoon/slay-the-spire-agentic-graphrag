@@ -11,6 +11,7 @@ Push-Location $ProjectRoot
 try {
   & $Python scripts\dev_check.py
   & $Python scripts\check_mod_bridge.py
+  & powershell -ExecutionPolicy Bypass -File scripts\build_mod_bridge.ps1
   & $Python -m compileall api sts_engine scripts
   & $Python scripts\data_coverage_report.py --data data\public_full_data.json --fail-under 99
   & $Python scripts\ingest_graph.py --data data\public_full_data.json --dry-run

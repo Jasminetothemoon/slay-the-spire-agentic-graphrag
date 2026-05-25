@@ -53,14 +53,14 @@ The jars are local dependencies and are not committed to GitHub.
 From the repository root:
 
 ```powershell
-cd mod-bridge
-gradle jar
+powershell -ExecutionPolicy Bypass -File scripts\build_mod_bridge.ps1
 ```
 
-If you use the Gradle wrapper later, the equivalent command is:
+The repository can use a portable toolchain under `.tools` so a system-wide Java/Gradle install is not required. The script expects:
 
-```powershell
-.\gradlew.bat jar
+```text
+.tools/jdk17
+.tools/gradle
 ```
 
 The output jar is created under:

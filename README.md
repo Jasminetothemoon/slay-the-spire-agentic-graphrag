@@ -214,6 +214,12 @@ docs/java_mod_bridge.md
 
 It lives under `mod-bridge` and sends live game snapshots to the existing `/mod/state` and `/mod/recommend` endpoints. The Java bridge requires local Slay the Spire, ModTheSpire, and BaseMod jars in `mod-bridge/libs` before it can be compiled.
 
+Build the Java bridge after the local jars and portable toolchain are present:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build_mod_bridge.ps1
+```
+
 Run bridge scenarios without starting FastAPI:
 
 ```bash

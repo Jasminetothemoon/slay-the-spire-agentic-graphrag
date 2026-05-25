@@ -21,5 +21,9 @@ logs/
 *.log
 .gh-config/
 tmp*.png
+.tools/
+mod-bridge/.gradle/
+mod-bridge/libs/*.zip
+mod-bridge/libs/mts/
 mod-bridge/libs/*.jar
 !mod-bridge/libs/README.md

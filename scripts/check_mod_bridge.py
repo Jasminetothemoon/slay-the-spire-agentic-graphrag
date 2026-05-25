@@ -19,6 +19,10 @@ REQUIRED_FILES = [
     "libs/README.md",
 ]
 
+REQUIRED_PROJECT_FILES = [
+    "scripts/build_mod_bridge.ps1",
+]
+
 
 def assert_contains(path: Path, needles: list[str]) -> None:
     text = path.read_text(encoding="utf-8")
@@ -29,6 +33,7 @@ def assert_contains(path: Path, needles: list[str]) -> None:
 
 def main() -> None:
     missing = [rel for rel in REQUIRED_FILES if not (MOD_DIR / rel).exists()]
+    missing.extend(rel for rel in REQUIRED_PROJECT_FILES if not (ROOT / rel).exists())
     if missing:
         raise AssertionError(f"Missing Mod bridge files: {missing}")
 
@@ -61,6 +66,10 @@ def main() -> None:
     assert_contains(
         MOD_DIR / "build.gradle",
         ["sourceCompatibility = JavaVersion.VERSION_1_8", "compileOnly fileTree", "copyJarToMods"],
+    )
+    assert_contains(
+        ROOT / "scripts/build_mod_bridge.ps1",
+        [".tools\\jdk17", ".tools\\gradle", "desktop-1.0.jar", "BaseMod.jar", "ModTheSpire.jar"],
     )
 
     print("Mod bridge structure checks passed.")

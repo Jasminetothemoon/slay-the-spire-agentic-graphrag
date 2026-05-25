@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.CardRewardScreen;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +107,7 @@ public class GameStateCollector {
 
     private int currentEnergy() {
         try {
-            return com.megacrit.cardcrawl.energy.EnergyPanel.totalCount;
+            return EnergyPanel.getCurrentEnergy();
         } catch (Exception ignored) {
             return 3;
         }
@@ -196,8 +197,8 @@ public class GameStateCollector {
     }
 
     private int intentDamage(AbstractMonster monster) {
-        if (monster.getIntentBaseDmg() > 0) {
-            return monster.getIntentBaseDmg() * Math.max(1, monster.getIntentMultiAmt());
+        if (monster.getIntentDmg() > 0) {
+            return monster.getIntentDmg();
         }
         return 0;
     }

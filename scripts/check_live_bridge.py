@@ -160,7 +160,7 @@ def validate_overlay_fallback() -> List[str]:
     text = app_js.read_text(encoding="utf-8")
     required = [
         "loadLiveStateFallback",
-        'fetch("/runs/mod_live")',
+        'fetch("/mod/live")',
         "applyIncomingState(state)",
     ]
     return [f"web/app.js missing overlay fallback marker: {marker}" for marker in required if marker not in text]

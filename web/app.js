@@ -10,6 +10,9 @@ const connectionStatusEl = document.querySelector("#connectionStatus");
 const decisionTypeLabelEl = document.querySelector("#decisionTypeLabel");
 const lastUpdatedEl = document.querySelector("#lastUpdated");
 const topRecommendationEl = document.querySelector("#topRecommendation");
+const queryTypeInput = document.querySelector("#queryType");
+const optionsInput = document.querySelector("#options");
+const recommendButton = document.querySelector("#recommend");
 
 const translations = {
   en: {
@@ -60,6 +63,8 @@ const translations = {
     stateSummary: "State",
     topPick: "Top pick",
     noScores: "No recommendation yet.",
+    noLiveOptions: "No live decision options are available yet.",
+    waitingForDecision: "Live state synced. Waiting for a real game decision.",
     act: "Act",
     floor: "Floor",
     source: "Source",
@@ -115,6 +120,8 @@ const translations = {
     stateSummary: "状态",
     topPick: "首选",
     noScores: "还没有推荐。",
+    noLiveOptions: "当前还没有实时候选项。",
+    waitingForDecision: "已同步实时状态，正在等待真实游戏决策。",
     act: "阶段",
     floor: "楼层",
     source: "来源",
@@ -242,7 +249,7 @@ function updateConnectionStatus(status) {
 }
 
 function updateLiveStrip() {
-  decisionTypeLabelEl.textContent = document.querySelector("#queryType").value;
+  decisionTypeLabelEl.textContent = queryTypeInput.value;
   lastUpdatedEl.textContent = lastUpdatedAt ? lastUpdatedAt.toLocaleTimeString() : "-";
 }
 
@@ -263,6 +270,15 @@ function applyIncomingState(state) {
   }
   setLines("#deck", state.deck);
   setLines("#relics", state.relics);
+  if (state.query_type) {
+    queryTypeInput.value = state.query_type;
+  }
+  if (Array.isArray(state.options) && state.options.length) {
+    setLines("#options", state.options);
+  } else if (state.source === "mod_bridge") {
+    setLines("#options", []);
+  }
+  updateRecommendationAvailability();
   renderStateSummary();
 }
 
@@ -338,11 +354,12 @@ async function postJson(url, payload) {
 
 async function loadLiveStateFallback() {
   try {
-    const response = await fetch("/runs/mod_live");
+    const response = await fetch("/mod/live");
     if (!response.ok) {
       return;
     }
-    const state = await response.json();
+    const payload = await response.json();
+    const state = payload.state || payload;
     applyIncomingState(state);
     statusEl.textContent = t("liveState", state.run_id || "mod_live");
   } catch {
@@ -379,23 +396,44 @@ document.querySelectorAll("#characterClass, #hp, #gold, #deck, #relics").forEach
   node.addEventListener("input", renderStateSummary);
 });
 
-document.querySelector("#queryType").addEventListener("change", updateLiveStrip);
+queryTypeInput.addEventListener("change", () => {
+  updateLiveStrip();
+  updateRecommendationAvailability();
+});
 
-document.querySelector("#recommend").addEventListener("click", async () => {
+recommendButton.addEventListener("click", async () => {
   if (!runIdInput.value) {
     statusEl.textContent = t("startFirst");
     return;
   }
-  await syncState();
+  if (latestState.source !== "mod_bridge") {
+    await syncState();
+  }
+  const options = lines("#options");
+  const queryType = queryTypeInput.value;
+  if (queryType !== "combat" && !options.length) {
+    statusEl.textContent = t("noLiveOptions");
+    return;
+  }
   const data = await postJson("/get_recommendation", {
     run_id: runIdInput.value,
-    query_type: document.querySelector("#queryType").value,
-    options: lines("#options"),
+    query_type: queryType,
+    options,
     user_query: "Recommend the best option.",
   });
   renderRecommendation(data);
   statusEl.textContent = t("returned", data.latency_ms);
 });
+
+function updateRecommendationAvailability() {
+  const options = lines("#options");
+  const hasCombatHand = Array.isArray(latestState.hand_cards) && latestState.hand_cards.length > 0;
+  const hasDecision = options.length > 0 || (queryTypeInput.value === "combat" && hasCombatHand);
+  recommendButton.disabled = !hasDecision;
+  if (!hasDecision && latestState.source === "mod_bridge") {
+    statusEl.textContent = t("waitingForDecision");
+  }
+}
 
 function renderScores(optionScores) {
   if (!optionScores.length) {
@@ -455,3 +493,4 @@ applyLanguage();
 renderTopRecommendation();
 updateLiveStrip();
 loadLiveStateFallback();
+updateRecommendationAvailability();

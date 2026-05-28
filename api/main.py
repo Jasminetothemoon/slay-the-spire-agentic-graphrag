@@ -147,16 +147,45 @@ async def broadcast(payload: Dict[str, Any]) -> None:
 def normalize_mod_state(payload: ModStatePayload) -> Dict[str, Any]:
     run_id = payload.run_id or "mod_live"
     state = payload.model_dump()
+    character_class = state.get("character_class", "silent").lower()
+    state["raw_deck"] = list(state.get("deck", []))
+    state["raw_relics"] = list(state.get("relics", []))
+    state["raw_potions"] = list(state.get("potions", []))
+    state["raw_hand_cards"] = list(state.get("hand_cards", []))
+    state["deck"] = normalize_entity_list(state.get("deck", []), character_class)
+    state["relics"] = normalize_entity_list(state.get("relics", []), character_class)
+    state["potions"] = normalize_entity_list(state.get("potions", []), character_class)
+    state["hand_cards"] = normalize_entity_list(state.get("hand_cards", []), character_class)
+    state["draw_pile"] = normalize_entity_list(state.get("draw_pile", []), character_class)
+    state["discard_pile"] = normalize_entity_list(state.get("discard_pile", []), character_class)
     state.update(
         {
             "run_id": run_id,
             "source": "mod_bridge",
             "game": "sts1",
             "patch_version": kb.metadata.get("patch_version", "unknown"),
-            "character_class": state.get("character_class", "silent").lower(),
+            "character_class": character_class,
         }
     )
     return state
+
+
+def normalize_entity_list(values: List[str], character_class: str) -> List[str]:
+    normalized = []
+    for value in values:
+        entity_id = kb.resolve_id(str(value), character_class)
+        if entity_id:
+            normalized.append(entity_id)
+    return normalized
+
+
+def normalize_option_list(values: List[str], character_class: str) -> List[str]:
+    normalized = []
+    for value in values:
+        text = str(value)
+        entity_id = kb.resolve_id(text, character_class)
+        normalized.append(entity_id or text)
+    return normalized
 
 
 def build_recommendation_response(current_state: Dict[str, Any]) -> RecommendationResponse:
@@ -225,6 +254,10 @@ async def mod_state(payload: ModStatePayload):
 async def mod_recommend(req: ModRecommendationRequest):
     state = normalize_mod_state(req.state)
     run_id = state["run_id"]
+    state["query_type"] = req.query_type
+    state["options"] = normalize_option_list(req.options, state["character_class"])
+    state["raw_options"] = list(req.options)
+    state["user_query"] = req.user_query
     active_runs[run_id] = state
     await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
 
@@ -232,7 +265,7 @@ async def mod_recommend(req: ModRecommendationRequest):
     current_state.update(
         {
             "query_type": req.query_type,
-            "options": req.options,
+            "options": state["options"],
             "user_query": req.user_query,
         }
     )
@@ -248,15 +281,33 @@ def get_run(run_id: str):
     return active_runs[run_id]
 
 
+@app.get("/mod/live")
+def get_live_mod_state():
+    state = active_runs.get("mod_live")
+    if not state:
+        raise HTTPException(status_code=404, detail="No live Mod state has been received yet")
+    return {
+        "run_id": "mod_live",
+        "state": state,
+        "has_decision": bool(state.get("query_type") and (state.get("options") or state.get("query_type") == "combat")),
+        "query_type": state.get("query_type"),
+        "options": state.get("options", []),
+        "raw_options": state.get("raw_options", []),
+    }
+
+
 @app.post("/get_recommendation", response_model=RecommendationResponse)
 async def get_recommendation(req: RecommendationRequest):
     if req.run_id not in active_runs:
         raise HTTPException(status_code=404, detail="Run ID not found")
     current_state = active_runs[req.run_id].copy()
+    options = normalize_option_list(req.options, current_state.get("character_class", ""))
+    if req.query_type == "combat" and not options:
+        options = current_state.get("hand_cards", [])
     current_state.update(
         {
             "query_type": req.query_type,
-            "options": req.options,
+            "options": options,
             "user_query": req.user_query,
         }
     )

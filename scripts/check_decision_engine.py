@@ -114,6 +114,31 @@ def check_combat_advice() -> List[str]:
     return errors
 
 
+def check_live_mod_normalization() -> List[str]:
+    from api.main import ModStatePayload, normalize_mod_state, normalize_option_list
+
+    payload = ModStatePayload(
+        run_id="mod_live_check",
+        character_class="watcher",
+        deck=["æ\u0089\u0093å\u0087»", "æ\u009a´æ\u0080\u0092", "è\u00ad¦æ\u0083\u0095", "å\u008f\u0091æ³\u0084"],
+        relics=["è\u0087³çº¯ä¹\u008bæ°´"],
+        potions=["è\u008d¯æ°´æ\xa0\u008f"],
+    )
+    state = normalize_mod_state(payload)
+    errors = []
+    for expected in ("strike_watcher", "eruption", "vigilance", "tantrum"):
+        if expected not in state.get("deck", []):
+            errors.append(f"Live Mod normalization should include {expected}, got {state.get('deck')}")
+    if state.get("relics") != ["pure_water"]:
+        errors.append(f"Live Mod relic should normalize to pure_water, got {state.get('relics')}")
+    if state.get("potions") != []:
+        errors.append(f"Potion slots should be dropped, got {state.get('potions')}")
+    options = normalize_option_list(["Halt", "PureWater", "Remove a Card"], "watcher")
+    if options[:2] != ["halt", "pure_water"]:
+        errors.append(f"Live Mod options should normalize game ids/names, got {options}")
+    return errors
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Check decision-engine invariants needed for live Mod state ingestion.")
     parser.add_argument("--data", default=str(DEFAULT_DATA))
@@ -128,10 +153,17 @@ def main() -> None:
     errors.extend(check_legality_filter())
     errors.extend(check_communication_mod_adapter())
     errors.extend(check_combat_advice())
+    errors.extend(check_live_mod_normalization())
     if errors:
         raise SystemExit("\n".join(errors))
     report = {
-        "checks": ["class_aware_resolution", "decision_legality_filter", "communication_mod_adapter", "combat_advice"],
+        "checks": [
+            "class_aware_resolution",
+            "decision_legality_filter",
+            "communication_mod_adapter",
+            "combat_advice",
+            "live_mod_normalization",
+        ],
         "status": "passed",
     }
     if args.json:

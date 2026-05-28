@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.CardRewardScreen;
+import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
 import java.util.ArrayList;
@@ -73,6 +74,21 @@ public class GameStateCollector {
             CardRewardScreen screen = AbstractDungeon.cardRewardScreen;
             if (screen != null && screen.rewardGroup != null && !screen.rewardGroup.isEmpty()) {
                 return new Decision("card_pick", cardNames(screen.rewardGroup), "Card reward from live Java bridge.");
+            }
+        }
+
+        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP) {
+            ShopScreen shop = AbstractDungeon.shopScreen;
+            List<String> options = new ArrayList<String>();
+            if (shop != null) {
+                options.addAll(cardNames(shop.coloredCards));
+                options.addAll(cardNames(shop.colorlessCards));
+                if (shop.purgeAvailable && AbstractDungeon.player != null && AbstractDungeon.player.gold >= ShopScreen.actualPurgeCost) {
+                    options.add("Remove a Card");
+                }
+            }
+            if (!options.isEmpty()) {
+                return new Decision("shop", options, "Shop choice from live Java bridge.");
             }
         }
 

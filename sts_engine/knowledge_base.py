@@ -24,9 +24,52 @@ ENTITY_COLLECTIONS = (
     "path_nodes",
 )
 
+GAME_ID_ALIASES = {
+    "purewater": "pure_water",
+    "strike_r": "strike_ironclad",
+    "defend_r": "defend_ironclad",
+    "strike_g": "strike_silent",
+    "defend_g": "defend_silent",
+    "strike_b": "strike_defect",
+    "defend_b": "defend_defect",
+    "strike_p": "strike_watcher",
+    "defend_p": "defend_watcher",
+}
+
+LOCALIZED_ALIASES = {
+    "打击": {
+        "ironclad": "strike_ironclad",
+        "silent": "strike_silent",
+        "defect": "strike_defect",
+        "watcher": "strike_watcher",
+    },
+    "防御": {
+        "ironclad": "defend_ironclad",
+        "silent": "defend_silent",
+        "defect": "defend_defect",
+        "watcher": "defend_watcher",
+    },
+    "暴怒": "eruption",
+    "警惕": "vigilance",
+    "发泄": "tantrum",
+    "停顿": "halt",
+    "至纯之水": "pure_water",
+    "药水栏": None,
+}
+
 
 def normalize_id(value: str) -> str:
     return value.strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def repair_mojibake(value: str) -> str:
+    if not value:
+        return value
+    try:
+        repaired = value.encode("latin1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return value
+    return repaired if repaired != value else value
 
 
 class KnowledgeBase:
@@ -37,6 +80,7 @@ class KnowledgeBase:
         self.entities: Dict[str, Dict[str, Any]] = {}
         self.name_to_id: Dict[str, str] = {}
         self.name_to_ids: Dict[str, List[str]] = {}
+        self.compact_to_id: Dict[str, str] = {}
         self._index_entities()
 
     def _index_entities(self) -> None:
@@ -49,25 +93,43 @@ class KnowledgeBase:
                 for key in {normalize_id(entity_id), normalize_id(entity.get("name", entity_id))}:
                     self.name_to_id[key] = entity_id
                     self.name_to_ids.setdefault(key, []).append(entity_id)
+                    self.compact_to_id.setdefault(key.replace("_", ""), entity_id)
 
     def resolve_id(self, value: str, character_class: str | None = None) -> Optional[str]:
         if not value:
             return None
-        key = normalize_id(value)
-        candidates = self.name_to_ids.get(key, [])
-        if not candidates:
+        value = repair_mojibake(str(value))
+        localized = LOCALIZED_ALIASES.get(value)
+        if isinstance(localized, dict):
+            localized_id = localized.get((character_class or "").lower())
+            if localized_id:
+                return localized_id
+        if isinstance(localized, str):
+            return localized
+        if localized is None and value in LOCALIZED_ALIASES:
             return None
-        if character_class:
-            character_class = character_class.lower()
-            for entity_id in candidates:
-                entity = self.entities.get(entity_id, {})
-                if entity.get("class") == character_class:
-                    return entity_id
-            for entity_id in candidates:
-                entity = self.entities.get(entity_id, {})
-                if entity.get("class") in {"any", "colorless", None}:
-                    return entity_id
-        return candidates[0]
+        key = normalize_id(value)
+        if key in GAME_ID_ALIASES:
+            return GAME_ID_ALIASES[key]
+        if key in self.entities:
+            return key
+        candidates = self.name_to_ids.get(key, [])
+        if candidates:
+            if character_class:
+                character_class = character_class.lower()
+                for entity_id in candidates:
+                    entity = self.entities.get(entity_id, {})
+                    if entity.get("class") == character_class:
+                        return entity_id
+                for entity_id in candidates:
+                    entity = self.entities.get(entity_id, {})
+                    if entity.get("class") in {"any", "colorless", None}:
+                        return entity_id
+            return candidates[0]
+        compact_id = self.compact_to_id.get(key.replace("_", ""))
+        if compact_id:
+            return compact_id
+        return None
 
     def resolve_many(self, values: Iterable[str], character_class: str | None = None) -> List[str]:
         resolved = []

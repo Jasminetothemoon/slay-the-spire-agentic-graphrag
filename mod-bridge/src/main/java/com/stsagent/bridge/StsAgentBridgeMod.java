@@ -28,33 +28,41 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
 
     @Override
     public void receivePostInitialize() {
-        client.postState(collector.collectHeartbeatState());
+        try {
+            client.postState(collector.collectHeartbeatState());
+        } catch (Exception ex) {
+            System.out.println("[STS Agent Bridge] Ignoring post-initialize error: " + ex.getMessage());
+        }
     }
 
     @Override
     public void receivePostUpdate() {
-        if (AbstractDungeon.player == null) {
-            return;
-        }
+        try {
+            if (AbstractDungeon.player == null || AbstractDungeon.currMapNode == null) {
+                return;
+            }
 
-        long now = System.currentTimeMillis();
-        if (now - lastPostAt < POLL_INTERVAL_MS) {
-            return;
-        }
+            long now = System.currentTimeMillis();
+            if (now - lastPostAt < POLL_INTERVAL_MS) {
+                return;
+            }
 
-        BridgePayload payload = collector.collect();
-        String signature = payload.signature();
-        if (signature.equals(lastSignature)) {
-            return;
-        }
+            BridgePayload payload = collector.collect();
+            String signature = payload.signature();
+            if (signature.equals(lastSignature)) {
+                return;
+            }
 
-        lastPostAt = now;
-        lastSignature = signature;
+            lastPostAt = now;
+            lastSignature = signature;
 
-        if (payload.hasDecision()) {
-            client.postRecommendation(payload);
-        } else {
-            client.postState(payload.stateJson());
+            if (payload.hasDecision()) {
+                client.postRecommendation(payload);
+            } else {
+                client.postState(payload.stateJson());
+            }
+        } catch (Exception ex) {
+            System.out.println("[STS Agent Bridge] Ignoring update error: " + ex.getMessage());
         }
     }
 }

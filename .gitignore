@@ -19,6 +19,7 @@ Thumbs.db
 .vscode/
 logs/
 *.log
+artifacts/
 .gh-config/
 tmp*.png
 .tools/

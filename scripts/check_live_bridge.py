@@ -93,9 +93,24 @@ async def collect_bridge_events(base_url: str, scenario: Dict[str, Any]) -> Dict
     async with websockets.connect(ws_url) as websocket:
         events.append(json.loads(await asyncio.wait_for(websocket.recv(), timeout=5)))
         response = await asyncio.to_thread(post_json, base_url, "/mod/recommend", scenario_payload(scenario))
-        while len(events) < 3:
-            events.append(json.loads(await asyncio.wait_for(websocket.recv(), timeout=5)))
+        deadline = time.time() + 5
+        while time.time() < deadline:
+            event_types = {event.get("type") for event in events}
+            if {"connected", "state_updated", "recommendation"}.issubset(event_types):
+                break
+            timeout = max(0.1, deadline - time.time())
+            events.append(json.loads(await asyncio.wait_for(websocket.recv(), timeout=timeout)))
         return {"http_response": response, "events": events}
+
+
+async def collect_replay_events(base_url: str, scenario: Dict[str, Any]) -> Dict[str, Any]:
+    response = await asyncio.to_thread(post_json, base_url, "/mod/state", scenario["state"])
+    ws_url = base_url.replace("http://", "ws://").replace("https://", "wss://") + "/ws"
+    events: List[Dict[str, Any]] = []
+    async with websockets.connect(ws_url) as websocket:
+        while len(events) < 2:
+            events.append(json.loads(await asyncio.wait_for(websocket.recv(), timeout=5)))
+    return {"http_response": response, "events": events}
 
 
 def validate_events(result: Dict[str, Any], scenario: Dict[str, Any]) -> List[str]:
@@ -121,6 +136,36 @@ def validate_events(result: Dict[str, Any], scenario: Dict[str, Any]) -> List[st
     return errors
 
 
+def validate_replay_events(result: Dict[str, Any], scenario: Dict[str, Any]) -> List[str]:
+    errors = []
+    events = result["events"]
+    event_types = [event.get("type") for event in events]
+    if event_types[:1] != ["connected"]:
+        errors.append("WebSocket did not emit connected first.")
+    replay_events = [event for event in events if event.get("type") == "state_updated"]
+    if not replay_events:
+        errors.append("WebSocket did not replay existing state_updated event.")
+        return errors
+    expected_run_id = scenario["state"].get("run_id", "mod_live")
+    if replay_events[0].get("run_id") != expected_run_id:
+        errors.append(f"Replay run_id mismatch: expected {expected_run_id}, got {replay_events[0].get('run_id')}.")
+    replay_state = replay_events[0].get("state", {})
+    if replay_state.get("run_id") != expected_run_id:
+        errors.append("Replay state did not include the expected run_id.")
+    return errors
+
+
+def validate_overlay_fallback() -> List[str]:
+    app_js = ROOT / "web" / "app.js"
+    text = app_js.read_text(encoding="utf-8")
+    required = [
+        "loadLiveStateFallback",
+        'fetch("/runs/mod_live")',
+        "applyIncomingState(state)",
+    ]
+    return [f"web/app.js missing overlay fallback marker: {marker}" for marker in required if marker not in text]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run a local API and verify bridge HTTP requests broadcast overlay WebSocket events.")
     parser.add_argument("--scenario-index", type=int, default=0)
@@ -128,6 +173,8 @@ def main() -> None:
     parser.add_argument("--scenarios", default=str(DEFAULT_SCENARIOS))
     parser.add_argument("--data", default=str(DEFAULT_DATA))
     parser.add_argument("--port", type=int, default=0, help="Port to use. Defaults to a free ephemeral port.")
+    parser.add_argument("--check-replay", action="store_true", help="Verify a browser connecting after /mod/state receives the current state.")
+    parser.add_argument("--check-overlay-fallback", action="store_true", help="Verify the web overlay has an HTTP fallback for mod_live.")
     args = parser.parse_args()
 
     port = args.port or free_port()
@@ -139,6 +186,12 @@ def main() -> None:
         selected = scenarios if args.all_scenarios else [scenarios[args.scenario_index]]
         reports = []
         all_errors = []
+        if args.check_overlay_fallback:
+            all_errors.extend(validate_overlay_fallback())
+        if args.check_replay:
+            replay_result = asyncio.run(collect_replay_events(base_url, selected[0]))
+            replay_errors = validate_replay_events(replay_result, selected[0])
+            all_errors.extend(f"replay: {error}" for error in replay_errors)
         for scenario in selected:
             result = asyncio.run(collect_bridge_events(base_url, scenario))
             errors = validate_events(result, scenario)
@@ -160,6 +213,7 @@ def main() -> None:
                 {
                     "status": "passed",
                     "base_url": base_url,
+                    "replay_checked": args.check_replay,
                     "scenarios": reports,
                 },
                 indent=2,

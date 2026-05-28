@@ -271,6 +271,8 @@ async def websocket_endpoint(websocket: WebSocket):
     subscribers.append(websocket)
     try:
         await websocket.send_json({"type": "connected", "active_runs": list(active_runs.keys())})
+        for run_id, state in active_runs.items():
+            await websocket.send_json({"type": "state_updated", "run_id": run_id, "state": state})
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:

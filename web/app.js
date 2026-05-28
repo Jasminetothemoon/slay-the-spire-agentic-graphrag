@@ -336,6 +336,20 @@ async function postJson(url, payload) {
   return response.json();
 }
 
+async function loadLiveStateFallback() {
+  try {
+    const response = await fetch("/runs/mod_live");
+    if (!response.ok) {
+      return;
+    }
+    const state = await response.json();
+    applyIncomingState(state);
+    statusEl.textContent = t("liveState", state.run_id || "mod_live");
+  } catch {
+    // The live run may not exist yet; WebSocket updates will fill it in later.
+  }
+}
+
 document.querySelector("#startRun").addEventListener("click", async () => {
   const data = await postJson("/start_run", {
     character_class: document.querySelector("#characterClass").value,
@@ -414,6 +428,7 @@ try {
   socket.onopen = () => {
     updateConnectionStatus("connected");
     statusEl.textContent = t("liveConnected");
+    loadLiveStateFallback();
   };
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
@@ -439,3 +454,4 @@ applyOverlayMode();
 applyLanguage();
 renderTopRecommendation();
 updateLiveStrip();
+loadLiveStateFallback();

@@ -1,9 +1,9 @@
 package com.stsagent.bridge;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -55,13 +55,13 @@ public class GameStateCollector {
         json.append("\"max_hp\":").append(AbstractDungeon.player.maxHealth).append(",");
         json.append("\"gold\":").append(AbstractDungeon.player.gold).append(",");
         json.append("\"energy\":").append(currentEnergy()).append(",");
-        json.append("\"deck\":").append(cards(AbstractDungeon.player.masterDeck.group)).append(",");
-        json.append("\"upgraded_cards\":").append(upgradedCards(AbstractDungeon.player.masterDeck.group)).append(",");
+        json.append("\"deck\":").append(cards(AbstractDungeon.player.masterDeck == null ? null : AbstractDungeon.player.masterDeck.group)).append(",");
+        json.append("\"upgraded_cards\":").append(upgradedCards(AbstractDungeon.player.masterDeck == null ? null : AbstractDungeon.player.masterDeck.group)).append(",");
         json.append("\"relics\":").append(relics()).append(",");
         json.append("\"potions\":").append(potions()).append(",");
-        json.append("\"hand_cards\":").append(cards(AbstractDungeon.player.hand.group)).append(",");
-        json.append("\"draw_pile\":").append(cards(AbstractDungeon.player.drawPile.group)).append(",");
-        json.append("\"discard_pile\":").append(cards(AbstractDungeon.player.discardPile.group)).append(",");
+        json.append("\"hand_cards\":").append(cards(AbstractDungeon.player.hand == null ? null : AbstractDungeon.player.hand.group)).append(",");
+        json.append("\"draw_pile\":").append(cards(AbstractDungeon.player.drawPile == null ? null : AbstractDungeon.player.drawPile.group)).append(",");
+        json.append("\"discard_pile\":").append(cards(AbstractDungeon.player.discardPile == null ? null : AbstractDungeon.player.discardPile.group)).append(",");
         json.append("\"enemies\":").append(enemies()).append(",");
         json.append("\"combat_state\":").append(combatState());
         json.append("}");
@@ -76,9 +76,9 @@ public class GameStateCollector {
             }
         }
 
-        AbstractRoom room = AbstractDungeon.getCurrRoom();
+        AbstractRoom room = currentRoom();
         if (room != null && room.phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player != null) {
-            List<String> hand = cardNames(AbstractDungeon.player.hand.group);
+            List<String> hand = cardNames(AbstractDungeon.player.hand == null ? null : AbstractDungeon.player.hand.group);
             if (!hand.isEmpty()) {
                 return new Decision("combat", hand, "Current combat turn from live Java bridge.");
             }
@@ -124,7 +124,7 @@ public class GameStateCollector {
         }
         for (AbstractCard card : cards) {
             if (card != null) {
-                names.add(card.name);
+                names.add(card.cardID != null ? card.cardID : card.name);
             }
         }
         return names;
@@ -135,7 +135,7 @@ public class GameStateCollector {
         if (cards != null) {
             for (AbstractCard card : cards) {
                 if (card != null && card.upgraded) {
-                    names.add(card.name);
+                    names.add(card.cardID != null ? card.cardID : card.name);
                 }
             }
         }
@@ -144,9 +144,12 @@ public class GameStateCollector {
 
     private String relics() {
         List<String> names = new ArrayList<String>();
+        if (AbstractDungeon.player == null || AbstractDungeon.player.relics == null) {
+            return "[]";
+        }
         for (AbstractRelic relic : AbstractDungeon.player.relics) {
             if (relic != null) {
-                names.add(relic.name);
+                names.add(relic.relicId != null ? relic.relicId : relic.name);
             }
         }
         return JsonUtil.stringArray(names);
@@ -154,21 +157,25 @@ public class GameStateCollector {
 
     private String potions() {
         List<String> names = new ArrayList<String>();
+        if (AbstractDungeon.player == null || AbstractDungeon.player.potions == null) {
+            return "[]";
+        }
         for (AbstractPotion potion : AbstractDungeon.player.potions) {
             if (potion != null && potion.ID != null && !"Potion Slot".equals(potion.name)) {
-                names.add(potion.name);
+                names.add(potion.ID);
             }
         }
         return JsonUtil.stringArray(names);
     }
 
     private String enemies() {
-        if (AbstractDungeon.getMonsters() == null || AbstractDungeon.getMonsters().monsters == null) {
+        MonsterGroup monsters = currentMonsters();
+        if (monsters == null || monsters.monsters == null) {
             return "[]";
         }
         StringBuilder json = new StringBuilder("[");
         boolean first = true;
-        for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
+        for (AbstractMonster monster : monsters.monsters) {
             if (monster == null || monster.isDeadOrEscaped()) {
                 continue;
             }
@@ -208,16 +215,40 @@ public class GameStateCollector {
     }
 
     private int incomingDamage() {
-        if (AbstractDungeon.getMonsters() == null || AbstractDungeon.getMonsters().monsters == null) {
+        MonsterGroup monsters = currentMonsters();
+        if (monsters == null || monsters.monsters == null) {
             return 0;
         }
         int total = 0;
-        for (AbstractMonster monster : AbstractDungeon.getMonsters().monsters) {
+        for (AbstractMonster monster : monsters.monsters) {
             if (monster != null && !monster.isDeadOrEscaped()) {
                 total += intentDamage(monster);
             }
         }
         return total;
+    }
+
+    private AbstractRoom currentRoom() {
+        try {
+            if (AbstractDungeon.currMapNode == null) {
+                return null;
+            }
+            return AbstractDungeon.getCurrRoom();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private MonsterGroup currentMonsters() {
+        AbstractRoom room = currentRoom();
+        if (room == null) {
+            return null;
+        }
+        try {
+            return room.monsters;
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     private static class Decision {

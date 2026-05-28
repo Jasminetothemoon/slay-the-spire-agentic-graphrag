@@ -17,7 +17,7 @@ try {
   & $Python scripts\ingest_graph.py --data data\public_full_data.json --dry-run
   & $Python scripts\check_graph_fixtures.py --data data\public_full_data.json
   & $Python scripts\check_decision_engine.py --data data\public_full_data.json
-  & $Python scripts\check_live_bridge.py --data data\public_full_data.json --all-scenarios
+  & $Python scripts\check_live_bridge.py --data data\public_full_data.json --all-scenarios --check-replay --check-overlay-fallback
   & $Python scripts\evaluate.py --data data\public_full_data.json --eval data\public_eval_cases.json
 }
 finally {

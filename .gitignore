@@ -20,6 +20,9 @@ Thumbs.db
 logs/
 *.log
 artifacts/
+task_plan.md
+findings.md
+progress.md
 .gh-config/
 tmp*.png
 .tools/

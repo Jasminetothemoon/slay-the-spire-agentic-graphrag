@@ -197,6 +197,7 @@ The response includes:
 - `graph_context`
 - `risk_report`
 - `latency_ms`
+- `localized.zh` for Chinese presentation fields
 
 ## Game-State Bridge
 
@@ -256,15 +257,39 @@ POST /mod/recommend
 
 It accepts a game-state snapshot plus the active decision options, then broadcasts both state and recommendation updates to the overlay.
 
+## Benchmark
+
+Generate the current benchmark report:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\benchmark_report.py --data data\public_full_data.json --eval data\public_eval_cases.json --output reports\benchmark.md
+```
+
+Current measured snapshot:
+
+- 666 graph entities and 1442 graph relationships.
+- 0 relationships missing provenance fields.
+- 23 fixed evaluation cases.
+- Top-1 accuracy: 1.0.
+- Top-3 accuracy: 1.0.
+- Mean latency: about 1.3 ms in the latest local benchmark.
+- P95 latency: about 1.3 ms in the latest local benchmark.
+- Chinese localization coverage: 560/612 localizable entities, 91.5%.
+
+The generated report lives at:
+
+```text
+reports/benchmark.md
+```
+
 ## Resume-Oriented Targets
 
-The current repository implements a runnable first version with real public data, local graph fallback, a FastAPI bridge, WebSocket overlay updates, and deterministic scoring. The next high-value work is to deepen evaluation and game-side integration:
+The current repository implements a runnable first version with real public data, local graph fallback, a FastAPI bridge, WebSocket overlay updates, deterministic scoring, Chinese presentation localization, and benchmark reporting. The next high-value work is to deepen evaluation and game-side integration:
 
-- 600+ entities and 1400+ graph relationships.
-- 200+ labeled evaluation cases.
-- P95 recommendation latency below 500ms for non-LLM recommendations.
-- Comparison report: rules only vs pure LLM vs vector RAG vs GraphRAG + scoring.
-- Thin Java/CommunicationMod bridge that posts live game state into `/mod/recommend`.
+- Expand from 23 to 200+ labeled evaluation cases.
+- Add comparison report: rules only vs pure LLM vs vector RAG vs GraphRAG + scoring.
+- Keep P95 recommendation latency below 500ms for non-LLM recommendations as evaluation coverage grows.
+- Deepen the Java/CommunicationMod bridge and in-game presentation path.
 
 ## Current Status
 

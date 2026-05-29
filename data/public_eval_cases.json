@@ -871,5 +871,514 @@
       "path_event_shop",
       "shop"
     ]
+  },
+  {
+    "id": "public_shop_rich_buy_relic",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_shop_002",
+      "character_class": "ironclad",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 25,
+      "current_hp": 55,
+      "max_hp": 80,
+      "gold": 260,
+      "deck": ["Strike", "Defend", "Inflame", "Shrug It Off"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Buy Relic", "Buy Card", "Remove a Card", "Skip"],
+    "expected_top": "buy_relic",
+    "acceptable": ["buy_relic"]
+  },
+  {
+    "id": "public_shop_low_gold_skip",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_shop_003",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 23,
+      "current_hp": 50,
+      "max_hp": 75,
+      "gold": 30,
+      "deck": ["Strike", "Defend", "Zap", "Glacier"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Buy Relic", "Buy Card", "Remove a Card", "Skip"],
+    "expected_top": "skip_shop",
+    "acceptable": ["skip_shop"]
+  },
+  {
+    "id": "public_shop_buy_card_defect_early",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_shop_004",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 5,
+      "current_hp": 45,
+      "max_hp": 75,
+      "gold": 130,
+      "deck": ["Strike", "Defend", "Zap"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Buy Card", "Buy Potion", "Skip"],
+    "expected_top": "buy_card",
+    "acceptable": ["buy_card", "buy_potion"]
+  },
+  {
+    "id": "public_shop_remove_large_watcher_deck",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_shop_005",
+      "character_class": "watcher",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 19,
+      "current_hp": 55,
+      "max_hp": 72,
+      "gold": 150,
+      "deck": ["Strike", "Strike", "Strike", "Defend", "Defend", "Defend", "Eruption", "Vigilance", "Evaluate", "Third Eye", "Just Lucky", "Flurry of Blows"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Remove a Card", "Buy Card", "Skip"],
+    "expected_top": "remove_card",
+    "acceptable": ["remove_card"]
+  },
+  {
+    "id": "public_shop_low_hp_buy_potion",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_shop_006",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 1,
+      "current_floor": 5,
+      "current_hp": 20,
+      "max_hp": 70,
+      "gold": 90,
+      "deck": ["Strike", "Defend", "Neutralize", "Survivor"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Buy Potion", "Buy Card", "Skip"],
+    "expected_top": "buy_potion",
+    "acceptable": ["buy_potion"]
+  },
+  {
+    "id": "public_relic_silent_shiv_take_shuriken",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_relic_001",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 52,
+      "max_hp": 70,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Blade Dance", "Cloak and Dagger", "Accuracy"],
+      "relics": ["Kunai"],
+      "potions": []
+    },
+    "options": ["Shuriken", "Tiny Chest", "Blue Candle"],
+    "expected_top": "shuriken",
+    "acceptable": ["shuriken"]
+  },
+  {
+    "id": "public_relic_silent_poison_take_snecko_skull",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_relic_002",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 52,
+      "max_hp": 70,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask", "Catalyst"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Snecko Skull", "Vajra", "Tiny Chest"],
+    "expected_top": "snecko_skull",
+    "acceptable": ["snecko_skull"]
+  },
+  {
+    "id": "public_relic_ironclad_block_take_thread",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_relic_003",
+      "character_class": "ironclad",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 42,
+      "max_hp": 80,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Shrug It Off", "Feel No Pain"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Thread and Needle", "Vajra", "Tiny Chest"],
+    "expected_top": "thread_and_needle",
+    "acceptable": ["thread_and_needle"]
+  },
+  {
+    "id": "public_relic_defect_power_take_mummified_hand",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_relic_004",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 28,
+      "current_hp": 50,
+      "max_hp": 75,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Echo Form", "Defragment", "Glacier"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Mummified Hand", "Vajra", "Tiny Chest"],
+    "expected_top": "mummified_hand",
+    "acceptable": ["mummified_hand", "vajra"]
+  },
+  {
+    "id": "public_relic_watcher_draw_take_bag",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_relic_005",
+      "character_class": "watcher",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 50,
+      "max_hp": 72,
+      "gold": 120,
+      "deck": ["Strike", "Defend", "Scrawl", "Rushdown", "Tantrum"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Bag of Preparation", "Tiny Chest", "Blue Candle"],
+    "expected_top": "bag_of_preparation",
+    "acceptable": ["bag_of_preparation", "blue_candle"]
+  },
+  {
+    "id": "public_pathing_map_low_hp_rest",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_004",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 1,
+      "current_floor": 12,
+      "current_hp": 17,
+      "max_hp": 70,
+      "gold": 95,
+      "deck": ["Strike", "Defend", "Backflip"],
+      "relics": [],
+      "potions": [],
+      "map_options": [
+        {"id": "forced_elite_no_rest", "name": "Forced Elite", "nodes": ["monster", "elite", "monster"], "forced_elites": 1},
+        {"id": "safe_rest_route", "name": "Rest Route", "nodes": ["monster", "rest", "treasure"], "campfires_before_elite": 1}
+      ]
+    },
+    "options": [],
+    "expected_top": "safe_rest_route",
+    "acceptable": ["safe_rest_route"]
+  },
+  {
+    "id": "public_pathing_map_watcher_elite",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_005",
+      "character_class": "watcher",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 7,
+      "current_hp": 62,
+      "max_hp": 72,
+      "gold": 130,
+      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Tantrum", "Wallop"],
+      "relics": ["Pure Water"],
+      "potions": ["Fire Potion"],
+      "map_options": [
+        {"id": "elite_rest_branch", "name": "Elite then Rest", "nodes": ["monster", "elite", "rest"], "forced_elites": 1, "campfires_before_elite": 1},
+        {"id": "safe_shop", "name": "Safe Shop", "nodes": ["event", "shop"]}
+      ]
+    },
+    "options": [],
+    "expected_top": "elite_rest_branch",
+    "acceptable": ["elite_rest_branch"]
+  },
+  {
+    "id": "public_pathing_map_shop_before_elite",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_006",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 6,
+      "current_hp": 50,
+      "max_hp": 75,
+      "gold": 185,
+      "deck": ["Strike", "Defend", "Zap", "Ball Lightning"],
+      "relics": [],
+      "potions": [],
+      "map_options": [
+        {"id": "shop_then_elite", "name": "Shop then Elite", "nodes": ["shop", "elite", "rest"], "forced_elites": 1, "shops_before_elite": 1, "campfires_before_elite": 1},
+        {"id": "event_chain", "name": "Events", "nodes": ["event", "event", "unknown"]}
+      ]
+    },
+    "options": [],
+    "expected_top": "shop_then_elite",
+    "acceptable": ["shop_then_elite"]
+  },
+  {
+    "id": "public_pathing_act2_take_events",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_007",
+      "character_class": "ironclad",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 22,
+      "current_hp": 35,
+      "max_hp": 80,
+      "gold": 110,
+      "deck": ["Strike", "Defend", "Inflame", "Shrug It Off"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Monster > Monster", "Event > Event", "Elite"],
+    "expected_top": "path_event_event",
+    "acceptable": ["path_event_event"]
+  },
+  {
+    "id": "public_pathing_early_take_hallway_fights",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_008",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 3,
+      "current_hp": 62,
+      "max_hp": 70,
+      "gold": 99,
+      "deck": ["Strike", "Defend", "Neutralize", "Survivor"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Monster > Monster", "Event > Event", "Shop"],
+    "expected_top": "path_monster_monster",
+    "acceptable": ["path_monster_monster"]
+  },
+  {
+    "id": "public_pathing_low_hp_take_treasure",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_009",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 27,
+      "current_hp": 20,
+      "max_hp": 75,
+      "gold": 85,
+      "deck": ["Strike", "Defend", "Zap", "Glacier"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Treasure", "Elite", "Monster > Elite"],
+    "expected_top": "treasure",
+    "acceptable": ["treasure"]
+  },
+  {
+    "id": "public_pathing_strong_ironclad_elite_rest",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_010",
+      "character_class": "ironclad",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 8,
+      "current_hp": 70,
+      "max_hp": 80,
+      "gold": 130,
+      "deck": ["Strike", "Defend", "Bash", "Inflame", "Immolate", "Shrug It Off"],
+      "relics": ["Burning Blood"],
+      "potions": ["Fire Potion"]
+    },
+    "options": ["Monster > Elite > Rest", "Monster > Elite > Elite", "Shop"],
+    "expected_top": "path_monster_elite_rest",
+    "acceptable": ["path_monster_elite_rest"]
+  },
+  {
+    "id": "public_combat_silent_block_potion",
+    "query_type": "combat",
+    "state": {
+      "run_id": "public_eval_combat_001",
+      "character_class": "silent",
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Neutralize", "Survivor"],
+      "relics": [],
+      "potions": ["Block Potion"],
+      "hand_cards": ["Neutralize", "Survivor", "Strike", "Defend"],
+      "enemies": [{"name": "Jaw Worm", "hp": 40, "intent": "attack", "intent_damage": 18}],
+      "combat_state": {"incoming_damage": 18}
+    },
+    "options": [],
+    "expected_top": "use_block_potion",
+    "acceptable": ["use_block_potion"]
+  },
+  {
+    "id": "public_combat_silent_aoe_sequence",
+    "query_type": "combat",
+    "state": {
+      "run_id": "public_eval_combat_002",
+      "character_class": "silent",
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Dagger Spray", "Neutralize"],
+      "relics": [],
+      "potions": [],
+      "hand_cards": ["Dagger Spray", "Strike", "Defend", "Neutralize"],
+      "enemies": [
+        {"name": "Red Slaver", "hp": 18, "intent": "attack", "intent_damage": 8},
+        {"name": "Blue Slaver", "hp": 15, "intent": "attack", "intent_damage": 8}
+      ],
+      "combat_state": {"incoming_damage": 16}
+    },
+    "options": [],
+    "expected_top": "play_dagger_spray_then_strike_silent_then_defend_silent_then_neutralize",
+    "acceptable": ["play_dagger_spray_then_strike_silent_then_defend_silent_then_neutralize", "play_dagger_spray_then_strike_silent_then_neutralize"]
+  },
+  {
+    "id": "public_combat_ironclad_attack_line",
+    "query_type": "combat",
+    "state": {
+      "run_id": "public_eval_combat_003",
+      "character_class": "ironclad",
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Bash", "Cleave"],
+      "relics": [],
+      "potions": [],
+      "hand_cards": ["Bash", "Strike", "Strike", "Defend"],
+      "enemies": [{"name": "Louse", "hp": 18, "intent": "attack", "intent_damage": 7}],
+      "combat_state": {"incoming_damage": 7}
+    },
+    "options": [],
+    "expected_top": "play_bash_then_defend_ironclad",
+    "acceptable": ["play_bash_then_defend_ironclad", "play_bash_then_strike_ironclad"]
+  },
+  {
+    "id": "public_combat_defect_block_with_glacier",
+    "query_type": "combat",
+    "state": {
+      "run_id": "public_eval_combat_004",
+      "character_class": "defect",
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Zap", "Glacier"],
+      "relics": [],
+      "potions": [],
+      "hand_cards": ["Glacier", "Defend", "Strike", "Zap"],
+      "enemies": [{"name": "Spheric Guardian", "hp": 30, "intent": "attack", "intent_damage": 16}],
+      "combat_state": {"incoming_damage": 16}
+    },
+    "options": [],
+    "expected_top": "play_glacier_then_defend_defect",
+    "acceptable": ["play_glacier_then_defend_defect", "play_glacier_then_strike_defect"]
+  },
+  {
+    "id": "public_combat_watcher_wrath_line",
+    "query_type": "combat",
+    "state": {
+      "run_id": "public_eval_combat_005",
+      "character_class": "watcher",
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Tantrum"],
+      "relics": [],
+      "potions": [],
+      "hand_cards": ["Eruption", "Strike", "Strike", "Defend"],
+      "enemies": [{"name": "Cultist", "hp": 30, "intent": "attack", "intent_damage": 6}],
+      "combat_state": {"incoming_damage": 6}
+    },
+    "options": [],
+    "expected_top": "play_eruption_then_strike_watcher_then_defend_watcher",
+    "acceptable": ["play_eruption_then_strike_watcher_then_defend_watcher", "play_eruption_then_strike_watcher_then_strike_watcher"]
+  },
+  {
+    "id": "public_pathing_optional_elite_branch",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_011",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 8,
+      "current_hp": 49,
+      "max_hp": 70,
+      "gold": 115,
+      "deck": ["Strike", "Defend", "Neutralize", "Survivor", "Dagger Spray", "Backflip"],
+      "relics": [],
+      "potions": ["Fire Potion"],
+      "map_options": [
+        {"id": "optional_elite_rest", "name": "Optional Elite with Rest", "nodes": ["monster", "elite", "rest"], "optional_elites": 1, "campfires_before_elite": 1},
+        {"id": "plain_events", "name": "Plain Events", "nodes": ["event", "event", "unknown"]}
+      ]
+    },
+    "options": [],
+    "expected_top": "optional_elite_rest",
+    "acceptable": ["optional_elite_rest"]
+  },
+  {
+    "id": "public_shop_medium_gold_buy_card_over_relic",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_shop_007",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 4,
+      "current_hp": 55,
+      "max_hp": 70,
+      "gold": 105,
+      "deck": ["Strike", "Defend", "Neutralize", "Survivor"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Buy Relic", "Buy Card", "Remove a Card", "Skip"],
+    "expected_top": "buy_card",
+    "acceptable": ["buy_card"]
+  },
+  {
+    "id": "public_relic_silent_shiv_take_ornamental_fan",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_relic_006",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 24,
+      "current_hp": 44,
+      "max_hp": 70,
+      "gold": 140,
+      "deck": ["Strike", "Defend", "Blade Dance", "Cloak and Dagger", "Accuracy", "Backflip"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Ornamental Fan", "Tiny Chest", "Blue Candle"],
+    "expected_top": "ornamental_fan",
+    "acceptable": ["ornamental_fan"]
   }
 ]

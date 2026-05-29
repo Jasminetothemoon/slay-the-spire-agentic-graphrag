@@ -137,21 +137,33 @@ class RecommendationScorer:
         deck_tags = self._deck_tags(state)
         hp_ratio = state.get("current_hp", state.get("max_hp", 1)) / max(state.get("max_hp", 1), 1)
         character_class = state.get("character_class", "").lower()
-        options = state.get("options", [])
+        options = self._pathing_options(state)
         scored = []
         for raw_option in options:
-            path = self._parse_path_option(str(raw_option))
-            if len(path) == 1:
+            route = self._parse_route_option(raw_option)
+            path = route["path"]
+            metadata = route["metadata"]
+            if len(path) == 1 and not metadata:
                 entity = self.kb.get(path[0], character_class) or {"id": path[0], "name": str(raw_option), "base_value": 45, "tags": []}
-                base_name = entity.get("name", str(raw_option))
+                base_name = entity.get("name", route["name"])
                 score = float(entity.get("base_value", 45))
             else:
-                base_name = str(raw_option)
+                base_name = route["name"]
                 score = 44.0 + len(path) * 2.0
 
             reasons: List[str] = []
             risks: List[str] = []
             counts = Counter(path)
+            forced_elites = int(metadata.get("forced_elites", 0) or 0)
+            optional_elites = int(metadata.get("optional_elites", 0) or 0)
+            campfires_before_elite = int(metadata.get("campfires_before_elite", 0) or 0)
+            shops_before_elite = int(metadata.get("shops_before_elite", 0) or 0)
+            if forced_elites:
+                counts["elite"] = max(counts["elite"], forced_elites)
+            if campfires_before_elite:
+                counts["rest"] = max(counts["rest"], campfires_before_elite)
+            if shops_before_elite:
+                counts["shop"] = max(counts["shop"], shops_before_elite)
             score += counts["treasure"] * 14
             score += counts["rest"] * (18 if "low_hp" in risk_tags else 8)
             score += counts["shop"] * self._shop_path_value(state)
@@ -159,12 +171,23 @@ class RecommendationScorer:
             score += counts["event"] * self._event_path_value(state, risk_tags)
             score += counts["unknown"] * self._event_path_value(state, risk_tags)
             score += counts["elite"] * self._elite_path_value(state, risk_tags, deck_tags, character_class)
+            score += optional_elites * (10 if self._elite_ready(state, deck_tags, character_class) else 2)
 
             if counts["elite"]:
                 if self._elite_ready(state, deck_tags, character_class):
                     reasons.append("Elite path is justified by current frontload, potions, HP, or a nearby rest site.")
                 else:
                     risks.append("Elite path is risky without enough frontload damage, potion support, or HP.")
+            if forced_elites:
+                risks.append(f"Route contains {forced_elites} forced elite encounter(s).")
+            if optional_elites:
+                reasons.append("Optional elite branch preserves reward upside without fully locking in risk.")
+            if campfires_before_elite and counts["elite"]:
+                reasons.append("Campfire before elite gives a recovery or upgrade checkpoint.")
+                score += 8
+            if shops_before_elite and counts["elite"]:
+                reasons.append("Shop before elite can convert gold into potions or frontload.")
+                score += 5 if state.get("gold", 0) >= 90 else -2
             if counts["elite"] >= 2 and counts["rest"] == 0:
                 score -= 18
                 risks.append("Forced multiple elites without a rest site is a high-variance route.")
@@ -190,7 +213,7 @@ class RecommendationScorer:
 
             if not reasons:
                 reasons.append("Route has acceptable baseline value, but no decisive pathing signal was found.")
-            option_id = self._path_option_id(raw_option, path)
+            option_id = route["id"] or self._path_option_id(str(raw_option), path)
             raw_score = score
             scored.append(
                 {
@@ -207,6 +230,7 @@ class RecommendationScorer:
                         {
                             "type": "pathing_rule",
                             "path": path,
+                            "route_metadata": metadata,
                             "node_counts": dict(counts),
                             "risk_tags": risk_tags,
                             "deck_tags": deck_tags,
@@ -227,6 +251,83 @@ class RecommendationScorer:
             )
         )
         return scored
+
+    def _pathing_options(self, state: Dict[str, Any]) -> List[Any]:
+        options: List[Any] = list(state.get("options") or [])
+        existing_keys = {self._route_dedupe_key(option) for option in options}
+        for route in state.get("map_options") or []:
+            key = self._route_dedupe_key(route)
+            if key not in existing_keys:
+                options.append(route)
+                existing_keys.add(key)
+        return options
+
+    def _route_dedupe_key(self, raw_option: Any) -> str:
+        if isinstance(raw_option, dict):
+            for key in ("id", "route_id", "name", "label"):
+                if raw_option.get(key):
+                    return str(raw_option[key]).lower()
+            nodes = raw_option.get("nodes") or raw_option.get("path") or []
+            return "route:" + "|".join(self._normalize_path_node(node) for node in nodes)
+        return str(raw_option).lower()
+
+    def _parse_route_option(self, raw_option: Any) -> Dict[str, Any]:
+        if not isinstance(raw_option, dict):
+            path = self._parse_path_option(str(raw_option))
+            return {
+                "id": self._path_option_id(str(raw_option), path),
+                "name": str(raw_option),
+                "path": path,
+                "metadata": {},
+            }
+
+        nodes = raw_option.get("nodes") or raw_option.get("path") or raw_option.get("route") or raw_option.get("next_nodes") or []
+        path = [self._normalize_path_node(node) for node in nodes]
+        path = [node for node in path if node]
+        if not path:
+            for key in ("node_type", "type", "symbol", "name", "label"):
+                if raw_option.get(key):
+                    path = [self._normalize_path_node(raw_option[key])]
+                    break
+        if not path:
+            path = ["unknown"]
+
+        metadata_keys = {
+            "forced_elites",
+            "optional_elites",
+            "campfires_before_elite",
+            "shops_before_elite",
+            "monster_count",
+            "event_count",
+            "rest_count",
+            "shop_count",
+            "treasure_count",
+            "floor",
+            "act",
+        }
+        metadata = {key: raw_option[key] for key in metadata_keys if key in raw_option}
+        count_aliases = {
+            "monster_count": "monster",
+            "event_count": "event",
+            "rest_count": "rest",
+            "shop_count": "shop",
+            "treasure_count": "treasure",
+        }
+        for source_key, node_type in count_aliases.items():
+            for _ in range(max(0, int(metadata.get(source_key, 0) or 0))):
+                path.append(node_type)
+
+        option_id = raw_option.get("id") or raw_option.get("route_id") or self._path_option_id(str(raw_option), path)
+        name = raw_option.get("name") or raw_option.get("label") or " > ".join(path)
+        return {"id": str(option_id), "name": str(name), "path": path, "metadata": metadata}
+
+    def _normalize_path_node(self, node: Any) -> str:
+        if isinstance(node, dict):
+            for key in ("node_type", "type", "symbol", "name", "label"):
+                if node.get(key):
+                    return self._parse_path_option(str(node[key]))[0]
+            return "unknown"
+        return self._parse_path_option(str(node))[0]
 
     def _parse_path_option(self, option: str) -> List[str]:
         normalized = option.lower()
@@ -360,6 +461,9 @@ class RecommendationScorer:
             if "elite_safety" in option_tags and state.get("current_floor", 1) <= 15:
                 score += 8
                 reasons.append("Potion value is high before early elites.")
+            if "elite_safety" in option_tags and "low_hp" in risk_tags:
+                score += 10
+                reasons.append("Low HP makes a safety potion more attractive.")
         return score, reasons
 
     def _curve_adjustment(self, option: Dict[str, Any], state: Dict[str, Any]) -> tuple[float, str, str]:
@@ -398,8 +502,23 @@ class RecommendationScorer:
                 False,
             )
 
-        if query_type == "shop" and "spend_gold" in option.get("tags", []) and state.get("gold", 0) < 75:
-            return -12.0, "", "Gold is low, so paid shop actions are less attractive.", True
+        if query_type == "shop":
+            option_id = option.get("id", "")
+            gold = state.get("gold", 0)
+            deck_size = len(state.get("deck", []))
+            if option_id == "remove_card":
+                if gold < 75:
+                    return -50.0, "", "Gold is too low to rely on card removal.", True
+                if deck_size < 10:
+                    return -18.0, "", "The deck is still small, so removal is less urgent than adding power.", True
+            if option_id == "buy_relic" and gold < 150:
+                return -45.0, "", "Gold is below a typical relic-buying threshold.", True
+            if option_id == "buy_card" and gold < 50:
+                return -35.0, "", "Gold is low, so buying cards is constrained.", True
+            if option_id == "buy_potion" and gold < 50:
+                return -18.0, "", "Gold is low, so even potion buying is constrained.", True
+            if "spend_gold" in option.get("tags", []) and gold < 75:
+                return -18.0, "", "Gold is low, so paid shop actions are less attractive.", True
         if query_type == "pathing" and entity_type == "path_node" and option["id"] == "elite":
             if state.get("current_hp", state.get("max_hp", 1)) / max(state.get("max_hp", 1), 1) < 0.45:
                 return -18.0, "", "Elite path is dangerous at the current HP total.", True

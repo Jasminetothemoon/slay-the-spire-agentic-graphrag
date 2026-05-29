@@ -10,6 +10,7 @@ except Exception:
 from sts_engine.retriever import GraphRAGRetriever
 from sts_engine.scoring import RecommendationScorer
 from sts_engine.combat import CombatAdvisor
+from sts_engine.explanations import build_explanation_panel
 from sts_engine.state import RunState
 
 
@@ -26,7 +27,8 @@ def validate_state_node(state: RunState) -> Dict[str, Any]:
         errors.append("Missing character_class.")
     if not state.get("query_type"):
         errors.append("Missing query_type.")
-    if not state.get("options") and state.get("query_type") != "combat":
+    has_path_routes = state.get("query_type") == "pathing" and state.get("map_options")
+    if not state.get("options") and state.get("query_type") != "combat" and not has_path_routes:
         errors.append("No decision options were provided.")
     return {"validation_errors": errors, "_started_at": time.perf_counter()}
 
@@ -57,6 +59,7 @@ def explain_decision_node(state: RunState) -> Dict[str, Any]:
         return {
             "recommendation": "invalid_state",
             "reasoning": "Cannot recommend because: " + "; ".join(errors),
+            "explanation_panel": {},
             "latency_ms": round((time.perf_counter() - started_at) * 1000, 2),
         }
 
@@ -65,6 +68,7 @@ def explain_decision_node(state: RunState) -> Dict[str, Any]:
         return {
             "recommendation": "skip",
             "reasoning": "No options could be scored. Prefer skipping or using manual review.",
+            "explanation_panel": {},
             "latency_ms": round((time.perf_counter() - started_at) * 1000, 2),
         }
 
@@ -80,6 +84,7 @@ def explain_decision_node(state: RunState) -> Dict[str, Any]:
     return {
         "recommendation": best["option_id"],
         "reasoning": " ".join(line for line in reason_lines if line),
+        "explanation_panel": build_explanation_panel(state, scorer.kb),
         "latency_ms": round((time.perf_counter() - started_at) * 1000, 2),
     }
 

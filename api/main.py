@@ -105,6 +105,7 @@ class ModRecommendationRequest(BaseModel):
 class RecommendationResponse(BaseModel):
     recommendation: str
     reasoning: str
+    explanation_panel: Dict[str, Any] = {}
     option_scores: List[Dict[str, Any]]
     graph_context: List[Dict[str, Any]]
     risk_report: Dict[str, Any]
@@ -197,10 +198,14 @@ def normalize_option_list(values: List[str], character_class: str) -> List[str]:
 
 
 def build_recommendation_response(current_state: Dict[str, Any]) -> RecommendationResponse:
+    if current_state.get("query_type") == "pathing" and not current_state.get("options"):
+        current_state = dict(current_state)
+        current_state["options"] = list(current_state.get("map_options") or [])
     final_state = engine.invoke(current_state)
     response = RecommendationResponse(
         recommendation=final_state.get("recommendation", "skip"),
         reasoning=final_state.get("reasoning", ""),
+        explanation_panel=final_state.get("explanation_panel", {}),
         option_scores=final_state.get("option_scores", []),
         graph_context=final_state.get("graph_context", []),
         risk_report=final_state.get("risk_report", {}),
@@ -268,6 +273,8 @@ async def mod_recommend(req: ModRecommendationRequest):
     run_id = state["run_id"]
     state["query_type"] = req.query_type
     state["options"] = normalize_option_list(req.options, state["character_class"])
+    if req.query_type == "pathing" and not state["options"]:
+        state["options"] = list(state.get("map_options") or [])
     state["raw_options"] = list(req.options)
     state["user_query"] = req.user_query
     state = with_localized_state(state)
@@ -317,6 +324,8 @@ async def get_recommendation(req: RecommendationRequest):
     options = normalize_option_list(req.options, current_state.get("character_class", ""))
     if req.query_type == "combat" and not options:
         options = current_state.get("hand_cards", [])
+    if req.query_type == "pathing" and not options:
+        options = list(current_state.get("map_options") or [])
     current_state.update(
         {
             "query_type": req.query_type,

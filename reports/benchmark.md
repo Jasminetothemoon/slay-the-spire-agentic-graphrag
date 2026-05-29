@@ -1,14 +1,14 @@
 # Benchmark Report
 
-Generated: 2026-05-29 10:24 UTC
+Generated: 2026-05-29 10:55 UTC
 
 ## Executive Summary
 
-- Evaluation cases: **26**
+- Evaluation cases: **51**
 - Top-1 accuracy: **1.0**
 - Top-3 accuracy: **1.0**
-- Mean latency: **1.2 ms**
-- P95 latency: **1.22 ms**
+- Mean latency: **1.3 ms**
+- P95 latency: **1.37 ms**
 - Graph entities: **666**
 - Graph relationships: **1442**
 - Community strategy rules: **6 rules from 6 sources**
@@ -31,8 +31,10 @@ The recommendation pipeline is a deterministic LangGraph workflow, not a direct 
 | Query Type | Cases | Top-1 | Top-3 |
 | --- | --- | --- | --- |
 | card_pick | 22 | 1.0 | 1.0 |
-| pathing | 3 | 1.0 | 1.0 |
-| shop | 1 | 1.0 | 1.0 |
+| combat | 5 | 1.0 | 1.0 |
+| pathing | 11 | 1.0 | 1.0 |
+| relic_pick | 6 | 1.0 | 1.0 |
+| shop | 7 | 1.0 | 1.0 |
 
 ## Data Scale
 

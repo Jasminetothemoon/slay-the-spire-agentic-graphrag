@@ -58,6 +58,9 @@ def check_legality_filter() -> List[str]:
     evidence = by_id.get("dagger_spray", {}).get("evidence", [])
     if not any(item.get("owned_id") == "strike_silent" for item in evidence):
         errors.append("Silent starter Strike should resolve to strike_silent in graph evidence.")
+    panel = result.get("explanation_panel", {})
+    if not panel.get("why_pick") or not panel.get("candidate_comparison"):
+        errors.append("Recommendation should include a structured explanation_panel.")
     return errors
 
 
@@ -114,6 +117,55 @@ def check_combat_advice() -> List[str]:
     return errors
 
 
+def check_pathing_route_objects() -> List[str]:
+    engine = build_graph()
+    state: Dict[str, Any] = {
+        "run_id": "route_object_check",
+        "character_class": "silent",
+        "query_type": "pathing",
+        "act": 1,
+        "current_floor": 12,
+        "current_hp": 17,
+        "max_hp": 70,
+        "gold": 95,
+        "deck": ["Strike", "Defend", "Backflip"],
+        "relics": [],
+        "potions": [],
+        "options": [],
+        "map_options": [
+            {
+                "id": "forced_elite_no_rest",
+                "name": "Forced Elite",
+                "nodes": ["monster", "elite", "monster"],
+                "forced_elites": 1,
+                "campfires_before_elite": 0,
+            },
+            {
+                "id": "safe_rest_route",
+                "name": "Rest Route",
+                "nodes": ["monster", "rest", "treasure"],
+                "forced_elites": 0,
+                "campfires_before_elite": 1,
+            },
+        ],
+    }
+    result = engine.invoke(state)
+    scores = result.get("option_scores", [])
+    errors = []
+    if not scores:
+        errors.append("Pathing with map_options should return route scores even when options is empty.")
+        return errors
+    if scores[0].get("option_id") != "safe_rest_route":
+        errors.append(f"Low HP route object should prefer safe_rest_route, got {scores[0].get('option_id')}")
+    evidence = scores[0].get("evidence", [{}])[0]
+    if evidence.get("type") != "pathing_rule" or "route_metadata" not in evidence:
+        errors.append("Route object score should preserve pathing_rule evidence and route_metadata.")
+    panel = result.get("explanation_panel", {})
+    if not panel.get("candidate_comparison", [{}])[0].get("why_not"):
+        errors.append("Candidate comparison should include why_not tradeoff text.")
+    return errors
+
+
 def check_live_mod_normalization() -> List[str]:
     from api.main import ModStatePayload, normalize_mod_state, normalize_option_list
 
@@ -153,6 +205,7 @@ def main() -> None:
     errors.extend(check_legality_filter())
     errors.extend(check_communication_mod_adapter())
     errors.extend(check_combat_advice())
+    errors.extend(check_pathing_route_objects())
     errors.extend(check_live_mod_normalization())
     if errors:
         raise SystemExit("\n".join(errors))
@@ -162,6 +215,7 @@ def main() -> None:
             "decision_legality_filter",
             "communication_mod_adapter",
             "combat_advice",
+            "pathing_route_objects",
             "live_mod_normalization",
         ],
         "status": "passed",

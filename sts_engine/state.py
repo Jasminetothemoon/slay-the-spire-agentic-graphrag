@@ -68,4 +68,5 @@ class RunState(TypedDict, total=False):
     option_scores: List[OptionScore]
     recommendation: str
     reasoning: str
+    explanation_panel: Dict[str, Any]
     latency_ms: float

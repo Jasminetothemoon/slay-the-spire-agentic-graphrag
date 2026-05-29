@@ -95,6 +95,9 @@ def check_recommendation_localization() -> List[str]:
     expect(errors, {"停顿", "幸运一击", "供奉"}.issubset(names), f"Localized option names are incomplete: {names}")
     expect(errors, "Recommended:" not in localized.get("reasoning", ""), "Reasoning should not remain in English template form.")
     expect(errors, "推荐" in localized.get("reasoning", ""), f"Reasoning should be Chinese, got {localized.get('reasoning')}")
+    panel = localized.get("explanation_panel", {})
+    expect(errors, bool(panel.get("why_pick", {}).get("name")), "Localized explanation panel should include why_pick name.")
+    expect(errors, bool(panel.get("candidate_comparison")), "Localized explanation panel should include candidate comparison.")
 
     direct = localize_response(
         {

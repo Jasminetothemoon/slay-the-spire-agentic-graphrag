@@ -10,6 +10,7 @@ PUBLIC_DATA_PATH = ROOT / "data" / "public_full_data.json"
 SEED_DATA_PATH = ROOT / "data" / "sample_data.json"
 DATA_PATH = PUBLIC_DATA_PATH if PUBLIC_DATA_PATH.exists() else SEED_DATA_PATH
 STRATEGY_PATH = Path(__file__).resolve().parents[1] / "data" / "strategy" / "archetypes.json"
+LOCALIZATION_ZHS_PATH = Path(__file__).resolve().parents[1] / "data" / "localization_zhs.json"
 
 
 ENTITY_COLLECTIONS = (
@@ -82,6 +83,7 @@ class KnowledgeBase:
         self.name_to_ids: Dict[str, List[str]] = {}
         self.compact_to_id: Dict[str, str] = {}
         self._index_entities()
+        self._index_localized_names()
 
     def _index_entities(self) -> None:
         for collection in ENTITY_COLLECTIONS:
@@ -94,6 +96,29 @@ class KnowledgeBase:
                     self.name_to_id[key] = entity_id
                     self.name_to_ids.setdefault(key, []).append(entity_id)
                     self.compact_to_id.setdefault(key.replace("_", ""), entity_id)
+
+    def _add_name_alias(self, alias: str, entity_id: str) -> None:
+        key = normalize_id(alias)
+        if not key:
+            return
+        self.name_to_id[key] = entity_id
+        self.name_to_ids.setdefault(key, []).append(entity_id)
+        self.compact_to_id.setdefault(key.replace("_", ""), entity_id)
+
+    def _index_localized_names(self) -> None:
+        if not LOCALIZATION_ZHS_PATH.exists():
+            return
+        try:
+            with open(LOCALIZATION_ZHS_PATH, "r", encoding="utf-8") as f:
+                localized = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            return
+        for entity_id, item in localized.get("entities", {}).items():
+            if entity_id not in self.entities:
+                continue
+            name = item.get("name")
+            if name:
+                self._add_name_alias(name, entity_id)
 
     def resolve_id(self, value: str, character_class: str | None = None) -> Optional[str]:
         if not value:

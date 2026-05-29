@@ -1,0 +1,2633 @@
+{
+  "metadata": {
+    "language": "zhs",
+    "source": "local_game_jar",
+    "source_path": "mod-bridge\\libs\\desktop-1.0.jar",
+    "entity_count": 560
+  },
+  "entities": {
+    "bash": {
+      "name": "痛击",
+      "english_name": "Bash",
+      "description": "造成 !D! 点伤害。 NL 给予 !M! 层 易伤 。"
+    },
+    "defend_defect": {
+      "name": "防御",
+      "english_name": "Defend",
+      "description": "获得 !B! 点 格挡 。"
+    },
+    "strike_defect": {
+      "name": "打击",
+      "english_name": "Strike",
+      "description": "造成 !D! 点伤害。"
+    },
+    "anger": {
+      "name": "愤怒",
+      "english_name": "Anger",
+      "description": "造成 !D! 点伤害。 NL 在弃牌堆放入一张此牌的复制品。"
+    },
+    "armaments": {
+      "name": "武装",
+      "english_name": "Armaments",
+      "description": "获得 !B! 点 格挡 。 NL 在本场战斗中 升级 手牌中的一张牌。"
+    },
+    "body_slam": {
+      "name": "全身撞击",
+      "english_name": "Body Slam",
+      "description": "造成你当前 格挡 值的伤害。"
+    },
+    "clash": {
+      "name": "交锋",
+      "english_name": "Clash",
+      "description": "只有在手牌每一张牌都是攻击牌时才能被打出。 NL 造成 !D! 点伤害。"
+    },
+    "cleave": {
+      "name": "顺劈斩",
+      "english_name": "Cleave",
+      "description": "对所有敌人造成 !D! 点伤害。"
+    },
+    "clothesline": {
+      "name": "金刚臂",
+      "english_name": "Clothesline",
+      "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。"
+    },
+    "flex": {
+      "name": "活动肌肉",
+      "english_name": "Flex",
+      "description": "获得 !M! 点 力量 。 NL 你的回合结束时，失去 !M! 点 力量 。"
+    },
+    "havoc": {
+      "name": "破灭",
+      "english_name": "Havoc",
+      "description": "打出抽牌堆顶部的牌，将其 消耗 。"
+    },
+    "headbutt": {
+      "name": "头槌",
+      "english_name": "Headbutt",
+      "description": "造成 !D! 点伤害。 NL 将弃牌堆中的一张牌放到抽牌堆的顶部。"
+    },
+    "heavy_blade": {
+      "name": "重刃",
+      "english_name": "Heavy Blade",
+      "description": "造成 !D! 点伤害。 NL 力量 在 重刃 上发挥 !M! 倍效果。"
+    },
+    "iron_wave": {
+      "name": "铁斩波",
+      "english_name": "Iron Wave",
+      "description": "获得 !B! 点 格挡 。 NL 造成 !D! 点伤害。"
+    },
+    "perfected_strike": {
+      "name": "完美打击",
+      "english_name": "Perfected Strike",
+      "description": "造成 !D! 点伤害。 NL 你每有一张名字中有 打击 的牌，伤害+2。"
+    },
+    "pommel_strike": {
+      "name": "剑柄打击",
+      "english_name": "Pommel Strike",
+      "description": "造成 !D! 点伤害。 NL 抽 !M! 张牌。"
+    },
+    "shrug_it_off": {
+      "name": "耸肩无视",
+      "english_name": "Shrug it Off",
+      "description": "获得 !B! 点 格挡 。 NL 抽1张牌。"
+    },
+    "sword_boomerang": {
+      "name": "飞剑回旋镖",
+      "english_name": "Sword Boomerang",
+      "description": "随机对敌人造成 !D! 点伤害 !M! 次。"
+    },
+    "thunderclap": {
+      "name": "闪电霹雳",
+      "english_name": "Thunderclap",
+      "description": "对所有敌人造成 !D! 点伤害，给予1层 易伤 。"
+    },
+    "true_grit": {
+      "name": "坚毅",
+      "english_name": "True Grit",
+      "description": "获得 !B! 点 格挡 。 NL 消耗 一张随机手牌。"
+    },
+    "twin_strike": {
+      "name": "双重打击",
+      "english_name": "Twin Strike",
+      "description": "造成 !D! 点伤害两次。"
+    },
+    "warcry": {
+      "name": "战吼",
+      "english_name": "Warcry",
+      "description": "抽 !M! 张牌。 NL 将手牌中的一张牌放到你的抽牌堆顶部。 NL 消耗 。"
+    },
+    "wild_strike": {
+      "name": "狂野打击",
+      "english_name": "Wild Strike",
+      "description": "造成 !D! 点伤害。 NL 将一张 *伤口 放入你的抽牌堆中。"
+    },
+    "battle_trance": {
+      "name": "战斗专注",
+      "english_name": "Battle Trance",
+      "description": "抽 !M! 张牌。 NL 你在这个回合内不能再抽任何牌。"
+    },
+    "blood_for_blood": {
+      "name": "以血还血",
+      "english_name": "Blood for Blood",
+      "description": "你每在战斗中失去生命一次，这张牌的耗能就减少1 [R] 。 NL 造成 !D! 点伤害。"
+    },
+    "bloodletting": {
+      "name": "放血",
+      "english_name": "Bloodletting",
+      "description": "获得 [R] [R] 。 NL 失去 3 点生命。"
+    },
+    "burning_pact": {
+      "name": "燃烧契约",
+      "english_name": "Burning Pact",
+      "description": " 消耗 1张牌。 NL 抽 !M! 张牌。"
+    },
+    "carnage": {
+      "name": "残杀",
+      "english_name": "Carnage",
+      "description": " 虚无 。 NL 造成 !D! 点伤害。"
+    },
+    "combust": {
+      "name": "自燃",
+      "english_name": "Combust",
+      "description": "在你的回合结束时，你失去1点生命，对所有敌人造成 !M! 点伤害。"
+    },
+    "dark_embrace": {
+      "name": "黑暗之拥",
+      "english_name": "Dark Embrace",
+      "description": "每当有一张牌被 消耗 时， 抽1张牌。"
+    },
+    "disarm": {
+      "name": "缴械",
+      "english_name": "Disarm",
+      "description": "使敌人失去 !M! 点 力量 。 NL 消耗 。"
+    },
+    "dropkick": {
+      "name": "飞身踢",
+      "english_name": "Dropkick",
+      "description": "造成 !D! 点伤害。 NL 如果敌人有 易伤 状态 ， NL 获得 [R] 并且 NL 抽1张牌。"
+    },
+    "dual_wield": {
+      "name": "双持",
+      "english_name": "Dual Wield",
+      "description": "将你手牌中的一张 攻击 或 能力 牌复制一张。"
+    },
+    "entrench": {
+      "name": "巩固",
+      "english_name": "Entrench",
+      "description": "将你当前的 格挡 翻倍。"
+    },
+    "evolve": {
+      "name": "进化",
+      "english_name": "Evolve",
+      "description": "每当你抽到一张 状态牌 时，抽 !M! 张牌。"
+    },
+    "feel_no_pain": {
+      "name": "无惧疼痛",
+      "english_name": "Feel No Pain",
+      "description": "每当有一张牌被 消耗 时， 获得 !M! 点 格挡 。"
+    },
+    "fire_breathing": {
+      "name": "火焰吐息",
+      "english_name": "Fire Breathing",
+      "description": "每当你抽到一张 状态牌 或 诅咒 牌时，对所有敌人造成 !M! 点伤害。"
+    },
+    "flame_barrier": {
+      "name": "火焰屏障",
+      "english_name": "Flame Barrier",
+      "description": "获得 !B! 点 格挡 。 NL 你在这个回合每受到一次攻击，都对攻击者造成 !M! 点伤害。"
+    },
+    "ghostly_armor": {
+      "name": "幽灵铠甲",
+      "english_name": "Ghostly Armor",
+      "description": " 虚无 。 NL 获得 !B! 点 格挡 。"
+    },
+    "hemokinesis": {
+      "name": "御血术",
+      "english_name": "Hemokinesis",
+      "description": "失去 !M! 点生命。 NL 造成 !D! 点伤害。"
+    },
+    "infernal_blade": {
+      "name": "地狱之刃",
+      "english_name": "Infernal Blade",
+      "description": "增加一张随机攻击牌到你的手牌。 NL 这张牌在本回合耗能变为0。 NL 消耗 。"
+    },
+    "inflame": {
+      "name": "燃烧",
+      "english_name": "Inflame",
+      "description": "获得 !M! 点 力量 。"
+    },
+    "intimidate": {
+      "name": "威吓",
+      "english_name": "Intimidate",
+      "description": "给予所有敌人 !M! 层 虚弱 。 NL 消耗 。"
+    },
+    "metallicize": {
+      "name": "金属化",
+      "english_name": "Metallicize",
+      "description": "在你的回合结束时，获得 !M! 点 格挡 。"
+    },
+    "power_through": {
+      "name": "硬撑",
+      "english_name": "Power Through",
+      "description": "增加2张 *伤口 到你的手牌。 NL 获得 !B! 点 格挡 。"
+    },
+    "pummel": {
+      "name": "连续拳",
+      "english_name": "Pummel",
+      "description": "造成 !D! 点伤害 !M! 次。 NL 消耗 。"
+    },
+    "rage": {
+      "name": "狂怒",
+      "english_name": "Rage",
+      "description": "打出此牌后，你在这个回合内每打出一张攻击牌，获得 !M! 格挡 。"
+    },
+    "rampage": {
+      "name": "暴走",
+      "english_name": "Rampage",
+      "description": "造成 !D! 点伤害。 NL 这张牌每被打出一次，在本场战斗中其伤害增加 !M! 。"
+    },
+    "reckless_charge": {
+      "name": "无谋冲锋",
+      "english_name": "Reckless Charge",
+      "description": "造成 !D! 点伤害。 NL 将一张 *晕眩 放入你的抽牌堆中。"
+    },
+    "rupture": {
+      "name": "撕裂",
+      "english_name": "Rupture",
+      "description": "每当你从一张牌中失去生命时，获得 !M! 点 力量 。"
+    },
+    "searing_blow": {
+      "name": "灼热攻击",
+      "english_name": "Searing Blow",
+      "description": "造成 !D! 点伤害。 NL 能被多次 升级 。"
+    },
+    "second_wind": {
+      "name": "重振精神",
+      "english_name": "Second Wind",
+      "description": "消耗 手牌中所有非攻击牌，每张获得 !B! 点 格挡 。"
+    },
+    "seeing_red": {
+      "name": "盛怒",
+      "english_name": "Seeing Red",
+      "description": "获得 [R] [R] 。 NL 消耗 。"
+    },
+    "sentinel": {
+      "name": "哨卫",
+      "english_name": "Sentinel",
+      "description": "获得 !B! 点 格挡 。 NL 如果这张牌被 消耗 ， NL 获得 [R] [R] 。"
+    },
+    "sever_soul": {
+      "name": "断魂斩",
+      "english_name": "Sever Soul",
+      "description": " 消耗 手牌中所有非攻击牌。 NL 造成 !D! 点伤害。"
+    },
+    "shockwave": {
+      "name": "震荡波",
+      "english_name": "Shockwave",
+      "description": "给予所有敌人 !M! 层 虚弱 和 易伤 。 NL 消耗 。"
+    },
+    "spot_weakness": {
+      "name": "观察弱点",
+      "english_name": "Spot Weakness",
+      "description": "如果一名敌人的意图是攻击，你获得 !M! 点 力量 。"
+    },
+    "uppercut": {
+      "name": "上勾拳",
+      "english_name": "Uppercut",
+      "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。 NL 给予 !M! 层 易伤 。"
+    },
+    "whirlwind": {
+      "name": "旋风斩",
+      "english_name": "Whirlwind",
+      "description": "对所有敌人造成 !D! 点伤害X次。"
+    },
+    "barricade": {
+      "name": "壁垒",
+      "english_name": "Barricade",
+      "description": " 格挡 不再在你的回合开始时消失。"
+    },
+    "berserk": {
+      "name": "狂暴",
+      "english_name": "Berserk",
+      "description": "获得 !M! 层 易伤 。 NL 在每回合开始时获得 [R] 。"
+    },
+    "bludgeon": {
+      "name": "重锤",
+      "english_name": "Bludgeon",
+      "description": "造成 !D! 点伤害。"
+    },
+    "brutality": {
+      "name": "残暴",
+      "english_name": "Brutality",
+      "description": "在你的回合开始时，你失去1点生命，抽1张牌。"
+    },
+    "corruption": {
+      "name": "腐化",
+      "english_name": "Corruption",
+      "description": "所有技能牌耗能变为0。 NL 所有技能牌在被打出时被 消耗 。"
+    },
+    "demon_form": {
+      "name": "恶魔形态",
+      "english_name": "Demon Form",
+      "description": "在每回合开始时获得 NL !M! 点 力量 。"
+    },
+    "double_tap": {
+      "name": "双发",
+      "english_name": "Double Tap",
+      "description": "在这个回合，你打出的下一张攻击牌会打出两次。"
+    },
+    "exhume": {
+      "name": "发掘",
+      "english_name": "Exhume",
+      "description": "选择一张已 消耗 的牌，将其放入你的手牌。 NL 消耗 。"
+    },
+    "feed": {
+      "name": "狂宴",
+      "english_name": "Feed",
+      "description": "造成 !D! 点伤害。 NL 斩杀 时，永久获得 !M! 点最大生命。 消耗 。"
+    },
+    "fiend_fire": {
+      "name": "恶魔之焰",
+      "english_name": "Fiend Fire",
+      "description": " 消耗 所有手牌。 NL 每张被 消耗 的牌造成 !D! 点伤害。 NL 消耗 。"
+    },
+    "immolate": {
+      "name": "燔祭",
+      "english_name": "Immolate",
+      "description": "对所有敌人造成 !D! 点伤害。 NL 将一张 *灼伤 放入你的弃牌堆中。"
+    },
+    "impervious": {
+      "name": "岿然不动",
+      "english_name": "Impervious",
+      "description": "获得 !B! 点 格挡 。 NL 消耗 。"
+    },
+    "juggernaut": {
+      "name": "势不可当",
+      "english_name": "Juggernaut",
+      "description": "每当你获得 格挡 时， NL 对随机一名敌人造成 NL !M! 点伤害。"
+    },
+    "limit_break": {
+      "name": "突破极限",
+      "english_name": "Limit Break",
+      "description": "将你的 力量 翻倍。 NL 消耗 。"
+    },
+    "offering": {
+      "name": "祭品",
+      "english_name": "Offering",
+      "description": "失去 6 点生命。 NL 获得 [R] [R] 。 NL 抽 !M! 张牌。 NL 消耗 。"
+    },
+    "reaper": {
+      "name": "死亡收割",
+      "english_name": "Reaper",
+      "description": "对所有敌人造成 !D! 点伤害。未被 格挡 的伤害将回复你的生命。 NL 消耗 。"
+    },
+    "neutralize": {
+      "name": "中和",
+      "english_name": "Neutralize",
+      "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。"
+    },
+    "survivor": {
+      "name": "生存者",
+      "english_name": "Survivor",
+      "description": "获得 !B! 点 格挡 。 NL 丢弃一张牌。"
+    },
+    "acrobatics": {
+      "name": "杂技",
+      "english_name": "Acrobatics",
+      "description": "抽 !M! 张牌。 NL 丢弃 1 张牌。"
+    },
+    "backflip": {
+      "name": "后空翻",
+      "english_name": "Backflip",
+      "description": "获得 !B! 点 格挡 。 NL 抽2张牌。"
+    },
+    "bane": {
+      "name": "灾祸",
+      "english_name": "Bane",
+      "description": "造成 !D! 点伤害。 NL 如果敌人有 中毒 状态 ，则再次造成 !D! 点伤害。"
+    },
+    "blade_dance": {
+      "name": "刀刃之舞",
+      "english_name": "Blade Dance",
+      "description": "增加 !M! 张 *小刀 到你的手牌。"
+    },
+    "cloak_and_dagger": {
+      "name": "斗篷与匕首",
+      "english_name": "Cloak And Dagger",
+      "description": "获得 !B! 点 格挡 。 NL 增加 !M! 张 *小刀 到你的手牌。"
+    },
+    "dagger_spray": {
+      "name": "匕首雨",
+      "english_name": "Dagger Spray",
+      "description": "对所有敌人造成 !D! 点伤害两次。"
+    },
+    "dagger_throw": {
+      "name": "投掷匕首",
+      "english_name": "Dagger Throw",
+      "description": "造成 !D! 点伤害。 NL 抽一张牌。 NL 丢弃一张牌。"
+    },
+    "deadly_poison": {
+      "name": "致命毒药",
+      "english_name": "Deadly Poison",
+      "description": "给予 !M! 层 中毒 。"
+    },
+    "deflect": {
+      "name": "偏折",
+      "english_name": "Deflect",
+      "description": "获得 !B! 点 格挡 。"
+    },
+    "dodge_and_roll": {
+      "name": "闪躲翻滚",
+      "english_name": "Dodge and Roll",
+      "description": "获得 !B! 点 格挡 。 NL 在下一回合获得 !B! 点 格挡 。"
+    },
+    "flying_knee": {
+      "name": "飞膝",
+      "english_name": "Flying Knee",
+      "description": "造成 !D! 点伤害。 NL 在下一回合获得 [G] 。"
+    },
+    "outmaneuver": {
+      "name": "抢占先机",
+      "english_name": "Outmaneuver",
+      "description": "下一回合 NL 获得 [G] [G] 。"
+    },
+    "piercing_wail": {
+      "name": "尖啸",
+      "english_name": "Piercing Wail",
+      "description": "所有敌人失去 !M! 力量 1回合。 NL 消耗 。"
+    },
+    "poisoned_stab": {
+      "name": "带毒刺击",
+      "english_name": "Poisoned Stab",
+      "description": "造成 !D! 点伤害。 NL 给予 !M! 层 中毒 。"
+    },
+    "prepared": {
+      "name": "早有准备",
+      "english_name": "Prepared",
+      "description": "抽 !M! 张牌。 NL 丢弃 !M! 张牌。"
+    },
+    "quick_slash": {
+      "name": "快斩",
+      "english_name": "Quick Slash",
+      "description": "造成 !D! 点伤害。 NL 抽 1 张牌。"
+    },
+    "slice": {
+      "name": "切割",
+      "english_name": "Slice",
+      "description": "造成 !D! 点伤害。"
+    },
+    "sucker_punch": {
+      "name": "突然一拳",
+      "english_name": "Sucker Punch",
+      "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。"
+    },
+    "accuracy": {
+      "name": "精准",
+      "english_name": "Accuracy",
+      "description": "*小刀 造成的伤害增加 !M! 。"
+    },
+    "all_out_attack": {
+      "name": "全力攻击",
+      "english_name": "All-Out Attack",
+      "description": "对所有敌人造成 !D! 点伤害。 NL 丢弃一张随机手牌。"
+    },
+    "backstab": {
+      "name": "背刺",
+      "english_name": "Backstab",
+      "description": "造成 !D! 点伤害。 NL 固有 。 NL 消耗 。"
+    },
+    "blur": {
+      "name": "残影",
+      "english_name": "Blur",
+      "description": "获得 !B! 点 格挡 。 NL 你的下一回合开始时 格挡 不会消失。"
+    },
+    "bouncing_flask": {
+      "name": "弹跳药瓶",
+      "english_name": "Bouncing Flask",
+      "description": "随机给予敌人3层 中毒  !M! 次。"
+    },
+    "calculated_gamble": {
+      "name": "计算下注",
+      "english_name": "Calculated Gamble",
+      "description": "丢弃所有手牌。 NL 然后抽相同数量张牌。 NL 消耗 。"
+    },
+    "caltrops": {
+      "name": "铁蒺藜",
+      "english_name": "Caltrops",
+      "description": "每当你被攻击时，对攻击者造成 !M! 点伤害。"
+    },
+    "catalyst": {
+      "name": "催化剂",
+      "english_name": "Catalyst",
+      "description": "将一名敌人的 中毒 层数翻倍。 NL 消耗 。"
+    },
+    "choke": {
+      "name": "勒脖",
+      "english_name": "Choke",
+      "description": "造成 !D! 点伤害。 NL 你在这个回合内每打出一张牌，该名敌人都会失去 !M! 点生命。"
+    },
+    "concentrate": {
+      "name": "全神贯注",
+      "english_name": "Concentrate",
+      "description": "丢弃 !M! 张牌。 NL 获得 [G] [G] 。"
+    },
+    "dash": {
+      "name": "冲刺",
+      "english_name": "Dash",
+      "description": "获得 !B! 点 格挡 。 NL 造成 !D! 点伤害。"
+    },
+    "distraction": {
+      "name": "声东击西",
+      "english_name": "Distraction",
+      "description": "增加一张随机技能牌到你的手牌。 NL 这张牌在本回合耗能变为0。 NL 消耗 。"
+    },
+    "endless_agony": {
+      "name": "无尽苦痛",
+      "english_name": "Endless Agony",
+      "description": "造成 !D! 点伤害。 NL 每当你抽到这张牌，都增加一张其复制品到你的手牌。 NL 消耗 。"
+    },
+    "escape_plan": {
+      "name": "逃脱计划",
+      "english_name": "Escape Plan",
+      "description": "抽1张牌。 NL 如果抽到的是技能牌，获得 !B! 点 格挡 。"
+    },
+    "eviscerate": {
+      "name": "内脏切除",
+      "english_name": "Eviscerate",
+      "description": "你在这个回合内每丢弃一张牌，耗能就减少1 [G] 。 NL 造成 !D! 点伤害三次。"
+    },
+    "expertise": {
+      "name": "独门技术",
+      "english_name": "Expertise",
+      "description": "抽牌直到你的手牌有 !M! 张牌。"
+    },
+    "finisher": {
+      "name": "终结技",
+      "english_name": "Finisher",
+      "description": "你在这个回合内每打出过一张攻击牌，就造成一次 !D! 点伤害。"
+    },
+    "flechettes": {
+      "name": "飞镖",
+      "english_name": "Flechettes",
+      "description": "手牌中每有一张技能牌，造成 !D! 点伤害。"
+    },
+    "footwork": {
+      "name": "灵动步法",
+      "english_name": "Footwork",
+      "description": "获得 !M! 点 敏捷 。"
+    },
+    "heel_hook": {
+      "name": "足跟勾",
+      "english_name": "Heel Hook",
+      "description": "造成 !D! 点伤害。 NL 如果敌人有 虚弱 状态 ， NL 获得 [G] 并且 NL 抽1张牌。"
+    },
+    "infinite_blades": {
+      "name": "无限刀刃",
+      "english_name": "Infinite Blades",
+      "description": "在你的回合开始时，增加一张 *小刀 到你的手牌。"
+    },
+    "leg_sweep": {
+      "name": "扫腿",
+      "english_name": "Leg Sweep",
+      "description": "给予 !M! 层 虚弱 . NL 获得 !B! 点 格挡 。"
+    },
+    "masterful_stab": {
+      "name": "精巧刺击",
+      "english_name": "Masterful Stab",
+      "description": "造成 !D! 点伤害。 NL 你每次受到伤害，这张牌的耗能增加1。"
+    },
+    "noxious_fumes": {
+      "name": "毒雾",
+      "english_name": "Noxious Fumes",
+      "description": "在你的回合开始时，给予所有敌人 !M! 层 中毒 。"
+    },
+    "predator": {
+      "name": "猎杀者",
+      "english_name": "Predator",
+      "description": "造成 !D! 点伤害。 NL 在下一回合多抽2张牌。"
+    },
+    "reflex": {
+      "name": "本能反应",
+      "english_name": "Reflex",
+      "description": " 不能被打出 。 NL 如果这张牌从你的手牌中被丢弃，抽 !M! 张牌。"
+    },
+    "riddle_with_holes": {
+      "name": "千穿百刺",
+      "english_name": "Riddle With Holes",
+      "description": "造成 !D! 点伤害5次。"
+    },
+    "setup": {
+      "name": "部署",
+      "english_name": "Setup",
+      "description": "将手牌中的一张牌放到抽牌堆的顶部。 NL 并且在其被打出之前，其耗能变为0。"
+    },
+    "skewer": {
+      "name": "串刺",
+      "english_name": "Skewer",
+      "description": "造成 !D! 点伤害X次。"
+    },
+    "tactician": {
+      "name": "战术大师",
+      "english_name": "Tactician",
+      "description": " 不能被打出 。 NL 如果这张牌从你的手牌中被丢弃，获得 [G] 。"
+    },
+    "terror": {
+      "name": "恐怖",
+      "english_name": "Terror",
+      "description": "给予99层 易伤 。 NL 消耗 。"
+    },
+    "well_laid_plans": {
+      "name": "计划妥当",
+      "english_name": "Well-Laid Plans",
+      "description": "在你的回合结束时， 保留 最多 !M! 张牌。"
+    },
+    "a_thousand_cuts": {
+      "name": "凌迟",
+      "english_name": "A Thousand Cuts",
+      "description": "你每打出一张牌，就对所有敌人造成 !M! 点伤害。"
+    },
+    "adrenaline": {
+      "name": "肾上腺素",
+      "english_name": "Adrenaline",
+      "description": "获得 [G] 。 NL 抽2张牌。 NL 消耗 。"
+    },
+    "after_image": {
+      "name": "余像",
+      "english_name": "After Image",
+      "description": "你每打出一张牌，都获得1点 格挡 。"
+    },
+    "bullet_time": {
+      "name": "子弹时间",
+      "english_name": "Bullet Time",
+      "description": "你在本回合内不能再抽牌。你手牌中的所有牌在本回合的耗能变为0点。"
+    },
+    "burst": {
+      "name": "爆发",
+      "english_name": "Burst",
+      "description": "在这个回合，你打出的下一张技能牌会打出两次。"
+    },
+    "corpse_explosion": {
+      "name": "尸爆术",
+      "english_name": "Corpse Explosion",
+      "description": "给予 !M! 层 中毒 。 NL 当这名敌人死亡时，对所有敌人造成等于其最大生命值的伤害。"
+    },
+    "die_die_die": {
+      "name": "死吧死吧死吧",
+      "english_name": "Die Die Die",
+      "description": "对所有敌人造成 !D! 点伤害。 NL 消耗 。"
+    },
+    "doppelganger": {
+      "name": "双重存在",
+      "english_name": "Doppelganger",
+      "description": "下一回合，抽X张牌，获得X [G] 。 NL 消耗 。"
+    },
+    "envenom": {
+      "name": "涂毒",
+      "english_name": "Envenom",
+      "description": "每有一次攻击造成未被格挡的伤害，就给予1层 中毒 。"
+    },
+    "glass_knife": {
+      "name": "玻璃刀刃",
+      "english_name": "Glass Knife",
+      "description": "造成 !D! 点伤害两次。 NL 这张牌每被打出一次，在本场战斗中其基础伤害减少2。"
+    },
+    "grand_finale": {
+      "name": "华丽收场",
+      "english_name": "Grand Finale",
+      "description": "只有当抽牌堆中没有牌时才能打出。 NL 对所有敌人造成 !D! 点伤害。"
+    },
+    "malaise": {
+      "name": "萎靡",
+      "english_name": "Malaise",
+      "description": "敌人失去X点 力量 ，给予X层 虚弱 。 NL 消耗 。"
+    },
+    "phantasmal_killer": {
+      "name": "幻影杀手",
+      "english_name": "Phantasmal Killer",
+      "description": "在你的下个回合，你所有的攻击伤害翻倍。"
+    },
+    "storm_of_steel": {
+      "name": "钢铁风暴",
+      "english_name": "Storm of Steel",
+      "description": "丢弃所有手牌。 NL 每丢弃一张牌，在你的手牌中增加一张 *小刀 。"
+    },
+    "tools_of_the_trade": {
+      "name": "必备工具",
+      "english_name": "Tools of the Trade",
+      "description": "在你的回合开始时，抽1张牌，丢弃1张牌。"
+    },
+    "unload": {
+      "name": "乾坤一掷",
+      "english_name": "Unload",
+      "description": "造成 !D! 点伤害。 NL 丢弃所有非攻击牌。"
+    },
+    "dualcast": {
+      "name": "双重释放",
+      "english_name": "Dualcast",
+      "description": "激发 你最右侧的充能球2次。"
+    },
+    "zap": {
+      "name": "电击",
+      "english_name": "Zap",
+      "description": "生成 !M! 个 闪电 充能球。"
+    },
+    "ball_lightning": {
+      "name": "球状闪电",
+      "english_name": "Ball Lightning",
+      "description": "造成 !D! 点伤害。 生成 !M! 个 闪电 充能球。"
+    },
+    "barrage": {
+      "name": "弹幕齐射",
+      "english_name": "Barrage",
+      "description": "你每拥有一个充能球，造成 !D! 点伤害。"
+    },
+    "beam_cell": {
+      "name": "光束射线",
+      "english_name": "Beam Cell",
+      "description": "造成 !D! 点伤害。 NL 给予 !M! 层 易伤 。"
+    },
+    "cold_snap": {
+      "name": "寒流",
+      "english_name": "Cold Snap",
+      "description": "造成 !D! 点伤害。 生成 !M! 个 冰霜 充能球。"
+    },
+    "compile_driver": {
+      "name": "编译冲击",
+      "english_name": "Compile Driver",
+      "description": "造成 !D! 点伤害。 NL 你每有一种不同的 充能球 ，抽 !M! 张牌。"
+    },
+    "coolheaded": {
+      "name": "冷静头脑",
+      "english_name": "Coolheaded",
+      "description": "生成 1 个 冰霜 充能球。 NL 抽 !M! 张牌。"
+    },
+    "go_for_the_eyes": {
+      "name": "眼部攻击",
+      "english_name": "Go for the Eyes",
+      "description": "造成 !D! 点伤害。 NL 如果目标敌人的意图是攻击，则给予其 !M! 层 虚弱 。"
+    },
+    "hologram": {
+      "name": "全息影像",
+      "english_name": "Hologram",
+      "description": "获得 !B! 点 格挡 。 NL 将弃牌堆中的一张牌放入你的手牌。 NL 消耗 。"
+    },
+    "leap": {
+      "name": "飞跃",
+      "english_name": "Leap",
+      "description": "获得 !B! 点 格挡 。"
+    },
+    "rebound": {
+      "name": "弹回",
+      "english_name": "Rebound",
+      "description": "造成 !D! 点伤害。 NL 你在这个回合打出的下一张牌将会被放置到抽牌堆的顶部。 （只限会移入弃牌堆的牌）"
+    },
+    "stack": {
+      "name": "堆栈",
+      "english_name": "Stack",
+      "description": "获得与你当前弃牌堆中牌数相等的 格挡 值。"
+    },
+    "streamline": {
+      "name": "精简改良",
+      "english_name": "Streamline",
+      "description": "造成 !D! 点伤害。 NL 这张牌每被打出一次，它在本场战斗中的耗能减少 !M! 。"
+    },
+    "sweeping_beam": {
+      "name": "扫荡射线",
+      "english_name": "Sweeping Beam",
+      "description": "对所有敌人造成 !D! 点伤害。 NL 抽 !M! 张牌。"
+    },
+    "turbo": {
+      "name": "内核加速",
+      "english_name": "TURBO",
+      "description": "获得 [B] [B] 。 NL 将一张 *虚空 放入你的弃牌堆中。"
+    },
+    "aggregate": {
+      "name": "汇集",
+      "english_name": "Aggregate",
+      "description": "你的抽牌堆中每有 !M! 张牌，获得一点 [B] 。"
+    },
+    "auto_shields": {
+      "name": "自动护盾",
+      "english_name": "Auto-Shields",
+      "description": "如果你没有格挡，获得 !B! 点 格挡 。"
+    },
+    "blizzard": {
+      "name": "暴雪",
+      "english_name": "Blizzard",
+      "description": "对所有敌人造成你在本场战斗中 生成 过的 冰霜 充能球总数 !M! 倍的伤害。"
+    },
+    "boot_sequence": {
+      "name": "启动流程",
+      "english_name": "Boot Sequence",
+      "description": "获得 !B! 点 格挡 。 NL 固有 。 NL 消耗 。"
+    },
+    "capacitor": {
+      "name": "扩容",
+      "english_name": "Capacitor",
+      "description": "获得 !M! 个充能球栏位。"
+    },
+    "chaos": {
+      "name": "混沌",
+      "english_name": "Chaos",
+      "description": " 生成 !M! 个随机充能球。"
+    },
+    "chill": {
+      "name": "冰寒",
+      "english_name": "Chill",
+      "description": "当前每有一名敌人，生成 !M! 个 冰霜 充能球。 NL 消耗 。"
+    },
+    "consume": {
+      "name": "耗尽",
+      "english_name": "Consume",
+      "description": "获得 !M! 点 集中 。 NL 失去 1 个充能球栏位。"
+    },
+    "darkness": {
+      "name": "漆黑",
+      "english_name": "Darkness",
+      "description": "生成 !M! 个 黑暗 充能球。"
+    },
+    "defragment": {
+      "name": "碎片整理",
+      "english_name": "Defragment",
+      "description": "获得 !M! 点 集中 。"
+    },
+    "doom_and_gloom": {
+      "name": "愁云惨淡",
+      "english_name": "Doom and Gloom",
+      "description": "对所有敌人造成 !D! 点伤害。 NL 生成 !M! 个 黑暗 充能球。"
+    },
+    "double_energy": {
+      "name": "双倍能量",
+      "english_name": "Double Energy",
+      "description": "将你的 能量 翻倍。 NL 消耗 。"
+    },
+    "ftl": {
+      "name": "超越光速",
+      "english_name": "FTL",
+      "description": "造成 !D! 点伤害。 NL 如果你在这回合打出的牌数少于 !M! 张，抽一张牌。"
+    },
+    "force_field": {
+      "name": "力场",
+      "english_name": "Force Field",
+      "description": "你在本场战斗中每打出一张能力牌，耗能就减少1 [B] 。 NL 获得 !B! 点 格挡 。"
+    },
+    "fusion": {
+      "name": "聚变",
+      "english_name": "Fusion",
+      "description": "生成 !M! 个 等离子 充能球。"
+    },
+    "genetic_algorithm": {
+      "name": "遗传算法",
+      "english_name": "Genetic Algorithm",
+      "description": "获得 !B! 点 格挡 。 NL 每打出一次，这张牌在本局游戏中的格挡值永久性增加 !M! 。 NL 消耗 。"
+    },
+    "glacier": {
+      "name": "冰川",
+      "english_name": "Glacier",
+      "description": "获得 !B! 点 格挡 。 NL 生成 !M! 个 冰霜 充能球。"
+    },
+    "heatsinks": {
+      "name": "散热片",
+      "english_name": "Heatsinks",
+      "description": "你每打出一张能力牌，抽 !M! 张牌。"
+    },
+    "hello_world": {
+      "name": "你好，世界",
+      "english_name": "Hello World",
+      "description": "在你的回合开始时，增加一张随机普通牌到你的手牌。"
+    },
+    "loop": {
+      "name": "循环",
+      "english_name": "Loop",
+      "description": "在你的回合开始时，使用你最右侧的1个充能球的被动能力。"
+    },
+    "melter": {
+      "name": "熔化",
+      "english_name": "Melter",
+      "description": "去除一名敌人的所有 格挡 值。 NL 造成 !D! 点伤害。"
+    },
+    "recycle": {
+      "name": "回收",
+      "english_name": "Recycle",
+      "description": "消耗 一张牌。 NL 获得与其耗能相等的 [B] 。"
+    },
+    "reinforced_body": {
+      "name": "硬化机体",
+      "english_name": "Reinforced Body",
+      "description": "获得 !B! 点 格挡 X 次。"
+    },
+    "reprogram": {
+      "name": "重编程",
+      "english_name": "Reprogram",
+      "description": "失去 !M! 点 集中 。 NL 获得!M!点 力量 。 NL 获得!M!点 敏捷 。"
+    },
+    "rip_and_tear": {
+      "name": "狂乱撕扯",
+      "english_name": "Rip and Tear",
+      "description": "随机对敌人造成 !D! 点伤害 !M! 次。"
+    },
+    "scrape": {
+      "name": "刮削",
+      "english_name": "Scrape",
+      "description": "造成 !D! 伤害。 NL 抽 !M! 张牌。 NL 丢弃抽到的牌中耗能不为0的牌。"
+    },
+    "self_repair": {
+      "name": "自我修复",
+      "english_name": "Self Repair",
+      "description": "在战斗结束时，回复 !M! 点生命。"
+    },
+    "skim": {
+      "name": "快速检索",
+      "english_name": "Skim",
+      "description": "抽 !M! 张牌。"
+    },
+    "static_discharge": {
+      "name": "静电释放",
+      "english_name": "Static Discharge",
+      "description": "每当你受到未被格挡的攻击伤害时， 生成 !M! 个 闪电 充能球。"
+    },
+    "storm": {
+      "name": "雷暴",
+      "english_name": "Storm",
+      "description": "你每打出一张能力牌， 生成 1 个 闪电 充能球。"
+    },
+    "sunder": {
+      "name": "分离",
+      "english_name": "Sunder",
+      "description": "造成 !D! 点伤害。 NL 如果这张牌杀死了敌人，则获得 [B] [B] [B] 。"
+    },
+    "tempest": {
+      "name": "暴风雨",
+      "english_name": "Tempest",
+      "description": "生成 X 个 闪电 充能球。 NL 消耗 。"
+    },
+    "white_noise": {
+      "name": "白噪声",
+      "english_name": "White Noise",
+      "description": "增加一张随机能力牌到你的手牌。 NL 这张牌在本回合耗能变为0。 NL 消耗 。"
+    },
+    "all_for_one": {
+      "name": "万物一心",
+      "english_name": "All for One",
+      "description": "造成 !D! 点伤害。 NL 将弃牌堆中所有0耗能的牌放入你的手牌。"
+    },
+    "amplify": {
+      "name": "增幅",
+      "english_name": "Amplify",
+      "description": "在这个回合，你的下一张 能力牌 会打出两次。"
+    },
+    "biased_cognition": {
+      "name": "偏差认知",
+      "english_name": "Biased Cognition",
+      "description": "获得 !M! 点 集中。 NL 在每回合开始时，失去 1 点 集中 。"
+    },
+    "buffer": {
+      "name": "缓冲",
+      "english_name": "Buffer",
+      "description": "阻止下一次你受到的生命值损伤。"
+    },
+    "core_surge": {
+      "name": "核心电涌",
+      "english_name": "Core Surge",
+      "description": "造成 !D! 点伤害。 NL 获得 !M! 层 人工制品 。 NL 消耗 。"
+    },
+    "creative_ai": {
+      "name": "创造性AI",
+      "english_name": "Creative AI",
+      "description": "在每回合开始时，增加一张随机 能力 牌到你的手牌。"
+    },
+    "echo_form": {
+      "name": "回响形态",
+      "english_name": "Echo Form",
+      "description": "你每回合打出的第一张牌会打出两次。 NL 虚无 。"
+    },
+    "electrodynamics": {
+      "name": "电动力学",
+      "english_name": "Electrodynamics",
+      "description": "闪电 充能球现在会击中所有敌人。 NL 生成 !M! 个 闪电 充能球。"
+    },
+    "fission": {
+      "name": "裂变",
+      "english_name": "Fission",
+      "description": "移除所有 充能球 ，每移除一个充能球获得 [B] 并抽 !M! 张牌 。 NL 消耗 。"
+    },
+    "hyperbeam": {
+      "name": "超能光束",
+      "english_name": "Hyperbeam",
+      "description": "对所有敌人造成 !D! 点伤害。 NL 失去 !M! 点 集中 。"
+    },
+    "machine_learning": {
+      "name": "机器学习",
+      "english_name": "Machine Learning",
+      "description": "在每回合开始时额外抽 !M! 张牌。"
+    },
+    "meteor_strike": {
+      "name": "陨石打击",
+      "english_name": "Meteor Strike",
+      "description": "造成 !D! 点伤害。 NL 生成 !M! 个 等离子 充能球。"
+    },
+    "multi_cast": {
+      "name": "多重释放",
+      "english_name": "Multi-Cast",
+      "description": "激发 你最右侧的充能球X次。"
+    },
+    "rainbow": {
+      "name": "彩虹",
+      "english_name": "Rainbow",
+      "description": "生成 闪电 、 冰霜 、 黑暗 充能球各一个。 NL 消耗 。"
+    },
+    "reboot": {
+      "name": "重启",
+      "english_name": "Reboot",
+      "description": "将你所有未消耗的牌重新洗牌放入抽牌堆。 NL 抽 !M! 张牌。 NL 消耗 。"
+    },
+    "seek": {
+      "name": "搜寻",
+      "english_name": "Seek",
+      "description": "从抽牌堆中选择 !M! 张牌放入你的手牌。 NL 消耗 。"
+    },
+    "thunder_strike": {
+      "name": "雷霆打击",
+      "english_name": "Thunder Strike",
+      "description": "你在本场战斗中每 生成 过 一个 闪电 充能球，随机造成一次 !D! 点伤害。"
+    },
+    "eruption": {
+      "name": "暴怒",
+      "english_name": "Eruption",
+      "description": "造成 !D! 点伤害。 NL 进入 愤怒 。"
+    },
+    "vigilance": {
+      "name": "警惕",
+      "english_name": "Vigilance",
+      "description": "获得 !B! 点 格挡 。 NL 进入 平静 。"
+    },
+    "bowling_bash": {
+      "name": "碰撞连击",
+      "english_name": "Bowling Bash",
+      "description": "当前每有一名敌人，造成 !D! 点伤害。"
+    },
+    "consecrate": {
+      "name": "供奉",
+      "english_name": "Consecrate",
+      "description": "对所有敌人造成 !D! 点伤害。"
+    },
+    "crescendo": {
+      "name": "渐强",
+      "english_name": "Crescendo",
+      "description": " 保留 。 NL 进入 愤怒 。 NL 消耗 。"
+    },
+    "crush_joints": {
+      "name": "粉碎关节",
+      "english_name": "Crush Joints",
+      "description": "造成 !D! 点伤害。 NL 如果本场战斗中打出的上一张牌是技能牌，给予 !M! 层 易伤 。"
+    },
+    "cut_through_fate": {
+      "name": "斩破命运",
+      "english_name": "Cut Through Fate",
+      "description": "造成 !D! 点伤害。 NL 预见 !M! 。 NL 抽1张牌。"
+    },
+    "empty_body": {
+      "name": "化体为空",
+      "english_name": "Empty Body",
+      "description": "获得 !B! 点 格挡 。 NL 退出当前 姿态 。"
+    },
+    "empty_fist": {
+      "name": "化拳为空",
+      "english_name": "Empty Fist",
+      "description": "造成 !D! 点伤害。 NL 退出当前 姿态 。"
+    },
+    "evaluate": {
+      "name": "评估",
+      "english_name": "Evaluate",
+      "description": "获得 !B! 点 格挡 。 NL 在你的抽牌堆中加入一张 *洞见 。"
+    },
+    "flurry_of_blows": {
+      "name": "疾风连击",
+      "english_name": "Flurry of Blows",
+      "description": "造成 !D! 点伤害。 NL 你每次转换 姿态 时，将这张牌从弃牌堆放回你的手牌。"
+    },
+    "flying_sleeves": {
+      "name": "流云飞袖",
+      "english_name": "Flying Sleeves",
+      "description": " 保留 。 NL 造成 !D! 点伤害两次。"
+    },
+    "follow_up": {
+      "name": "追击",
+      "english_name": "Follow-Up",
+      "description": "造成 !D! 点伤害。 NL 如果本场战斗中打出的上一张牌是攻击牌，获得 [W] 。"
+    },
+    "halt": {
+      "name": "停顿",
+      "english_name": "Halt",
+      "description": "获得 !B! 点 格挡 。 NL 愤怒 ：获得 !M! 点额外格挡。"
+    },
+    "just_lucky": {
+      "name": "幸运一击",
+      "english_name": "Just Lucky",
+      "description": "预见 !M! 。 NL 获得 !B! 点 格挡 。 NL 造成 !D! 点伤害。"
+    },
+    "prostrate": {
+      "name": "五体投地",
+      "english_name": "Prostrate",
+      "description": "获得 !M! 层 真言 。 NL 获得 !B! 点 格挡 。"
+    },
+    "protect": {
+      "name": "护身",
+      "english_name": "Protect",
+      "description": " 保留 。 NL 获得 !B! 点 格挡 。"
+    },
+    "sash_whip": {
+      "name": "腰带抽打",
+      "english_name": "Sash Whip",
+      "description": "造成 !D! 点伤害。 NL 如果本场战斗中打出的上一张牌是攻击牌，给予 !M! 层 虚弱 。"
+    },
+    "third_eye": {
+      "name": "天眼",
+      "english_name": "Third Eye",
+      "description": "获得 !B! 点 格挡 。 NL 预见 !M! 。"
+    },
+    "battle_hymn": {
+      "name": "战歌",
+      "english_name": "Battle Hymn",
+      "description": "在每回合开始时，将一张 *惩恶 加入你的手牌。"
+    },
+    "carve_reality": {
+      "name": "改造现实",
+      "english_name": "Carve Reality",
+      "description": "造成 !D! 点伤害。 NL 将一张 *惩恶 加入你的手牌。"
+    },
+    "collect": {
+      "name": "收集",
+      "english_name": "Collect",
+      "description": "在你的下X个回合开始时，增加一张 *奇迹+ 到你的手牌。 NL 消耗 。"
+    },
+    "conclude": {
+      "name": "结末",
+      "english_name": "Conclude",
+      "description": "对所有敌人造成 !D! 点伤害。 NL 结束你的回合。"
+    },
+    "deceive_reality": {
+      "name": "欺瞒现实",
+      "english_name": "Deceive Reality",
+      "description": "获得 !B! 点 格挡 。 NL 将一张 *平安 加入你的手牌。"
+    },
+    "empty_mind": {
+      "name": "化智为空",
+      "english_name": "Empty Mind",
+      "description": "抽 !M! 张牌。 NL 退出当前 姿态 。"
+    },
+    "fasting": {
+      "name": "DEPRECATED",
+      "english_name": "Fasting",
+      "description": "DEPRECATED"
+    },
+    "fear_no_evil": {
+      "name": "不惧妖邪",
+      "english_name": "Fear No Evil",
+      "description": "造成 !D! 点伤害。 NL 如果目标敌人的意图是攻击，则进入 平静 。"
+    },
+    "foreign_influence": {
+      "name": "他山之石",
+      "english_name": "Foreign Influence",
+      "description": "从3张任意颜色的攻击牌中选择1张加入你的手牌。 NL 消耗 。"
+    },
+    "indignation": {
+      "name": "义愤填膺",
+      "english_name": "Indignation",
+      "description": " 愤怒 ：给予所有敌人 !M! 层 易伤 。 NL 否则，进入 愤怒 。"
+    },
+    "inner_peace": {
+      "name": "内心宁静",
+      "english_name": "Inner Peace",
+      "description": "平静 ： 抽 !M! 张牌。 NL 否则，进入 平静 。"
+    },
+    "like_water": {
+      "name": "如水",
+      "english_name": "Like Water",
+      "description": "在你的回合结束时，如果你处于 平静 ， 则获得 !M! 点 格挡 。"
+    },
+    "meditate": {
+      "name": "冥想",
+      "english_name": "Meditate",
+      "description": "将弃牌堆中的一张牌放入你的手牌，并将其 保留 。 NL 进入 平静 。 NL 结束你的回合。"
+    },
+    "mental_fortress": {
+      "name": "心灵堡垒",
+      "english_name": "Mental Fortress",
+      "description": "每当你转换 姿态 时，获得 !M! 点 格挡 。"
+    },
+    "nirvana": {
+      "name": "涅槃",
+      "english_name": "Nirvana",
+      "description": "你每次 预见 时，获得 !M! 点 格挡 。"
+    },
+    "perseverance": {
+      "name": "坚韧",
+      "english_name": "Perseverance",
+      "description": " 保留 。 NL 获得 !B! 点 格挡 。 NL 每当这张牌被 保留 时，将其在本场战斗的格挡增加 !M! 点。"
+    },
+    "pray": {
+      "name": "祈祷",
+      "english_name": "Pray",
+      "description": "获得 !M! 层 真言 。 NL 在你的抽牌堆中加入1张 *洞见 。"
+    },
+    "reach_heaven": {
+      "name": "立地升天",
+      "english_name": "Reach Heaven",
+      "description": "造成 !D! 点伤害。 在你的抽牌堆中加入1张 NL *以暴易暴 。"
+    },
+    "sanctity": {
+      "name": "圣洁",
+      "english_name": "Sanctity",
+      "description": "获得 !B! 点 格挡 。 NL 如果本场战斗中打出的上一张牌是技能牌，抽 !M! 张牌。"
+    },
+    "sands_of_time": {
+      "name": "时之沙",
+      "english_name": "Sands of Time",
+      "description": " 保留 。 NL 造成 !D! 点伤害。 NL 每当这张牌被 保留 时，将其在本场战斗的耗能减少1。"
+    },
+    "signature_move": {
+      "name": "招牌技",
+      "english_name": "Signature Move",
+      "description": "只有当这张牌是你手中唯一的一张攻击牌时才可以被打出。 造成 !D! 点伤害。"
+    },
+    "study": {
+      "name": "研习",
+      "english_name": "Study",
+      "description": "在你的回合结束时，在你的抽牌堆中加入一张 *洞见 。"
+    },
+    "swivel": {
+      "name": "旋身",
+      "english_name": "Swivel",
+      "description": "获得 !B! 点 格挡 。 NL 你打出的下一张攻击牌耗能变为0。"
+    },
+    "talk_to_the_hand": {
+      "name": "以手拒之",
+      "english_name": "Talk to the Hand",
+      "description": "造成 !D! 点伤害。 NL 每当目标敌人受到攻击时，你获得 !M! 点格挡。 NL 消耗 。"
+    },
+    "tantrum": {
+      "name": "发泄",
+      "english_name": "Tantrum",
+      "description": "造成 !D! 点伤害 !M! 次。 NL 进入 愤怒 。 NL 将这张牌放入你的抽牌堆。"
+    },
+    "wallop": {
+      "name": "当头棒喝",
+      "english_name": "Wallop",
+      "description": "造成 !D! 点伤害。 NL 获得与所造成的未被格挡的伤害相等的 格挡 。"
+    },
+    "wave_of_the_hand": {
+      "name": "摆手",
+      "english_name": "Wave of the Hand",
+      "description": "在本回合，你每次获得 格挡 时，给予所有敌人 !M! 层 虚弱 。"
+    },
+    "weave": {
+      "name": "迂回",
+      "english_name": "Weave",
+      "description": "造成 !D! 点伤害。 NL 你每次 预见 时，将这张牌从弃牌堆放回你的手牌。"
+    },
+    "wheel_kick": {
+      "name": "回环踢",
+      "english_name": "Wheel Kick",
+      "description": "造成 !D! 点伤害。 NL 抽 !M! 张牌。"
+    },
+    "windmill_strike": {
+      "name": "旋转打击",
+      "english_name": "Windmill Strike",
+      "description": " 保留 。 NL 造成 !D! 点伤害。 NL 每当这张牌被 保留 时，将其在本场战斗的伤害增加 !M! 点。"
+    },
+    "worship": {
+      "name": "敬拜",
+      "english_name": "Worship",
+      "description": "获得 !M! 层 真言 。"
+    },
+    "wreath_of_flame": {
+      "name": "火焰纹",
+      "english_name": "Wreath of Flame",
+      "description": "你的下一张攻击牌造成 !M! 点额外伤害。"
+    },
+    "alpha": {
+      "name": "阿尔法",
+      "english_name": "Alpha",
+      "description": "将一张 *贝塔 放入你的抽牌堆中。 NL 消耗 。"
+    },
+    "blasphemy": {
+      "name": "渎神",
+      "english_name": "Blasphemy",
+      "description": "进入 神格 。 NL 在下回合死亡。 NL 消耗 。"
+    },
+    "brilliance": {
+      "name": "光辉",
+      "english_name": "Brilliance",
+      "description": "造成 !D! 点伤害。 NL 额外造成本场战斗中获得的 真言 总层数的伤害。"
+    },
+    "conjure_blade": {
+      "name": "聚能成刃",
+      "english_name": "Conjure Blade",
+      "description": "将一张 *灭除之刃 放入你的抽牌堆中。 NL 消耗 。"
+    },
+    "deus_ex_machina": {
+      "name": "机械降神",
+      "english_name": "Deus Ex Machina",
+      "description": " 不能被打出 。 NL 当你抽到这张牌时，在你的手牌中加入 !M! 张 *奇迹 ，然后 消耗 。"
+    },
+    "deva_form": {
+      "name": "天人形态",
+      "english_name": "Deva Form",
+      "description": " 虚无 。 NL 在你的回合开始时获得 [W] ，每回合增加 !M! 。"
+    },
+    "devotion": {
+      "name": "虔信",
+      "english_name": "Devotion",
+      "description": "在你的回合开始时，获得 !M! 层 真言 。"
+    },
+    "establishment": {
+      "name": "确立基础",
+      "english_name": "Establishment",
+      "description": "每当有卡牌被 保留 时，将其在本场战斗的耗能减少 !M! 。"
+    },
+    "lesson_learned": {
+      "name": "勤学精进",
+      "english_name": "Lesson Learned",
+      "description": "造成 !D! 点伤害。 NL 斩杀 时， 升级 你牌组中的一张随机牌。 消耗 。"
+    },
+    "master_reality": {
+      "name": "操控现实",
+      "english_name": "Master Reality",
+      "description": "所有在战斗中临时增加的牌将被 升级 。"
+    },
+    "omniscience": {
+      "name": "通晓万物",
+      "english_name": "Omniscience",
+      "description": "选择你抽牌堆中的一张牌。 将这张牌打出两次然后将其 消耗 。 NL 消耗 。"
+    },
+    "ragnarok": {
+      "name": "诸神之黄昏",
+      "english_name": "Ragnarok",
+      "description": "随机对敌人造成 !D! 点伤害 !M! 次。"
+    },
+    "scrawl": {
+      "name": "潦草急就",
+      "english_name": "Scrawl",
+      "description": "抽牌直到将手牌抽满。 NL 消耗 。"
+    },
+    "spirit_shield": {
+      "name": "精神护盾",
+      "english_name": "Spirit Shield",
+      "description": "你每有一张手牌，获得 !M! 点 格挡 。"
+    },
+    "vault": {
+      "name": "腾跃",
+      "english_name": "Vault",
+      "description": "在本回合结束后，额外获得一回合。 NL 结束你的回合。 NL 消耗 。"
+    },
+    "wish": {
+      "name": "许愿",
+      "english_name": "Wish",
+      "description": "选择：获得 !B! 层 多层护甲 、 !D! 点 力量 、 或 !M! 金币 。 NL 消耗 。"
+    },
+    "bandage_up": {
+      "name": "包扎",
+      "english_name": "Bandage Up",
+      "description": "回复 !M! 生命。 NL 消耗 。"
+    },
+    "blind": {
+      "name": "致盲",
+      "english_name": "Blind",
+      "description": "给予 !M! 层 虚弱 。"
+    },
+    "dark_shackles": {
+      "name": "黑暗镣铐",
+      "english_name": "Dark Shackles",
+      "description": "让一名敌人在本回合内失去 !M! 点 力量 。 NL 消耗 。"
+    },
+    "deep_breath": {
+      "name": "深呼吸",
+      "english_name": "Deep Breath",
+      "description": "将你的弃牌堆洗牌后放入你的抽牌堆。 NL 抽 !M! 张牌。"
+    },
+    "discovery": {
+      "name": "发现",
+      "english_name": "Discovery",
+      "description": "从3张随机牌中选择1张加入你的手牌。这张牌在本回合耗能变为0。 NL 消耗 。"
+    },
+    "dramatic_entrance": {
+      "name": "闪亮登场",
+      "english_name": "Dramatic Entrance",
+      "description": " 固有 。 NL 对所有敌人造成 !D! 点伤害。 NL 消耗 。"
+    },
+    "enlightenment": {
+      "name": "开悟",
+      "english_name": "Enlightenment",
+      "description": "在这个回合，你当前手牌中所有牌的耗能降低到1。"
+    },
+    "finesse": {
+      "name": "妙计",
+      "english_name": "Finesse",
+      "description": "获得 !B! 点 格挡 。 NL 抽1张牌。"
+    },
+    "flash_of_steel": {
+      "name": "亮剑",
+      "english_name": "Flash of Steel",
+      "description": "造成 !D! 点伤害。 NL 抽1张牌。"
+    },
+    "forethought": {
+      "name": "预谋",
+      "english_name": "Forethought",
+      "description": "将手牌中的一张牌放到抽牌堆的底部。 NL 并且这张牌在被打出之前，耗能变为0。"
+    },
+    "good_instincts": {
+      "name": "优秀直觉",
+      "english_name": "Good Instincts",
+      "description": "获得 !B! 点 格挡 。"
+    },
+    "impatience": {
+      "name": "急躁",
+      "english_name": "Impatience",
+      "description": "如果你的手牌中没有攻击牌，抽 !M! 张牌。"
+    },
+    "jack_of_all_trades": {
+      "name": "花样百出",
+      "english_name": "Jack Of All Trades",
+      "description": "增加 !M! 张随机无色牌到你的手牌。 NL 消耗 。"
+    },
+    "madness": {
+      "name": "疯狂",
+      "english_name": "Madness",
+      "description": "你手牌中一张随机牌在本场战斗中耗能变为0。 NL 消耗 。"
+    },
+    "mind_blast": {
+      "name": "心灵震慑",
+      "english_name": "Mind Blast",
+      "description": " 固有 。 NL 造成你抽牌堆中剩余牌数的伤害。"
+    },
+    "panacea": {
+      "name": "万能药",
+      "english_name": "Panacea",
+      "description": "获得 !M! 层 人工制品 。 NL 消耗 。"
+    },
+    "panic_button": {
+      "name": "应急按钮",
+      "english_name": "Panic Button",
+      "description": "获得 !B! 点 格挡 。 NL 你在接下来 !M! 回合内无法再从卡牌中获得格挡。 NL 消耗 。"
+    },
+    "purity": {
+      "name": "净化",
+      "english_name": "Purity",
+      "description": "从手牌中选择最多 !M! 张牌 消耗 。 NL 消耗 。"
+    },
+    "swift_strike": {
+      "name": "迅捷打击",
+      "english_name": "Swift Strike",
+      "description": "造成 !D! 点伤害。"
+    },
+    "trip": {
+      "name": "绊倒",
+      "english_name": "Trip",
+      "description": "给予 !M! 层 易伤 。"
+    },
+    "apotheosis": {
+      "name": "神化",
+      "english_name": "Apotheosis",
+      "description": "在本场战斗中 升级 你的所有牌。 NL 消耗 。"
+    },
+    "chrysalis": {
+      "name": "结茧",
+      "english_name": "Chrysalis",
+      "description": "在你的抽牌堆中加入 NL !M! 张随机技能牌。 他们 NL 在本场战斗中耗能为0。 NL 消耗 。"
+    },
+    "hand_of_greed": {
+      "name": "贪婪之手",
+      "english_name": "Hand of Greed",
+      "description": "造成 !D! 点伤害。 NL 斩杀 时，获得 !M! 金币。"
+    },
+    "magnetism": {
+      "name": "磁力",
+      "english_name": "Magnetism",
+      "description": "在每回合开始时，增加一张随机无色牌到你的手牌。"
+    },
+    "master_of_strategy": {
+      "name": "战略大师",
+      "english_name": "Master Of Strategy",
+      "description": "抽 !M! 张牌。 NL 消耗 。"
+    },
+    "mayhem": {
+      "name": "乱战",
+      "english_name": "Mayhem",
+      "description": "在你的回合开始时，打出你抽牌堆顶部的牌。"
+    },
+    "metamorphosis": {
+      "name": "羽化",
+      "english_name": "Metamorphosis",
+      "description": "在你的抽牌堆中加入 NL !M! 张随机攻击牌。 他们 NL 在本场战斗中耗能为0。 NL 消耗 。"
+    },
+    "panache": {
+      "name": "神气制胜",
+      "english_name": "Panache",
+      "description": "你每在同个回合内打出5张牌，就对所有敌人造成 !M! 点伤害。"
+    },
+    "sadistic_nature": {
+      "name": "残虐天性",
+      "english_name": "Sadistic Nature",
+      "description": "每当你对一名敌人造成负面 状态 ，使对方受到 !M! 点伤害。"
+    },
+    "secret_technique": {
+      "name": "秘密技法",
+      "english_name": "Secret Technique",
+      "description": "从抽牌堆中选择一张技能牌放入你的手牌。 NL 消耗 。"
+    },
+    "secret_weapon": {
+      "name": "秘密武器",
+      "english_name": "Secret Weapon",
+      "description": "从抽牌堆中选择一张攻击牌放入你的手牌。 NL 消耗 。"
+    },
+    "the_bomb": {
+      "name": "炸弹",
+      "english_name": "The Bomb",
+      "description": "在3回合结束后，对所有敌人造成 !M! 点伤害。"
+    },
+    "thinking_ahead": {
+      "name": "深谋远虑",
+      "english_name": "Thinking Ahead",
+      "description": "抽2张牌，然后将手牌中的一张牌放到你抽牌堆的顶端。 消耗 。"
+    },
+    "transmutation": {
+      "name": "转化",
+      "english_name": "Transmutation",
+      "description": "在你的手牌中加入 X 张随机无色牌。 它们在本回合的耗能变为0。 NL 消耗 。"
+    },
+    "violence": {
+      "name": "暴力",
+      "english_name": "Violence",
+      "description": "随机将你抽牌堆中 !M! 张攻击牌加入你的手牌。 NL 消耗 。"
+    },
+    "beta": {
+      "name": "贝塔",
+      "english_name": "Beta",
+      "description": "将一张 *欧米伽 放入你的抽牌堆中。 NL 消耗 。"
+    },
+    "bite": {
+      "name": "噬咬",
+      "english_name": "Bite",
+      "description": "造成 !D! 点伤害。 NL 回复 !M! 点生命。"
+    },
+    "expunger": {
+      "name": "灭除之刃",
+      "english_name": "Expunger",
+      "description": "造成 !D! 点伤害 X 次。"
+    },
+    "insight": {
+      "name": "洞见",
+      "english_name": "Insight",
+      "description": " 保留 。 NL 抽 !M! 张牌。 NL 消耗 。"
+    },
+    "j_a_x": {
+      "name": "J.A.X.",
+      "english_name": "J.A.X.",
+      "description": "失去 3 点生命。 NL 获得 !M! 点 力量 。"
+    },
+    "miracle": {
+      "name": "奇迹",
+      "english_name": "Miracle",
+      "description": " 保留 。 NL 获得 [W] 。 NL 消耗 。"
+    },
+    "omega": {
+      "name": "欧米伽",
+      "english_name": "Omega",
+      "description": "在你的回合结束时，对所有敌人造成 !M! 点伤害。"
+    },
+    "ritual_dagger": {
+      "name": "仪式匕首",
+      "english_name": "Ritual Dagger",
+      "description": "造成 !D! 点伤害。 NL 斩杀 时，它在本局游戏中的伤害永久性增加 !M! 。 NL 消耗 。"
+    },
+    "safety": {
+      "name": "平安",
+      "english_name": "Safety",
+      "description": " 保留 。 NL 获得 !B! 点 格挡 。 NL 消耗 。"
+    },
+    "shiv_card": {
+      "name": "小刀",
+      "english_name": "Shiv",
+      "description": "造成 !D! 点伤害。 NL 消耗 。"
+    },
+    "smite": {
+      "name": "惩恶",
+      "english_name": "Smite",
+      "description": " 保留 。 NL 造成 !D! 点伤害。 NL 消耗 。"
+    },
+    "through_violence": {
+      "name": "以暴易暴",
+      "english_name": "Through Violence",
+      "description": " 保留 。 NL 造成 !D! 点伤害。 NL 消耗 。"
+    },
+    "ascenders_bane": {
+      "name": "进阶之灾",
+      "english_name": "Ascender's Bane",
+      "description": "不能被打出 。 NL 虚无 。 NL 不能从牌组中移除。"
+    },
+    "clumsy": {
+      "name": "笨拙",
+      "english_name": "Clumsy",
+      "description": " 不能被打出 。 NL 虚无 。"
+    },
+    "curse_of_the_bell": {
+      "name": "铃铛的诅咒",
+      "english_name": "Curse of the Bell",
+      "description": " 不能被打出 。 NL 不能从牌组中移除。"
+    },
+    "decay": {
+      "name": "腐朽",
+      "english_name": "Decay",
+      "description": " 不能被打出 。 NL 在你的回合结束时，受到2点伤害。"
+    },
+    "doubt": {
+      "name": "疑虑",
+      "english_name": "Doubt",
+      "description": " 不能被打出 。 NL 在你的回合结束时，获得1层 虚弱 。"
+    },
+    "injury": {
+      "name": "受伤",
+      "english_name": "Injury",
+      "description": " 不能被打出 。"
+    },
+    "necronomicurse": {
+      "name": "死灵诅咒",
+      "english_name": "Necronomicurse",
+      "description": " 不能被打出 。 NL 这个 诅咒 无法逃脱。"
+    },
+    "normality": {
+      "name": "凡庸",
+      "english_name": "Normality",
+      "description": " 不能被打出 。 NL 在手牌中时，你在此回合无法打出3张以上牌。"
+    },
+    "pain": {
+      "name": "疼痛",
+      "english_name": "Pain",
+      "description": " 不能被打出 。 NL 当在手牌中时，每打出一张其他牌，失去1生命。"
+    },
+    "parasite": {
+      "name": "寄生",
+      "english_name": "Parasite",
+      "description": " 不能被打出 。 NL 如果这张牌在你的牌组中被转化或移除，你失去3点最大生命。"
+    },
+    "pride": {
+      "name": "傲慢",
+      "english_name": "Pride",
+      "description": "固有 。 消耗 。 NL 你的回合结束时，在抽牌堆顶部加入一张这张牌的复制品。"
+    },
+    "regret": {
+      "name": "悔恨",
+      "english_name": "Regret",
+      "description": " 不能被打出 。 NL 在你的回合结束时，失去相当于手牌数量的生命。"
+    },
+    "shame": {
+      "name": "羞耻",
+      "english_name": "Shame",
+      "description": "不能被打出 。 NL 在你的回合结束时，获得1层 脆弱 。"
+    },
+    "writhe": {
+      "name": "苦恼",
+      "english_name": "Writhe",
+      "description": " 不能被打出 。 NL 固有 。"
+    },
+    "burn": {
+      "name": "灼伤",
+      "english_name": "Burn",
+      "description": " 不能被打出 。 NL 在你的回合结束时，你受到2点伤害。"
+    },
+    "dazed": {
+      "name": "晕眩",
+      "english_name": "Dazed",
+      "description": " 不能被打出 。 NL 虚无 。"
+    },
+    "wound": {
+      "name": "伤口",
+      "english_name": "Wound",
+      "description": " 不能被打出 。"
+    },
+    "slimed": {
+      "name": "黏液",
+      "english_name": "Slimed",
+      "description": "消耗 。"
+    },
+    "void": {
+      "name": "虚空",
+      "english_name": "Void",
+      "description": "不能被打出 。 NL 抽到这张牌时失去1点能量。 NL 虚无 。"
+    },
+    "strike_ironclad": {
+      "name": "打击",
+      "english_name": "Strike",
+      "description": "造成 !D! 点伤害。"
+    },
+    "defend_ironclad": {
+      "name": "防御",
+      "english_name": "Defend",
+      "description": "获得 !B! 点 格挡 。"
+    },
+    "strike_silent": {
+      "name": "打击",
+      "english_name": "Strike",
+      "description": "造成 !D! 点伤害。"
+    },
+    "defend_silent": {
+      "name": "防御",
+      "english_name": "Defend",
+      "description": "获得 !B! 点 格挡 。"
+    },
+    "strike_watcher": {
+      "name": "打击",
+      "english_name": "Strike",
+      "description": "造成 !D! 点伤害。"
+    },
+    "defend_watcher": {
+      "name": "防御",
+      "english_name": "Defend",
+      "description": "获得 !B! 点 格挡 。"
+    },
+    "burning_blood": {
+      "name": "燃烧之血",
+      "english_name": "Burning Blood"
+    },
+    "ring_of_the_snake": {
+      "name": "蛇之戒指",
+      "english_name": "Ring of the Snake"
+    },
+    "cracked_core": {
+      "name": "破损核心",
+      "english_name": "Cracked Core"
+    },
+    "pure_water": {
+      "name": "至纯之水",
+      "english_name": "Pure Water"
+    },
+    "akabeko": {
+      "name": "赤牛",
+      "english_name": "Akabeko"
+    },
+    "anchor": {
+      "name": "锚",
+      "english_name": "Anchor"
+    },
+    "ancient_tea_set": {
+      "name": "古茶具套装",
+      "english_name": "Ancient Tea Set"
+    },
+    "art_of_war": {
+      "name": "孙子兵法",
+      "english_name": "Art of War"
+    },
+    "bag_of_marbles": {
+      "name": "弹珠袋",
+      "english_name": "Bag of Marbles"
+    },
+    "bag_of_preparation": {
+      "name": "准备背包",
+      "english_name": "Bag of Preparation"
+    },
+    "blood_vial": {
+      "name": "小血瓶",
+      "english_name": "Blood Vial"
+    },
+    "bronze_scales": {
+      "name": "铜制鳞片",
+      "english_name": "Bronze Scales"
+    },
+    "centennial_puzzle": {
+      "name": "百年积木",
+      "english_name": "Centennial Puzzle"
+    },
+    "ceramic_fish": {
+      "name": "陶瓷小鱼",
+      "english_name": "Ceramic Fish"
+    },
+    "damaru": {
+      "name": "手摇鼓",
+      "english_name": "Damaru"
+    },
+    "data_disk": {
+      "name": "数据磁盘",
+      "english_name": "Data Disk"
+    },
+    "dream_catcher": {
+      "name": "捕梦网",
+      "english_name": "Dream Catcher"
+    },
+    "happy_flower": {
+      "name": "开心小花",
+      "english_name": "Happy Flower"
+    },
+    "juzu_bracelet": {
+      "name": "佛珠手链",
+      "english_name": "Juzu Bracelet"
+    },
+    "lantern": {
+      "name": "灯笼",
+      "english_name": "Lantern"
+    },
+    "maw_bank": {
+      "name": "巨口储蓄罐",
+      "english_name": "Maw Bank"
+    },
+    "meal_ticket": {
+      "name": "餐券",
+      "english_name": "Meal Ticket"
+    },
+    "nunchaku": {
+      "name": "双节棍",
+      "english_name": "Nunchaku"
+    },
+    "oddly_smooth_stone": {
+      "name": "意外光滑的石头",
+      "english_name": "Oddly Smooth Stone"
+    },
+    "omamori": {
+      "name": "御守",
+      "english_name": "Omamori"
+    },
+    "orichalcum": {
+      "name": "奥利哈钢",
+      "english_name": "Orichalcum"
+    },
+    "pen_nib": {
+      "name": "钢笔尖",
+      "english_name": "Pen Nib"
+    },
+    "potion_belt": {
+      "name": "药水腰带",
+      "english_name": "Potion Belt"
+    },
+    "preserved_insect": {
+      "name": "昆虫标本",
+      "english_name": "Preserved Insect"
+    },
+    "red_skull": {
+      "name": "红头骨",
+      "english_name": "Red Skull"
+    },
+    "regal_pillow": {
+      "name": "皇家枕头",
+      "english_name": "Regal Pillow"
+    },
+    "smiling_mask": {
+      "name": "微笑面具",
+      "english_name": "Smiling Mask"
+    },
+    "strawberry": {
+      "name": "草莓",
+      "english_name": "Strawberry"
+    },
+    "tiny_chest": {
+      "name": "小宝箱",
+      "english_name": "Tiny Chest"
+    },
+    "toy_ornithopter": {
+      "name": "玩具扑翼飞机",
+      "english_name": "Toy Ornithopter"
+    },
+    "vajra": {
+      "name": "金刚杵",
+      "english_name": "Vajra"
+    },
+    "war_paint": {
+      "name": "战纹涂料",
+      "english_name": "War Paint"
+    },
+    "whetstone": {
+      "name": "磨刀石",
+      "english_name": "Whetstone"
+    },
+    "blue_candle": {
+      "name": "蓝蜡烛",
+      "english_name": "Blue Candle"
+    },
+    "bottled_flame": {
+      "name": "瓶装火焰",
+      "english_name": "Bottled Flame"
+    },
+    "bottled_lightning": {
+      "name": "瓶装闪电",
+      "english_name": "Bottled Lightning"
+    },
+    "bottled_tornado": {
+      "name": "瓶装旋风",
+      "english_name": "Bottled Tornado"
+    },
+    "darkstone_periapt": {
+      "name": "黑石护符",
+      "english_name": "Darkstone Periapt"
+    },
+    "eternal_feather": {
+      "name": "永恒羽毛",
+      "english_name": "Eternal Feather"
+    },
+    "gremlin_horn": {
+      "name": "地精之角",
+      "english_name": "Gremlin Horn"
+    },
+    "horn_cleat": {
+      "name": "船夹板",
+      "english_name": "Horn Cleat"
+    },
+    "ink_bottle": {
+      "name": "墨水瓶",
+      "english_name": "Ink Bottle"
+    },
+    "kunai": {
+      "name": "苦无",
+      "english_name": "Kunai"
+    },
+    "letter_opener": {
+      "name": "开信刀",
+      "english_name": "Letter Opener"
+    },
+    "matryoshka": {
+      "name": "套娃",
+      "english_name": "Matryoshka"
+    },
+    "meat_on_the_bone": {
+      "name": "带骨肉",
+      "english_name": "Meat on the Bone"
+    },
+    "mercury_hourglass": {
+      "name": "水银沙漏",
+      "english_name": "Mercury Hourglass"
+    },
+    "mummified_hand": {
+      "name": "干瘪之手",
+      "english_name": "Mummified Hand"
+    },
+    "ninja_scroll": {
+      "name": "忍术卷轴",
+      "english_name": "Ninja Scroll"
+    },
+    "ornamental_fan": {
+      "name": "精致折扇",
+      "english_name": "Ornamental Fan"
+    },
+    "pantograph": {
+      "name": "缩放仪",
+      "english_name": "Pantograph"
+    },
+    "pear": {
+      "name": "梨子",
+      "english_name": "Pear"
+    },
+    "question_card": {
+      "name": "问号牌",
+      "english_name": "Question Card"
+    },
+    "self_forming_clay": {
+      "name": "自成型黏土",
+      "english_name": "Self-Forming Clay"
+    },
+    "shuriken": {
+      "name": "手里剑",
+      "english_name": "Shuriken"
+    },
+    "singing_bowl": {
+      "name": "颂钵",
+      "english_name": "Singing Bowl"
+    },
+    "strike_dummy": {
+      "name": "打击木偶",
+      "english_name": "Strike Dummy"
+    },
+    "sundial": {
+      "name": "日晷",
+      "english_name": "Sundial"
+    },
+    "symbiotic_virus": {
+      "name": "共生病毒",
+      "english_name": "Symbiotic Virus"
+    },
+    "teardrop_locket": {
+      "name": "泪滴吊坠盒",
+      "english_name": "Teardrop Locket"
+    },
+    "the_courier": {
+      "name": "送货员",
+      "english_name": "The Courier"
+    },
+    "white_beast_statue": {
+      "name": "白兽雕像",
+      "english_name": "White Beast Statue"
+    },
+    "bird_faced_urn": {
+      "name": "鸟面瓮",
+      "english_name": "Bird-Faced Urn"
+    },
+    "black_star": {
+      "name": "黑星",
+      "english_name": "Black Star"
+    },
+    "brimstone": {
+      "name": "硫磺",
+      "english_name": "Brimstone"
+    },
+    "captains_wheel": {
+      "name": "舵盘",
+      "english_name": "Captain’s Wheel"
+    },
+    "cauldron": {
+      "name": "大锅",
+      "english_name": "Cauldron"
+    },
+    "cloak_clasp": {
+      "name": "斗篷扣",
+      "english_name": "Cloak Clasp"
+    },
+    "dollys_mirror": {
+      "name": "多利之镜",
+      "english_name": "Dolly’s Mirror"
+    },
+    "emotion_chip": {
+      "name": "情感芯片",
+      "english_name": "Emotion Chip"
+    },
+    "fossilized_helix": {
+      "name": "螺类化石",
+      "english_name": "Fossilized Helix"
+    },
+    "gambling_chip": {
+      "name": "赌博筹码",
+      "english_name": "Gambling Chip"
+    },
+    "ginger": {
+      "name": "生姜",
+      "english_name": "Ginger"
+    },
+    "girya": {
+      "name": "壶铃",
+      "english_name": "Girya"
+    },
+    "golden_eye": {
+      "name": "黄金眼",
+      "english_name": "Golden Eye"
+    },
+    "hand_drill": {
+      "name": "手钻",
+      "english_name": "Hand Drill"
+    },
+    "ice_cream": {
+      "name": "冰淇淋",
+      "english_name": "Ice Cream"
+    },
+    "incense_burner": {
+      "name": "香炉",
+      "english_name": "Incense Burner"
+    },
+    "lizard_tail": {
+      "name": "蜥蜴尾巴",
+      "english_name": "Lizard Tail"
+    },
+    "magic_flower": {
+      "name": "魔法花",
+      "english_name": "Magic Flower"
+    },
+    "mark_of_the_bloom": {
+      "name": "绽放印记",
+      "english_name": "Mark of the Bloom"
+    },
+    "necronomicon": {
+      "name": "死灵之书",
+      "english_name": "Necronomicon"
+    },
+    "old_coin": {
+      "name": "古钱币",
+      "english_name": "Old Coin"
+    },
+    "orange_pellets": {
+      "name": "橙色药丸",
+      "english_name": "Orange Pellets"
+    },
+    "peace_pipe": {
+      "name": "宁静烟斗",
+      "english_name": "Peace Pipe"
+    },
+    "pocketwatch": {
+      "name": "怀表",
+      "english_name": "Pocketwatch"
+    },
+    "prismatic_shard": {
+      "name": "棱镜碎片",
+      "english_name": "Prismatic Shard"
+    },
+    "runic_cube": {
+      "name": "符文立方体",
+      "english_name": "Runic Cube"
+    },
+    "stone_calendar": {
+      "name": "历石",
+      "english_name": "Stone Calendar"
+    },
+    "strange_spoon": {
+      "name": "奇怪的勺子",
+      "english_name": "Strange Spoon"
+    },
+    "the_specimen": {
+      "name": "生物样本",
+      "english_name": "The Specimen"
+    },
+    "thread_and_needle": {
+      "name": "针线",
+      "english_name": "Thread and Needle"
+    },
+    "torii": {
+      "name": "鸟居",
+      "english_name": "Torii"
+    },
+    "tough_bandages": {
+      "name": "结实绷带",
+      "english_name": "Tough Bandages"
+    },
+    "turnip": {
+      "name": "萝卜",
+      "english_name": "Turnip"
+    },
+    "unceasing_top": {
+      "name": "不休陀螺",
+      "english_name": "Unceasing Top"
+    },
+    "membership_card": {
+      "name": "会员卡",
+      "english_name": "Membership Card"
+    },
+    "astrolabe": {
+      "name": "星盘",
+      "english_name": "Astrolabe"
+    },
+    "black_blood": {
+      "name": "黑暗之血",
+      "english_name": "Black Blood"
+    },
+    "calling_bell": {
+      "name": "召唤铃铛",
+      "english_name": "Calling Bell"
+    },
+    "coffee_dripper": {
+      "name": "咖啡滤杯",
+      "english_name": "Coffee Dripper"
+    },
+    "cursed_key": {
+      "name": "诅咒钥匙",
+      "english_name": "Cursed Key"
+    },
+    "ectoplasm": {
+      "name": "灵体外质",
+      "english_name": "Ectoplasm"
+    },
+    "empty_cage": {
+      "name": "空鸟笼",
+      "english_name": "Empty Cage"
+    },
+    "fusion_hammer": {
+      "name": "融合之锤",
+      "english_name": "Fusion Hammer"
+    },
+    "holy_water": {
+      "name": "圣水",
+      "english_name": "Holy Water"
+    },
+    "inserter": {
+      "name": "机械臂",
+      "english_name": "Inserter"
+    },
+    "mark_of_pain": {
+      "name": "痛楚印记",
+      "english_name": "Mark of Pain"
+    },
+    "runic_dome": {
+      "name": "符文圆顶",
+      "english_name": "Runic Dome"
+    },
+    "runic_pyramid": {
+      "name": "符文金字塔",
+      "english_name": "Runic Pyramid"
+    },
+    "sacred_bark": {
+      "name": "神圣树皮",
+      "english_name": "Sacred Bark"
+    },
+    "slavers_collar": {
+      "name": "奴隶贩子颈环",
+      "english_name": "Slavers' Collar"
+    },
+    "snecko_eye": {
+      "name": "异蛇之眼",
+      "english_name": "Snecko Eye"
+    },
+    "sozu": {
+      "name": "添水",
+      "english_name": "Sozu"
+    },
+    "tiny_house": {
+      "name": "小屋子",
+      "english_name": "Tiny House"
+    },
+    "velvet_choker": {
+      "name": "天鹅绒颈圈",
+      "english_name": "Velvet Choker"
+    },
+    "bloody_idol": {
+      "name": "鲜血神像",
+      "english_name": "Bloody Idol"
+    },
+    "enchiridion": {
+      "name": "英雄宝典",
+      "english_name": "Enchiridion"
+    },
+    "face_of_cleric": {
+      "name": "牧师的脸",
+      "english_name": "Face of Cleric"
+    },
+    "golden_idol": {
+      "name": "金神像",
+      "english_name": "Golden Idol"
+    },
+    "mutagenic_strength": {
+      "name": "突变之力",
+      "english_name": "Mutagenic Strength"
+    },
+    "nloths_gift": {
+      "name": "恩洛斯的礼物",
+      "english_name": "Nloth's Gift"
+    },
+    "red_mask": {
+      "name": "红面具",
+      "english_name": "Red Mask"
+    },
+    "spirit_poop": {
+      "name": "精灵便便",
+      "english_name": "Spirit Poop"
+    },
+    "ssserpent_head": {
+      "name": "蛇的头",
+      "english_name": "Ssserpent Head"
+    },
+    "warped_tongs": {
+      "name": "弯曲铁钳",
+      "english_name": "Warped Tongs"
+    },
+    "circlet": {
+      "name": "头环",
+      "english_name": "Circlet"
+    },
+    "ambrosia": {
+      "name": "仙馔密酒",
+      "english_name": "Ambrosia"
+    },
+    "ancient_potion": {
+      "name": "先古药水",
+      "english_name": "Ancient Potion"
+    },
+    "attack_potion": {
+      "name": "攻击药水",
+      "english_name": "Attack Potion"
+    },
+    "blessing_of_the_forge": {
+      "name": "熔炉的祝福",
+      "english_name": "Blessing of the Forge"
+    },
+    "block_potion": {
+      "name": "格挡药水",
+      "english_name": "Block Potion"
+    },
+    "blood_potion": {
+      "name": "鲜血药水",
+      "english_name": "Blood Potion"
+    },
+    "bottled_miracle": {
+      "name": "瓶装奇迹",
+      "english_name": "Bottled Miracle"
+    },
+    "colorless_potion": {
+      "name": "无色药水",
+      "english_name": "Colorless Potion"
+    },
+    "cultist_potion": {
+      "name": "邪教徒药水",
+      "english_name": "Cultist Potion"
+    },
+    "cunning_potion": {
+      "name": "狡诈药水",
+      "english_name": "Cunning Potion"
+    },
+    "dexterity_potion": {
+      "name": "敏捷药水",
+      "english_name": "Dexterity Potion"
+    },
+    "distilled_chaos": {
+      "name": "精炼混沌",
+      "english_name": "Distilled Chaos"
+    },
+    "duplication_potion": {
+      "name": "复制药水",
+      "english_name": "Duplication Potion"
+    },
+    "elixir": {
+      "name": "不死药",
+      "english_name": "Elixir"
+    },
+    "energy_potion": {
+      "name": "能量药水",
+      "english_name": "Energy Potion"
+    },
+    "entropic_brew": {
+      "name": "混沌药水",
+      "english_name": "Entropic Brew"
+    },
+    "essence_of_darkness": {
+      "name": "暗之精华",
+      "english_name": "Essence of Darkness"
+    },
+    "essence_of_steel": {
+      "name": "钢之精华",
+      "english_name": "Essence of Steel"
+    },
+    "explosive_potion": {
+      "name": "爆炸药水",
+      "english_name": "Explosive Potion"
+    },
+    "fear_potion": {
+      "name": "恐惧药水",
+      "english_name": "Fear Potion"
+    },
+    "fire_potion": {
+      "name": "火焰药水",
+      "english_name": "Fire Potion"
+    },
+    "focus_potion": {
+      "name": "集中药水",
+      "english_name": "Focus Potion"
+    },
+    "fruit_juice": {
+      "name": "果汁",
+      "english_name": "Fruit Juice"
+    },
+    "gamblers_brew": {
+      "name": "赌徒特酿",
+      "english_name": "Gambler's Brew"
+    },
+    "ghost_in_a_jar": {
+      "name": "罐装幽灵",
+      "english_name": "Ghost In A Jar"
+    },
+    "heart_of_iron": {
+      "name": "铁之心",
+      "english_name": "Heart of Iron"
+    },
+    "liquid_bronze": {
+      "name": "流动铜液",
+      "english_name": "Liquid Bronze"
+    },
+    "liquid_memories": {
+      "name": "液态记忆",
+      "english_name": "Liquid Memories"
+    },
+    "poison_potion": {
+      "name": "毒药水",
+      "english_name": "Poison Potion"
+    },
+    "potion_of_capacity": {
+      "name": "扩容药水",
+      "english_name": "Potion of Capacity"
+    },
+    "power_potion": {
+      "name": "能力药水",
+      "english_name": "Power Potion"
+    },
+    "regen_potion": {
+      "name": "再生药水",
+      "english_name": "Regen Potion"
+    },
+    "skill_potion": {
+      "name": "技能药水",
+      "english_name": "Skill Potion"
+    },
+    "smoke_bomb": {
+      "name": "烟雾弹",
+      "english_name": "Smoke Bomb"
+    },
+    "snecko_oil": {
+      "name": "异蛇之油",
+      "english_name": "Snecko Oil"
+    },
+    "speed_potion": {
+      "name": "速度药水",
+      "english_name": "Speed Potion"
+    },
+    "stance_potion": {
+      "name": "姿态药水",
+      "english_name": "Stance Potion"
+    },
+    "strength_potion": {
+      "name": "力量药水",
+      "english_name": "Strength Potion"
+    },
+    "swift_potion": {
+      "name": "迅捷药水",
+      "english_name": "Swift Potion"
+    },
+    "weak_potion": {
+      "name": "虚弱药水",
+      "english_name": "Weak Potion"
+    },
+    "awakened_one": {
+      "name": "觉醒者",
+      "english_name": "Awakened One"
+    },
+    "bronze_automaton": {
+      "name": "铜制机械人偶",
+      "english_name": "Bronze Automaton"
+    },
+    "hexaghost": {
+      "name": "六火亡魂",
+      "english_name": "Hexaghost"
+    },
+    "slime_boss": {
+      "name": "史莱姆老大",
+      "english_name": "Slime Boss"
+    },
+    "the_collector": {
+      "name": "收藏家",
+      "english_name": "The Collector"
+    },
+    "time_eater": {
+      "name": "时间吞噬者",
+      "english_name": "Time Eater"
+    },
+    "book_of_stabbing": {
+      "name": "扎人的书",
+      "english_name": "Book of Stabbing"
+    },
+    "giant_head": {
+      "name": "大脑袋",
+      "english_name": "Giant Head"
+    },
+    "gremlin_leader": {
+      "name": "地精首领",
+      "english_name": "Gremlin Leader"
+    },
+    "gremlin_nob": {
+      "name": "地精大块头",
+      "english_name": "Gremlin Nob"
+    },
+    "lagavulin": {
+      "name": "乐加维林",
+      "english_name": "Lagavulin"
+    },
+    "nemesis": {
+      "name": "天罚",
+      "english_name": "Nemesis"
+    },
+    "reptomancer": {
+      "name": "拜蛇术士",
+      "english_name": "Reptomancer"
+    },
+    "spire_shield": {
+      "name": "高塔之盾",
+      "english_name": "Spire Shield"
+    },
+    "spire_spear": {
+      "name": "高塔之矛",
+      "english_name": "Spire Spear"
+    },
+    "acid_slime_l": {
+      "name": "酸液史莱姆（大）",
+      "english_name": "Acid Slime (L)"
+    },
+    "acid_slime_m": {
+      "name": "酸液史莱姆（中）",
+      "english_name": "Acid Slime (M)"
+    },
+    "acid_slime_s": {
+      "name": "酸液史莱姆（小）",
+      "english_name": "Acid Slime (S)"
+    },
+    "byrd": {
+      "name": "异鸟",
+      "english_name": "Byrd"
+    },
+    "centurion": {
+      "name": "百夫长",
+      "english_name": "Centurion"
+    },
+    "chosen": {
+      "name": "被拣选者",
+      "english_name": "Chosen"
+    },
+    "cultist": {
+      "name": "邪教徒",
+      "english_name": "Cultist"
+    },
+    "darkling": {
+      "name": "小黑",
+      "english_name": "Darkling"
+    },
+    "exploder": {
+      "name": "爆炸机",
+      "english_name": "Exploder"
+    },
+    "fungi_beast": {
+      "name": "真菌兽",
+      "english_name": "Fungi Beast"
+    },
+    "gremlin_wizard": {
+      "name": "地精法师",
+      "english_name": "Gremlin Wizard"
+    },
+    "jaw_worm": {
+      "name": "大颚虫",
+      "english_name": "Jaw Worm"
+    },
+    "looter": {
+      "name": "抢劫的",
+      "english_name": "Looter"
+    },
+    "orb_walker": {
+      "name": "圆球行者",
+      "english_name": "Orb Walker"
+    },
+    "repulsor": {
+      "name": "反冲机",
+      "english_name": "Repulsor"
+    },
+    "shelled_parasite": {
+      "name": "带壳寄生怪",
+      "english_name": "Shelled Parasite"
+    },
+    "snake_plant": {
+      "name": "蛇花",
+      "english_name": "Snake Plant"
+    },
+    "snecko": {
+      "name": "异蛇",
+      "english_name": "Snecko"
+    },
+    "spheric_guardian": {
+      "name": "圆球守护者",
+      "english_name": "Spheric Guardian"
+    },
+    "spike_slime_l": {
+      "name": "尖刺史莱姆（大）",
+      "english_name": "Spike Slime (L)"
+    },
+    "spike_slime_m": {
+      "name": "尖刺史莱姆（中）",
+      "english_name": "Spike Slime (M)"
+    },
+    "spike_slime_s": {
+      "name": "尖刺史莱姆（小）",
+      "english_name": "Spike Slime (S)"
+    },
+    "spiker": {
+      "name": "钉刺机",
+      "english_name": "Spiker"
+    },
+    "transient": {
+      "name": "倏忽魔",
+      "english_name": "Transient"
+    },
+    "writhing_mass": {
+      "name": "扭曲团块",
+      "english_name": "Writhing Mass"
+    }
+  },
+  "mechanics": {
+    "aoe": "群体伤害",
+    "block": "格挡",
+    "draw": "抽牌",
+    "discard": "弃牌",
+    "energy": "能量",
+    "frontload_damage": "前期输出",
+    "poison": "中毒",
+    "strength": "力量",
+    "stance_wrath": "愤怒",
+    "stance_calm": "平静",
+    "focus": "集中",
+    "orb_frost": "冰霜充能球",
+    "orb_lightning": "闪电充能球",
+    "scaling_damage": "成长输出",
+    "retain": "保留",
+    "weak": "虚弱",
+    "vulnerable": "易伤"
+  },
+  "labels": {
+    "ironclad": "铁甲战士",
+    "silent": "静默猎手",
+    "defect": "故障机器人",
+    "watcher": "观者",
+    "card_pick": "选牌",
+    "relic_pick": "选遗物",
+    "shop": "商店",
+    "pathing": "路线",
+    "combat": "战斗",
+    "no_aoe": "缺少群体伤害",
+    "low_defense": "防御不足",
+    "slow_scaling": "成长能力不足",
+    "low_hp": "血量偏低",
+    "shop_ready": "金币适合进商店"
+  }
+}

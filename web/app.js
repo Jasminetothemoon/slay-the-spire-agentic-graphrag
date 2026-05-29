@@ -163,6 +163,12 @@ function applyLanguage() {
   languageSelect.value = currentLanguage;
   overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
   updateConnectionStatus(connectionState);
+  renderStateInputs();
+  if (window.lastRecommendation) {
+    answerEl.textContent = localizedReasoning(window.lastRecommendation);
+    evidenceEl.textContent = JSON.stringify(localizedGraphContext(window.lastRecommendation), null, 2);
+  }
+  renderScores(window.lastRecommendation?.option_scores || []);
   renderStateSummary();
   renderTopRecommendation();
   updateLiveStrip();
@@ -231,6 +237,55 @@ function currentStatePayload() {
   };
 }
 
+function zhState() {
+  return latestState.localized?.zh || {};
+}
+
+function localizedList(key, fallback) {
+  if (currentLanguage === "zh" && Array.isArray(zhState()[key])) {
+    return zhState()[key];
+  }
+  return fallback || [];
+}
+
+function renderStateInputs() {
+  if (!latestState || !Object.keys(latestState).length) {
+    return;
+  }
+  setLines("#deck", localizedList("deck", latestState.deck));
+  setLines("#relics", localizedList("relics", latestState.relics));
+  if (Array.isArray(latestState.options) && latestState.options.length) {
+    setLines("#options", localizedList("options", latestState.options));
+  }
+}
+
+function localizedScore(score, index) {
+  if (currentLanguage !== "zh") {
+    return score;
+  }
+  const localized = window.lastRecommendation?.localized?.zh?.option_scores?.[index] || {};
+  return {
+    ...score,
+    name: localized.name || score.name,
+    reasons: localized.reasons || score.reasons,
+    risks: localized.risks || score.risks,
+  };
+}
+
+function localizedReasoning(data) {
+  if (currentLanguage === "zh") {
+    return data.localized?.zh?.reasoning || data.reasoning;
+  }
+  return data.reasoning;
+}
+
+function localizedGraphContext(data) {
+  if (currentLanguage === "zh") {
+    return data.localized?.zh?.graph_context || data.graph_context;
+  }
+  return data.graph_context;
+}
+
 function markUpdated() {
   lastUpdatedAt = new Date();
   updateLiveStrip();
@@ -268,13 +323,12 @@ function applyIncomingState(state) {
   if (Number.isFinite(Number(state.gold))) {
     document.querySelector("#gold").value = state.gold;
   }
-  setLines("#deck", state.deck);
-  setLines("#relics", state.relics);
+  renderStateInputs();
   if (state.query_type) {
     queryTypeInput.value = state.query_type;
   }
   if (Array.isArray(state.options) && state.options.length) {
-    setLines("#options", state.options);
+    setLines("#options", localizedList("options", state.options));
   } else if (state.source === "mod_bridge") {
     setLines("#options", []);
   }
@@ -285,8 +339,8 @@ function applyIncomingState(state) {
 function renderRecommendation(data) {
   window.lastRecommendation = data;
   markUpdated();
-  answerEl.textContent = data.reasoning;
-  evidenceEl.textContent = JSON.stringify(data.graph_context, null, 2);
+  answerEl.textContent = localizedReasoning(data);
+  evidenceEl.textContent = JSON.stringify(localizedGraphContext(data), null, 2);
   renderScores(data.option_scores || []);
   renderStateSummary();
   renderTopRecommendation();
@@ -295,8 +349,10 @@ function renderRecommendation(data) {
 function renderStateSummary() {
   const state = currentStatePayload();
   const topScore = window.lastRecommendation?.option_scores?.[0];
+  const displayTopScore = topScore ? localizedScore(topScore, 0) : null;
+  const stateClass = currentLanguage === "zh" ? zhState().character_class || state.character_class : state.character_class;
   const chips = [
-    `${t("class")}: ${state.character_class || "-"}`,
+    `${t("class")}: ${stateClass || "-"}`,
     `${t("hp")}: ${state.current_hp}/${state.max_hp}`,
     `${t("gold")}: ${state.gold}`,
     `${t("act")}: ${state.act}`,
@@ -311,7 +367,7 @@ function renderStateSummary() {
     </div>
     <div class="top-pick">
       <span>${t("topPick")}</span>
-      <strong>${escapeHtml(topScore ? `${topScore.name} / ${topScore.score}` : t("noScores"))}</strong>
+      <strong>${escapeHtml(displayTopScore ? `${displayTopScore.name} / ${displayTopScore.score}` : t("noScores"))}</strong>
     </div>
   `;
 }
@@ -322,13 +378,14 @@ function renderTopRecommendation() {
     topRecommendationEl.innerHTML = `<div class="empty-top">${escapeHtml(t("noScores"))}</div>`;
     return;
   }
-  const keyReason = topScore.reasons?.[0] || "";
-  const keyRisk = topScore.risks?.[0] || "";
+  const displayScore = localizedScore(topScore, 0);
+  const keyReason = displayScore.reasons?.[0] || "";
+  const keyRisk = displayScore.risks?.[0] || "";
   topRecommendationEl.innerHTML = `
     <div class="top-rank">#1</div>
     <div class="top-copy">
       <span>${escapeHtml(t("topPick"))}</span>
-      <strong>${escapeHtml(topScore.name)}</strong>
+      <strong>${escapeHtml(displayScore.name)}</strong>
       <p>${escapeHtml(keyReason)}</p>
       ${keyRisk ? `<p class="risk-line">${escapeHtml(t("keyRisk"))}: ${escapeHtml(keyRisk)}</p>` : ""}
     </div>
@@ -443,7 +500,9 @@ function renderScores(optionScores) {
 
   scoresEl.innerHTML = optionScores
     .map(
-      (score, index) => `
+      (rawScore, index) => {
+        const score = localizedScore(rawScore, index);
+        return `
       <article class="score-card ${index === 0 ? "top-score" : ""}">
         <header>
           <span>${escapeHtml(score.name)}</span>
@@ -455,7 +514,8 @@ function renderScores(optionScores) {
           ${(score.risks || []).length ? `<li class="risk"><strong>${t("risks")}:</strong></li>` : ""}
           ${(score.risks || []).map((risk) => `<li class="risk">${escapeHtml(risk)}</li>`).join("")}
         </ul>
-      </article>`
+      </article>`;
+      }
     )
     .join("");
 }

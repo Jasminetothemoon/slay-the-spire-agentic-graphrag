@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from sts_engine.agent import build_graph
 from sts_engine.knowledge_base import load_knowledge_base
+from sts_engine.localization import localize_response, localize_state
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +28,12 @@ engine = build_graph()
 kb = load_knowledge_base()
 active_runs: Dict[str, Dict[str, Any]] = {}
 subscribers: List[WebSocket] = []
+
+
+def with_localized_state(state: Dict[str, Any]) -> Dict[str, Any]:
+    state_with_locale = dict(state)
+    state_with_locale["localized"] = {"zh": localize_state(state_with_locale)}
+    return state_with_locale
 
 
 class StartRunRequest(BaseModel):
@@ -103,6 +110,7 @@ class RecommendationResponse(BaseModel):
     risk_report: Dict[str, Any]
     latency_ms: float
     backend: str
+    localized: Dict[str, Any] = {}
 
 
 def default_state(run_id: str, req: StartRunRequest) -> Dict[str, Any]:
@@ -167,7 +175,7 @@ def normalize_mod_state(payload: ModStatePayload) -> Dict[str, Any]:
             "character_class": character_class,
         }
     )
-    return state
+    return with_localized_state(state)
 
 
 def normalize_entity_list(values: List[str], character_class: str) -> List[str]:
@@ -190,7 +198,7 @@ def normalize_option_list(values: List[str], character_class: str) -> List[str]:
 
 def build_recommendation_response(current_state: Dict[str, Any]) -> RecommendationResponse:
     final_state = engine.invoke(current_state)
-    return RecommendationResponse(
+    response = RecommendationResponse(
         recommendation=final_state.get("recommendation", "skip"),
         reasoning=final_state.get("reasoning", ""),
         option_scores=final_state.get("option_scores", []),
@@ -199,6 +207,8 @@ def build_recommendation_response(current_state: Dict[str, Any]) -> Recommendati
         latency_ms=final_state.get("latency_ms", 0.0),
         backend="neo4j_or_local_fallback",
     )
+    response.localized = {"zh": localize_response(response.model_dump())}
+    return response
 
 
 @app.get("/")
@@ -222,6 +232,7 @@ def health():
 async def start_run(req: StartRunRequest):
     run_id = f"run_{uuid.uuid4().hex[:8]}"
     state = default_state(run_id, req)
+    state = with_localized_state(state)
     active_runs[run_id] = state
     await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
     return {"message": "Run started", "run_id": run_id, "state": state}
@@ -236,6 +247,7 @@ async def update_state(req: UpdateStateRequest):
     for key, value in update_data.items():
         if key != "run_id":
             state[key] = value
+    state = with_localized_state(state)
     active_runs[req.run_id] = state
     await broadcast({"type": "state_updated", "run_id": req.run_id, "state": state})
     return {"message": "State updated", "current_state": state}
@@ -258,6 +270,7 @@ async def mod_recommend(req: ModRecommendationRequest):
     state["options"] = normalize_option_list(req.options, state["character_class"])
     state["raw_options"] = list(req.options)
     state["user_query"] = req.user_query
+    state = with_localized_state(state)
     active_runs[run_id] = state
     await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
 

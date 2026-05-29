@@ -302,7 +302,7 @@
           "id": "zero_cost_payoff_after_zero_cost_density",
           "when_owned_any": ["claw", "scrape", "hologram", "turbo", "go_for_the_eyes"],
           "target_any": ["claw", "all_for_one", "scrape", "hologram"],
-          "bonus": 18,
+          "bonus": 28,
           "reason": "Zero-cost payoff needs enough cheap cards, recursion, or draw to outpace normal card picks."
         }
       ]

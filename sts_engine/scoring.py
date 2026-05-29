@@ -26,6 +26,9 @@ class RecommendationScorer:
         self.kb = knowledge_base or load_knowledge_base()
 
     def score(self, state: Dict[str, Any], evidence: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        if state.get("query_type") == "pathing":
+            return self._score_pathing(state)
+
         evidence_by_option: Dict[str, List[Dict[str, Any]]] = {}
         for item in evidence:
             evidence_by_option.setdefault(item["option_id"], []).append(item)
@@ -63,6 +66,9 @@ class RecommendationScorer:
             strategy_bonus = min(36.0, sum(item.get("bonus", 0) for item in option_strategy))
             if strategy_bonus:
                 score += strategy_bonus
+                archetypes = sorted({item.get("archetype_name", "") for item in option_strategy if item.get("archetype_name")})
+                if archetypes:
+                    reasons.append(f"Archetype fit: {', '.join(archetypes)}.")
                 reasons.extend(item["reason"] for item in option_strategy[:2])
 
             risk_bonus, risk_reasons = self._risk_adjustment(risk_tags, option_tags, query_type, state)
@@ -88,6 +94,8 @@ class RecommendationScorer:
 
             if not reasons:
                 reasons.append("Solid baseline value, but no decisive graph signal was found.")
+            raw_score = score
+            display_score = self._display_score(raw_score)
             confidence = self._confidence(option, option_evidence, option_strategy, reasons, risks, valid)
             scores.append(
                 {
@@ -95,7 +103,9 @@ class RecommendationScorer:
                     "name": option.get("name", option_id),
                     "decision_type": query_type,
                     "valid": valid,
-                    "score": round(max(0.0, min(score, 100.0)), 2),
+                    "score": display_score,
+                    "raw_score": round(raw_score, 2),
+                    "strategy_signal": round(strategy_bonus, 2),
                     "confidence": confidence,
                     "reasons": reasons[:4],
                     "risks": risks[:3],
@@ -105,8 +115,9 @@ class RecommendationScorer:
 
         scores.sort(
             key=lambda item: (
-                -item["score"],
                 -self._explicit_strategy_count(item.get("evidence", [])),
+                -item.get("strategy_signal", 0),
+                -item["score"],
                 -len(item.get("evidence", [])),
                 -item["confidence"],
                 len(item.get("risks", [])),
@@ -114,6 +125,189 @@ class RecommendationScorer:
             )
         )
         return scores
+
+    def _display_score(self, raw_score: float) -> float:
+        if raw_score <= 100:
+            return round(max(0.0, raw_score), 2)
+        overflow = raw_score - 100
+        return round(min(100.0, 100 - 28 / (1 + overflow / 28)), 2)
+
+    def _score_pathing(self, state: Dict[str, Any]) -> List[Dict[str, Any]]:
+        risk_tags = self.kb.risk_tags(state)
+        deck_tags = self._deck_tags(state)
+        hp_ratio = state.get("current_hp", state.get("max_hp", 1)) / max(state.get("max_hp", 1), 1)
+        character_class = state.get("character_class", "").lower()
+        options = state.get("options", [])
+        scored = []
+        for raw_option in options:
+            path = self._parse_path_option(str(raw_option))
+            if len(path) == 1:
+                entity = self.kb.get(path[0], character_class) or {"id": path[0], "name": str(raw_option), "base_value": 45, "tags": []}
+                base_name = entity.get("name", str(raw_option))
+                score = float(entity.get("base_value", 45))
+            else:
+                base_name = str(raw_option)
+                score = 44.0 + len(path) * 2.0
+
+            reasons: List[str] = []
+            risks: List[str] = []
+            counts = Counter(path)
+            score += counts["treasure"] * 14
+            score += counts["rest"] * (18 if "low_hp" in risk_tags else 8)
+            score += counts["shop"] * self._shop_path_value(state)
+            score += counts["monster"] * self._monster_path_value(state, deck_tags)
+            score += counts["event"] * self._event_path_value(state, risk_tags)
+            score += counts["unknown"] * self._event_path_value(state, risk_tags)
+            score += counts["elite"] * self._elite_path_value(state, risk_tags, deck_tags, character_class)
+
+            if counts["elite"]:
+                if self._elite_ready(state, deck_tags, character_class):
+                    reasons.append("Elite path is justified by current frontload, potions, HP, or a nearby rest site.")
+                else:
+                    risks.append("Elite path is risky without enough frontload damage, potion support, or HP.")
+            if counts["elite"] >= 2 and counts["rest"] == 0:
+                score -= 18
+                risks.append("Forced multiple elites without a rest site is a high-variance route.")
+            if counts["rest"]:
+                if "low_hp" in risk_tags:
+                    reasons.append("Rest site gives a recovery exit before the route becomes dangerous.")
+                else:
+                    reasons.append("Campfire keeps upgrade/rest flexibility open.")
+            if counts["shop"]:
+                if state.get("gold", 0) >= 150:
+                    reasons.append("Gold total makes a shop route attractive.")
+                elif character_class in {"silent", "defect"} and state.get("current_floor", 1) <= 8:
+                    reasons.append("Early shop can buy frontload or potions for a weaker Act 1 start.")
+                else:
+                    risks.append("Shop value is limited when gold is low.")
+            if counts["monster"] and state.get("current_floor", 1) <= 6:
+                reasons.append("Early hallway fights are valuable for card rewards before committing to elites.")
+            if counts["event"] or counts["unknown"]:
+                if state.get("act", 1) >= 2:
+                    reasons.append("Events gain value after Act 1 because they can avoid bad hallway fights.")
+                else:
+                    risks.append("Too many early Act 1 events can delay finding attack cards.")
+
+            if not reasons:
+                reasons.append("Route has acceptable baseline value, but no decisive pathing signal was found.")
+            option_id = self._path_option_id(raw_option, path)
+            raw_score = score
+            scored.append(
+                {
+                    "option_id": option_id,
+                    "name": base_name,
+                    "decision_type": "pathing",
+                    "valid": True,
+                    "score": self._display_score(raw_score),
+                    "raw_score": round(raw_score, 2),
+                    "confidence": self._path_confidence(path, reasons, risks),
+                    "reasons": reasons[:4],
+                    "risks": risks[:3],
+                    "evidence": [
+                        {
+                            "type": "pathing_rule",
+                            "path": path,
+                            "node_counts": dict(counts),
+                            "risk_tags": risk_tags,
+                            "deck_tags": deck_tags,
+                            "source": "community_strategy_synthesis",
+                            "source_url": "internal://strategy/pathing-rules",
+                            "confidence": 0.72,
+                        }
+                    ],
+                }
+            )
+
+        scored.sort(
+            key=lambda item: (
+                -item["score"],
+                -item["confidence"],
+                len(item.get("risks", [])),
+                item["option_id"],
+            )
+        )
+        return scored
+
+    def _parse_path_option(self, option: str) -> List[str]:
+        normalized = option.lower()
+        for separator in ("->", ">", "/", "|", ","):
+            normalized = normalized.replace(separator, "\n")
+        aliases = {
+            "?": "unknown",
+            "unknown": "unknown",
+            "event": "event",
+            "monster": "monster",
+            "fight": "monster",
+            "hallway": "monster",
+            "elite": "elite",
+            "rest": "rest",
+            "campfire": "rest",
+            "rest_site": "rest",
+            "shop": "shop",
+            "merchant": "shop",
+            "treasure": "treasure",
+            "chest": "treasure",
+        }
+        path = []
+        for part in normalized.splitlines():
+            token = part.strip().replace(" ", "_").replace("-", "_")
+            if not token:
+                continue
+            path.append(aliases.get(token, token))
+        return path or [option]
+
+    def _path_option_id(self, raw_option: str, path: List[str]) -> str:
+        if len(path) == 1:
+            resolved = self.kb.resolve_id(path[0])
+            if resolved:
+                return resolved
+        return "path_" + "_".join(path).replace("?", "unknown")
+
+    def _elite_ready(self, state: Dict[str, Any], deck_tags: List[str], character_class: str) -> bool:
+        hp_ratio = state.get("current_hp", state.get("max_hp", 1)) / max(state.get("max_hp", 1), 1)
+        frontload = deck_tags.count("frontload_damage") + deck_tags.count("aoe")
+        defensive = deck_tags.count("block") + deck_tags.count("orb_frost")
+        has_potion = bool(state.get("potions"))
+        strong_act1_class = character_class in {"ironclad", "watcher"}
+        return hp_ratio >= 0.62 and (frontload >= 3 or has_potion or strong_act1_class) and defensive >= 1
+
+    def _elite_path_value(self, state: Dict[str, Any], risk_tags: List[str], deck_tags: List[str], character_class: str) -> float:
+        if self._elite_ready(state, deck_tags, character_class):
+            return 24.0 if state.get("act", 1) == 1 else 18.0
+        penalty = -18.0
+        if "low_hp" in risk_tags:
+            penalty -= 12.0
+        if deck_tags.count("frontload_damage") < 2:
+            penalty -= 8.0
+        return penalty
+
+    def _shop_path_value(self, state: Dict[str, Any]) -> float:
+        gold = state.get("gold", 0)
+        if gold >= 180:
+            return 22.0
+        if gold >= 120:
+            return 14.0
+        if gold >= 75:
+            return 6.0
+        return -8.0
+
+    def _monster_path_value(self, state: Dict[str, Any], deck_tags: List[str]) -> float:
+        if state.get("act", 1) == 1 and state.get("current_floor", 1) <= 6:
+            return 10.0
+        if "low_hp" in self.kb.risk_tags(state):
+            return -4.0
+        return 4.0
+
+    def _event_path_value(self, state: Dict[str, Any], risk_tags: List[str]) -> float:
+        if state.get("act", 1) >= 2 or "low_hp" in risk_tags:
+            return 8.0
+        if state.get("current_floor", 1) <= 6:
+            return -6.0
+        return 3.0
+
+    def _path_confidence(self, path: List[str], reasons: List[str], risks: List[str]) -> float:
+        confidence = 0.46 + min(0.18, len(path) * 0.03) + min(0.18, len(reasons) * 0.04) - min(0.12, len(risks) * 0.04)
+        return round(max(0.2, min(0.9, confidence)), 2)
 
     def _explicit_strategy_count(self, evidence: List[Dict[str, Any]]) -> int:
         return sum(1 for item in evidence if item.get("type") == "archetype_rule")

@@ -269,7 +269,7 @@ Current measured snapshot:
 
 - 666 graph entities and 1442 graph relationships.
 - 0 relationships missing provenance fields.
-- 23 fixed evaluation cases.
+- 26 fixed evaluation cases, including card-pick, shop, and pathing scenarios.
 - Top-1 accuracy: 1.0.
 - Top-3 accuracy: 1.0.
 - Mean latency: about 1.3 ms in the latest local benchmark.

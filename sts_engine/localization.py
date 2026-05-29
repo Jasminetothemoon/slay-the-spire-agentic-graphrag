@@ -17,6 +17,7 @@ REASON_TRANSLATIONS = [
     (r"Detected: low HP\.", "检测到：血量偏低。"),
     (r"No major deck-shape risk detected\.", "没有检测到明显卡组结构风险。"),
     (r"Graph synergy with current run: (.+?)\.", r"与当前局面存在图谱协同：\1。"),
+    (r"Archetype fit: (.+?)\.", r"契合流派：\1。"),
     (r"Matches the current character card pool\.", "符合当前职业的卡池。"),
     (r"Fixes an AoE weakness before multi-enemy fights\.", "补足多敌人战斗前的群体伤害短板。"),
     (r"Improves a low-defense deck profile\.", "改善当前卡组防御不足的问题。"),

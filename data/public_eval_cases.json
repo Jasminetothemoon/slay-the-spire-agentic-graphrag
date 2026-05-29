@@ -11,13 +11,27 @@
       "current_hp": 40,
       "max_hp": 70,
       "gold": 120,
-      "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask", "Noxious Fumes"],
-      "relics": ["Snecko Skull"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Deadly Poison",
+        "Bouncing Flask",
+        "Noxious Fumes"
+      ],
+      "relics": [
+        "Snecko Skull"
+      ],
       "potions": []
     },
-    "options": ["Catalyst", "Backflip", "Dagger Spray"],
+    "options": [
+      "Catalyst",
+      "Backflip",
+      "Dagger Spray"
+    ],
     "expected_top": "catalyst",
-    "acceptable": ["catalyst"]
+    "acceptable": [
+      "catalyst"
+    ]
   },
   {
     "id": "public_silent_missing_aoe_take_dagger_spray",
@@ -31,13 +45,23 @@
       "current_hp": 52,
       "max_hp": 70,
       "gold": 80,
-      "deck": ["Strike", "Defend", "Backflip"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Backflip"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Dagger Spray", "Deadly Poison", "Catalyst"],
+    "options": [
+      "Dagger Spray",
+      "Deadly Poison",
+      "Catalyst"
+    ],
     "expected_top": "dagger_spray",
-    "acceptable": ["dagger_spray"]
+    "acceptable": [
+      "dagger_spray"
+    ]
   },
   {
     "id": "public_ironclad_strength_take_limit_break",
@@ -51,13 +75,26 @@
       "current_hp": 55,
       "max_hp": 80,
       "gold": 130,
-      "deck": ["Strike", "Defend", "Bash", "Inflame", "Spot Weakness"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Bash",
+        "Inflame",
+        "Spot Weakness"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Limit Break", "Shockwave", "Backflip"],
+    "options": [
+      "Limit Break",
+      "Shockwave",
+      "Backflip"
+    ],
     "expected_top": "limit_break",
-    "acceptable": ["limit_break", "shockwave"]
+    "acceptable": [
+      "limit_break",
+      "shockwave"
+    ]
   },
   {
     "id": "public_defect_focus_take_defragment",
@@ -71,13 +108,26 @@
       "current_hp": 38,
       "max_hp": 75,
       "gold": 145,
-      "deck": ["Strike", "Defend", "Zap", "Glacier"],
-      "relics": ["Cracked Core"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Zap",
+        "Glacier"
+      ],
+      "relics": [
+        "Cracked Core"
+      ],
       "potions": []
     },
-    "options": ["Defragment", "Dagger Spray", "Wallop"],
+    "options": [
+      "Defragment",
+      "Dagger Spray",
+      "Wallop"
+    ],
     "expected_top": "defragment",
-    "acceptable": ["defragment"]
+    "acceptable": [
+      "defragment"
+    ]
   },
   {
     "id": "public_shop_remove_card",
@@ -91,13 +141,32 @@
       "current_hp": 50,
       "max_hp": 80,
       "gold": 180,
-      "deck": ["Strike", "Strike", "Strike", "Defend", "Defend", "Bash", "Inflame", "Shockwave", "Defend", "Strike", "Strike", "Defend"],
+      "deck": [
+        "Strike",
+        "Strike",
+        "Strike",
+        "Defend",
+        "Defend",
+        "Bash",
+        "Inflame",
+        "Shockwave",
+        "Defend",
+        "Strike",
+        "Strike",
+        "Defend"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Remove a Card", "Buy Potion", "Skip"],
+    "options": [
+      "Remove a Card",
+      "Buy Potion",
+      "Skip"
+    ],
     "expected_top": "remove_card",
-    "acceptable": ["remove_card"]
+    "acceptable": [
+      "remove_card"
+    ]
   },
   {
     "id": "public_poison_needs_aoe_take_corpse_explosion",
@@ -111,13 +180,25 @@
       "current_hp": 44,
       "max_hp": 70,
       "gold": 110,
-      "deck": ["Strike", "Defend", "Deadly Poison", "Bouncing Flask", "Noxious Fumes"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Deadly Poison",
+        "Bouncing Flask",
+        "Noxious Fumes"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Corpse Explosion", "Backflip", "Prepared"],
+    "options": [
+      "Corpse Explosion",
+      "Backflip",
+      "Prepared"
+    ],
     "expected_top": "corpse_explosion",
-    "acceptable": ["corpse_explosion"]
+    "acceptable": [
+      "corpse_explosion"
+    ]
   },
   {
     "id": "public_shiv_payoff_take_accuracy",
@@ -131,13 +212,24 @@
       "current_hp": 46,
       "max_hp": 70,
       "gold": 90,
-      "deck": ["Strike", "Defend", "Blade Dance", "Cloak And Dagger"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Blade Dance",
+        "Cloak And Dagger"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Accuracy", "Deadly Poison", "Dagger Spray"],
+    "options": [
+      "Accuracy",
+      "Deadly Poison",
+      "Dagger Spray"
+    ],
     "expected_top": "accuracy",
-    "acceptable": ["accuracy"]
+    "acceptable": [
+      "accuracy"
+    ]
   },
   {
     "id": "public_watcher_stance_take_rushdown",
@@ -151,13 +243,26 @@
       "current_hp": 48,
       "max_hp": 72,
       "gold": 100,
-      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Empty Fist"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Eruption",
+        "Vigilance",
+        "Empty Fist"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Rushdown", "Wallop", "Evaluate"],
+    "options": [
+      "Rushdown",
+      "Wallop",
+      "Evaluate"
+    ],
     "expected_top": "rushdown",
-    "acceptable": ["rushdown", "wallop"]
+    "acceptable": [
+      "rushdown",
+      "wallop"
+    ]
   },
   {
     "id": "public_silent_discard_take_tactician",
@@ -171,13 +276,26 @@
       "current_hp": 43,
       "max_hp": 70,
       "gold": 130,
-      "deck": ["Strike", "Defend", "Calculated Gamble", "Acrobatics", "Prepared"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Calculated Gamble",
+        "Acrobatics",
+        "Prepared"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Tactician", "Deadly Poison", "Dagger Spray"],
+    "options": [
+      "Tactician",
+      "Deadly Poison",
+      "Dagger Spray"
+    ],
     "expected_top": "tactician",
-    "acceptable": ["tactician", "dagger_spray"]
+    "acceptable": [
+      "tactician",
+      "dagger_spray"
+    ]
   },
   {
     "id": "public_ironclad_block_take_barricade",
@@ -191,13 +309,26 @@
       "current_hp": 52,
       "max_hp": 80,
       "gold": 100,
-      "deck": ["Strike", "Defend", "Bash", "Impervious", "Flame Barrier", "Shrug It Off"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Bash",
+        "Impervious",
+        "Flame Barrier",
+        "Shrug It Off"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Barricade", "Limit Break", "Inflame"],
+    "options": [
+      "Barricade",
+      "Limit Break",
+      "Inflame"
+    ],
     "expected_top": "barricade",
-    "acceptable": ["barricade"]
+    "acceptable": [
+      "barricade"
+    ]
   },
   {
     "id": "public_defect_dark_take_recursion",
@@ -211,13 +342,26 @@
       "current_hp": 39,
       "max_hp": 75,
       "gold": 120,
-      "deck": ["Strike", "Defend", "Zap", "Darkness", "Doom and Gloom"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Zap",
+        "Darkness",
+        "Doom and Gloom"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Recursion", "Glacier", "Dagger Spray"],
+    "options": [
+      "Recursion",
+      "Glacier",
+      "Dagger Spray"
+    ],
     "expected_top": "recursion",
-    "acceptable": ["recursion", "glacier"]
+    "acceptable": [
+      "recursion",
+      "glacier"
+    ]
   },
   {
     "id": "public_watcher_divinity_take_brilliance",
@@ -231,13 +375,27 @@
       "current_hp": 46,
       "max_hp": 72,
       "gold": 105,
-      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Prostrate", "Worship"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Eruption",
+        "Vigilance",
+        "Prostrate",
+        "Worship"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Brilliance", "Wallop", "Evaluate"],
+    "options": [
+      "Brilliance",
+      "Wallop",
+      "Evaluate"
+    ],
     "expected_top": "brilliance",
-    "acceptable": ["brilliance", "wallop"]
+    "acceptable": [
+      "brilliance",
+      "wallop"
+    ]
   },
   {
     "id": "public_silent_wraith_take_wraith_form",
@@ -251,13 +409,25 @@
       "current_hp": 22,
       "max_hp": 70,
       "gold": 130,
-      "deck": ["Strike", "Defend", "Well-Laid Plans", "Piercing Wail", "Backflip"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Well-Laid Plans",
+        "Piercing Wail",
+        "Backflip"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Wraith Form", "Dagger Spray", "Deadly Poison"],
+    "options": [
+      "Wraith Form",
+      "Dagger Spray",
+      "Deadly Poison"
+    ],
     "expected_top": "wraith_form",
-    "acceptable": ["wraith_form"]
+    "acceptable": [
+      "wraith_form"
+    ]
   },
   {
     "id": "public_ironclad_self_damage_take_rupture",
@@ -271,13 +441,27 @@
       "current_hp": 48,
       "max_hp": 82,
       "gold": 100,
-      "deck": ["Strike", "Defend", "Bash", "Hemokinesis", "Bloodletting", "Offering"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Bash",
+        "Hemokinesis",
+        "Bloodletting",
+        "Offering"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Rupture", "Inflame", "Body Slam"],
+    "options": [
+      "Rupture",
+      "Inflame",
+      "Body Slam"
+    ],
     "expected_top": "rupture",
-    "acceptable": ["rupture", "inflame"]
+    "acceptable": [
+      "rupture",
+      "inflame"
+    ]
   },
   {
     "id": "public_defect_power_take_echo_form",
@@ -291,13 +475,26 @@
       "current_hp": 40,
       "max_hp": 75,
       "gold": 145,
-      "deck": ["Strike", "Defend", "Zap", "Storm", "Heatsinks", "Glacier"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Zap",
+        "Storm",
+        "Heatsinks",
+        "Glacier"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Echo Form", "Dagger Spray", "Wallop"],
+    "options": [
+      "Echo Form",
+      "Dagger Spray",
+      "Wallop"
+    ],
     "expected_top": "echo_form",
-    "acceptable": ["echo_form"]
+    "acceptable": [
+      "echo_form"
+    ]
   },
   {
     "id": "public_watcher_retain_take_establishment",
@@ -311,13 +508,28 @@
       "current_hp": 45,
       "max_hp": 72,
       "gold": 120,
-      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Protect", "Meditate", "Battle Hymn"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Eruption",
+        "Vigilance",
+        "Protect",
+        "Meditate",
+        "Battle Hymn"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Establishment", "Wallop", "Evaluate"],
+    "options": [
+      "Establishment",
+      "Wallop",
+      "Evaluate"
+    ],
     "expected_top": "establishment",
-    "acceptable": ["establishment", "wallop"]
+    "acceptable": [
+      "establishment",
+      "wallop"
+    ]
   },
   {
     "id": "public_silent_grand_finale_after_control",
@@ -331,13 +543,26 @@
       "current_hp": 46,
       "max_hp": 70,
       "gold": 115,
-      "deck": ["Strike", "Defend", "Calculated Gamble", "Expertise", "Well-Laid Plans"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Calculated Gamble",
+        "Expertise",
+        "Well-Laid Plans"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Grand Finale", "Deadly Poison", "Dagger Spray"],
+    "options": [
+      "Grand Finale",
+      "Deadly Poison",
+      "Dagger Spray"
+    ],
     "expected_top": "grand_finale",
-    "acceptable": ["grand_finale", "dagger_spray"]
+    "acceptable": [
+      "grand_finale",
+      "dagger_spray"
+    ]
   },
   {
     "id": "public_ironclad_searing_blow_after_upgrade_plan",
@@ -351,13 +576,26 @@
       "current_hp": 58,
       "max_hp": 80,
       "gold": 100,
-      "deck": ["Strike", "Defend", "Bash", "Searing Blow", "Armaments"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Bash",
+        "Searing Blow",
+        "Armaments"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Searing Blow", "Inflame", "Body Slam"],
+    "options": [
+      "Searing Blow",
+      "Inflame",
+      "Body Slam"
+    ],
     "expected_top": "searing_blow",
-    "acceptable": ["searing_blow", "inflame"]
+    "acceptable": [
+      "searing_blow",
+      "inflame"
+    ]
   },
   {
     "id": "public_defect_claw_after_zero_cost_density",
@@ -371,13 +609,27 @@
       "current_hp": 48,
       "max_hp": 75,
       "gold": 90,
-      "deck": ["Strike", "Defend", "Zap", "Claw", "Scrape", "Hologram"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Zap",
+        "Claw",
+        "Scrape",
+        "Hologram"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["All For One", "Glacier", "Defragment"],
+    "options": [
+      "All For One",
+      "Glacier",
+      "Defragment"
+    ],
     "expected_top": "all_for_one",
-    "acceptable": ["all_for_one", "glacier"]
+    "acceptable": [
+      "all_for_one",
+      "glacier"
+    ]
   },
   {
     "id": "public_watcher_pressure_points_second_copy",
@@ -391,13 +643,27 @@
       "current_hp": 54,
       "max_hp": 72,
       "gold": 80,
-      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Pressure Points", "Third Eye"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Eruption",
+        "Vigilance",
+        "Pressure Points",
+        "Third Eye"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Pressure Points", "Wallop", "Evaluate"],
+    "options": [
+      "Pressure Points",
+      "Wallop",
+      "Evaluate"
+    ],
     "expected_top": "pressure_points",
-    "acceptable": ["pressure_points", "wallop"]
+    "acceptable": [
+      "pressure_points",
+      "wallop"
+    ]
   },
   {
     "id": "public_ironclad_exhaust_take_dark_embrace",
@@ -411,13 +677,26 @@
       "current_hp": 50,
       "max_hp": 80,
       "gold": 110,
-      "deck": ["Strike", "Defend", "Bash", "True Grit", "Burning Pact", "Fiend Fire"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Bash",
+        "True Grit",
+        "Burning Pact",
+        "Fiend Fire"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Dark Embrace", "Inflame", "Body Slam"],
+    "options": [
+      "Dark Embrace",
+      "Inflame",
+      "Body Slam"
+    ],
     "expected_top": "dark_embrace",
-    "acceptable": ["dark_embrace"]
+    "acceptable": [
+      "dark_embrace"
+    ]
   },
   {
     "id": "public_defect_lightning_take_electrodynamics",
@@ -431,13 +710,28 @@
       "current_hp": 44,
       "max_hp": 75,
       "gold": 115,
-      "deck": ["Strike", "Defend", "Zap", "Ball Lightning", "Storm"],
-      "relics": ["Cracked Core"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Zap",
+        "Ball Lightning",
+        "Storm"
+      ],
+      "relics": [
+        "Cracked Core"
+      ],
       "potions": []
     },
-    "options": ["Electrodynamics", "Glacier", "Defragment"],
+    "options": [
+      "Electrodynamics",
+      "Glacier",
+      "Defragment"
+    ],
     "expected_top": "electrodynamics",
-    "acceptable": ["electrodynamics", "defragment"]
+    "acceptable": [
+      "electrodynamics",
+      "defragment"
+    ]
   },
   {
     "id": "public_watcher_wrath_burst_take_wallop",
@@ -451,12 +745,131 @@
       "current_hp": 42,
       "max_hp": 72,
       "gold": 90,
-      "deck": ["Strike", "Defend", "Eruption", "Vigilance", "Empty Fist"],
+      "deck": [
+        "Strike",
+        "Defend",
+        "Eruption",
+        "Vigilance",
+        "Empty Fist"
+      ],
       "relics": [],
       "potions": []
     },
-    "options": ["Wallop", "Evaluate", "Pressure Points"],
+    "options": [
+      "Wallop",
+      "Evaluate",
+      "Pressure Points"
+    ],
     "expected_top": "wallop",
-    "acceptable": ["wallop"]
+    "acceptable": [
+      "wallop"
+    ]
+  },
+  {
+    "id": "public_pathing_low_hp_take_rest_route",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_001",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 1,
+      "current_floor": 12,
+      "current_hp": 18,
+      "max_hp": 70,
+      "gold": 90,
+      "deck": [
+        "Strike",
+        "Defend",
+        "Backflip"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "options": [
+      "Elite",
+      "Rest",
+      "Monster > Elite",
+      "Monster > Rest > Treasure"
+    ],
+    "expected_top": "path_monster_rest_treasure",
+    "acceptable": [
+      "path_monster_rest_treasure",
+      "rest"
+    ]
+  },
+  {
+    "id": "public_pathing_strong_watcher_take_elite_route",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_002",
+      "character_class": "watcher",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 7,
+      "current_hp": 62,
+      "max_hp": 72,
+      "gold": 130,
+      "deck": [
+        "Strike",
+        "Defend",
+        "Eruption",
+        "Vigilance",
+        "Tantrum",
+        "Wallop"
+      ],
+      "relics": [
+        "Pure Water"
+      ],
+      "potions": [
+        "Fire Potion"
+      ]
+    },
+    "options": [
+      "Elite",
+      "Monster > Elite > Rest",
+      "Shop",
+      "Event > Shop"
+    ],
+    "expected_top": "path_monster_elite_rest",
+    "acceptable": [
+      "path_monster_elite_rest",
+      "elite"
+    ]
+  },
+  {
+    "id": "public_pathing_rich_deck_take_shop_route",
+    "query_type": "pathing",
+    "state": {
+      "run_id": "public_eval_path_003",
+      "character_class": "defect",
+      "ascension_level": 15,
+      "act": 2,
+      "current_floor": 20,
+      "current_hp": 48,
+      "max_hp": 75,
+      "gold": 210,
+      "deck": [
+        "Strike",
+        "Defend",
+        "Zap",
+        "Glacier",
+        "Defragment"
+      ],
+      "relics": [
+        "Cracked Core"
+      ],
+      "potions": []
+    },
+    "options": [
+      "Shop",
+      "Elite",
+      "Event > Shop",
+      "Monster > Elite"
+    ],
+    "expected_top": "path_event_shop",
+    "acceptable": [
+      "path_event_shop",
+      "shop"
+    ]
   }
 ]

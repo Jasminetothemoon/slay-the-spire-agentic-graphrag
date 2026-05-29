@@ -175,6 +175,18 @@ python scripts/strategy_coverage_report.py
 
 The strategy layer is intentionally measured as coverage, not claimed as complete. The current coverage inventory tracks 20 archetypes across four classes; all 20 now have seeded scoring rules and evaluation signals.
 
+Community and wiki-derived heuristics used by pathing and archetype advice are tracked separately:
+
+```text
+data/strategy/community_rules.json
+```
+
+This file records rule ids, source URLs, source type, positive/negative signals, confidence, and implementation pointers. It is validated by:
+
+```bash
+python scripts/check_community_rules.py
+```
+
 ## API Example
 
 ```bash
@@ -268,6 +280,7 @@ Generate the current benchmark report:
 Current measured snapshot:
 
 - 666 graph entities and 1442 graph relationships.
+- 6 traceable community strategy rules from 6 public wiki/community sources.
 - 0 relationships missing provenance fields.
 - 26 fixed evaluation cases, including card-pick, shop, and pathing scenarios.
 - Top-1 accuracy: 1.0.

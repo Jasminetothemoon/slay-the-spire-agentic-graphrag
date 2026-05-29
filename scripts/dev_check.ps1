@@ -15,6 +15,7 @@ try {
   & $Python -m compileall api sts_engine scripts
   & $Python scripts\data_coverage_report.py --data data\public_full_data.json --fail-under 99
   & $Python scripts\check_localization.py
+  & $Python scripts\check_community_rules.py
   & $Python scripts\ingest_graph.py --data data\public_full_data.json --dry-run
   & $Python scripts\check_graph_fixtures.py --data data\public_full_data.json
   & $Python scripts\check_decision_engine.py --data data\public_full_data.json

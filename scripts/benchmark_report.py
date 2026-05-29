@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT))
 DEFAULT_DATA = ROOT / "data" / "public_full_data.json"
 DEFAULT_EVAL = ROOT / "data" / "public_eval_cases.json"
 DEFAULT_LOCALIZATION = ROOT / "data" / "localization_zhs.json"
+DEFAULT_COMMUNITY_RULES = ROOT / "data" / "strategy" / "community_rules.json"
 DEFAULT_OUTPUT = ROOT / "reports" / "benchmark.md"
 
 COLLECTIONS = ("classes", "mechanics", "cards", "relics", "potions", "enemies", "shop_actions", "path_nodes")
@@ -121,6 +122,17 @@ def localization_stats(data: Dict[str, Any], localization: Dict[str, Any]) -> Di
     }
 
 
+def community_rule_stats(rules: Dict[str, Any]) -> Dict[str, Any]:
+    category_counts: Counter[str] = Counter(rule.get("category", "unknown") for rule in rules.get("rules", []))
+    source_type_counts: Counter[str] = Counter(source.get("source_type", "unknown") for source in rules.get("sources", []))
+    return {
+        "rules": len(rules.get("rules", [])),
+        "sources": len(rules.get("sources", [])),
+        "category_counts": dict(sorted(category_counts.items())),
+        "source_type_counts": dict(sorted(source_type_counts.items())),
+    }
+
+
 def markdown_table(headers: List[str], rows: List[List[Any]]) -> str:
     lines = [
         "| " + " | ".join(headers) + " |",
@@ -131,7 +143,13 @@ def markdown_table(headers: List[str], rows: List[List[Any]]) -> str:
     return "\n".join(lines)
 
 
-def build_markdown(data: Dict[str, Any], graph: Dict[str, Any], eval_report: Dict[str, Any], loc: Dict[str, Any]) -> str:
+def build_markdown(
+    data: Dict[str, Any],
+    graph: Dict[str, Any],
+    eval_report: Dict[str, Any],
+    loc: Dict[str, Any],
+    community: Dict[str, Any],
+) -> str:
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     node_rows = [[name, graph["node_counts"].get(name, 0)] for name in COLLECTIONS]
     relationship_rows = [[name, count] for name, count in graph["relationship_counts"].items()]
@@ -160,6 +178,7 @@ Generated: {generated_at}
 - P95 latency: **{eval_report["p95_latency_ms"]} ms**
 - Graph entities: **{sum(graph["node_counts"].values())}**
 - Graph relationships: **{graph["total_relationships"]}**
+- Community strategy rules: **{community["rules"]} rules from {community["sources"]} sources**
 - Chinese localization coverage: **{loc["localized_entities"]}/{loc["localizable_entities"]} ({loc["coverage_pct"]}%)**
 
 ## Agentic Workflow
@@ -194,6 +213,14 @@ The recommendation pipeline is a deterministic LangGraph workflow, not a direct 
 - Localized entity names are presentation-layer fields; internal recommendation logic continues to use stable English ids.
 - Chinese display is covered by regression checks in `scripts/check_localization.py`.
 
+## Community Strategy Layer
+
+The scoring layer uses traceable community and wiki heuristics for pathing and archetype advice. These rules are stored in `data/strategy/community_rules.json` and validated by `scripts/check_community_rules.py`.
+
+{markdown_table(["Category", "Rules"], [[name, count] for name, count in community["category_counts"].items()])}
+
+{markdown_table(["Source Type", "Sources"], [[name, count] for name, count in community["source_type_counts"].items()])}
+
 ## Failure Analysis
 
 {failure_section}
@@ -211,6 +238,7 @@ def main() -> None:
     parser.add_argument("--data", default=str(DEFAULT_DATA))
     parser.add_argument("--eval", default=str(DEFAULT_EVAL))
     parser.add_argument("--localization", default=str(DEFAULT_LOCALIZATION))
+    parser.add_argument("--community-rules", default=str(DEFAULT_COMMUNITY_RULES))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--json", action="store_true", help="Print machine-readable summary in addition to writing Markdown.")
     args = parser.parse_args()
@@ -218,13 +246,16 @@ def main() -> None:
     data_path = Path(args.data)
     eval_path = Path(args.eval)
     localization_path = Path(args.localization)
+    community_rules_path = Path(args.community_rules)
     data = load_json(data_path)
     localization = load_json(localization_path)
+    community_rules = load_json(community_rules_path)
     graph = graph_stats(data)
     eval_report = evaluate(data_path, eval_path)
     loc = localization_stats(data, localization)
+    community = community_rule_stats(community_rules)
 
-    markdown = build_markdown(data, graph, eval_report, loc)
+    markdown = build_markdown(data, graph, eval_report, loc, community)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(markdown, encoding="utf-8")
@@ -238,6 +269,7 @@ def main() -> None:
             "relationships_missing_provenance": graph["relationships_missing_provenance"],
         },
         "localization": loc,
+        "community_strategy": community,
     }
     if args.json:
         print(json.dumps(summary, ensure_ascii=False, indent=2))

@@ -1,16 +1,17 @@
 # Benchmark Report
 
-Generated: 2026-05-29 10:16 UTC
+Generated: 2026-05-29 10:24 UTC
 
 ## Executive Summary
 
 - Evaluation cases: **26**
 - Top-1 accuracy: **1.0**
 - Top-3 accuracy: **1.0**
-- Mean latency: **1.22 ms**
-- P95 latency: **1.21 ms**
+- Mean latency: **1.2 ms**
+- P95 latency: **1.22 ms**
 - Graph entities: **666**
 - Graph relationships: **1442**
+- Community strategy rules: **6 rules from 6 sources**
 - Chinese localization coverage: **560/612 (91.5%)**
 
 ## Agentic Workflow
@@ -63,6 +64,20 @@ The recommendation pipeline is a deterministic LangGraph workflow, not a direct 
 - Source: **local_game_jar**
 - Localized entity names are presentation-layer fields; internal recommendation logic continues to use stable English ids.
 - Chinese display is covered by regression checks in `scripts/check_localization.py`.
+
+## Community Strategy Layer
+
+The scoring layer uses traceable community and wiki heuristics for pathing and archetype advice. These rules are stored in `data/strategy/community_rules.json` and validated by `scripts/check_community_rules.py`.
+
+| Category | Rules |
+| --- | --- |
+| archetype | 1 |
+| pathing | 5 |
+
+| Source Type | Sources |
+| --- | --- |
+| community_discussion | 3 |
+| wiki | 3 |
 
 ## Failure Analysis
 

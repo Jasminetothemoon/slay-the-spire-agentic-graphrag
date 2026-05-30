@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 public class BridgeClient {
     private final BridgeConfig config;
+    private String lastError = "";
 
     public BridgeClient(BridgeConfig config) {
         this.config = config;
@@ -29,8 +30,17 @@ public class BridgeClient {
         return RecommendationParser.parse(responseBody);
     }
 
+    public String lastError() {
+        return lastError;
+    }
+
+    public boolean hasLastError() {
+        return !lastError.isEmpty();
+    }
+
     private String post(String path, String body) {
         HttpURLConnection connection = null;
+        lastError = "";
         try {
             URL url = new URL(config.apiBaseUrl + path);
             connection = (HttpURLConnection) url.openConnection();
@@ -51,8 +61,14 @@ public class BridgeClient {
             if (config.verbose) {
                 System.out.println("[STS Agent Bridge] POST " + path + " -> " + status);
             }
+            if (status >= 400) {
+                lastError = "API returned HTTP " + status + " for " + path;
+            } else if (responseBody.isEmpty()) {
+                lastError = "API returned an empty response for " + path;
+            }
             return responseBody;
         } catch (Exception ex) {
+            lastError = "Cannot reach local API at " + config.apiBaseUrl + path;
             if (config.verbose) {
                 System.out.println("[STS Agent Bridge] Failed to POST " + path + ": " + ex.getMessage());
             }

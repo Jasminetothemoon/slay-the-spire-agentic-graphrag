@@ -69,11 +69,21 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
 
             if (payload.hasDecision()) {
                 RecommendationResult result = client.postRecommendation(payload);
-                panel.update(result);
+                if (result != null && result.hasContent()) {
+                    panel.update(result);
+                } else if (client.hasLastError()) {
+                    panel.updateStatus(client.lastError());
+                } else {
+                    panel.updateStatus("No recommendation found in API response.");
+                }
             } else {
                 client.postState(payload.stateJson());
+                if (client.hasLastError()) {
+                    panel.updateStatus(client.lastError());
+                }
             }
         } catch (Exception ex) {
+            panel.updateStatus("Mod bridge update failed: " + ex.getMessage());
             System.out.println("[STS Agent Bridge] Ignoring update error: " + ex.getMessage());
         }
     }

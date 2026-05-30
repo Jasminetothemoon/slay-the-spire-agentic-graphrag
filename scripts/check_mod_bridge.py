@@ -50,15 +50,15 @@ def main() -> None:
 
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/BridgeClient.java",
-        ["/mod/state", "/mod/recommend", "HttpURLConnection", "Content-Type", "RecommendationParser.parse"],
+        ["/mod/state", "/mod/recommend", "HttpURLConnection", "Content-Type", "RecommendationParser.parse", "lastError"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
-        ["PostRenderSubscriber", "receivePostRender", "panel.update", "Input.Keys.F8", "panel.toggleVisible"],
+        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "Input.Keys.F8", "panel.toggleVisible"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
-        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible"],
+        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible", "updateStatus"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/GameStateCollector.java",

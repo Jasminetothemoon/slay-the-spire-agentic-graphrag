@@ -9,12 +9,20 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 public class InGameRecommendationPanel {
     private static final long STALE_AFTER_MS = 15000L;
     private RecommendationResult latest;
+    private String statusMessage = "";
+    private long statusReceivedAt = 0L;
     private boolean visible = true;
 
     public void update(RecommendationResult result) {
         if (result != null && result.hasContent()) {
             latest = result;
+            statusMessage = "";
         }
+    }
+
+    public void updateStatus(String message) {
+        statusMessage = message == null ? "" : message;
+        statusReceivedAt = System.currentTimeMillis();
     }
 
     public void toggleVisible() {
@@ -26,13 +34,20 @@ public class InGameRecommendationPanel {
     }
 
     public void render(SpriteBatch sb) {
-        if (!visible || latest == null || System.currentTimeMillis() - latest.receivedAt > STALE_AFTER_MS) {
+        if (!visible) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        boolean hasFreshRecommendation = latest != null && now - latest.receivedAt <= STALE_AFTER_MS;
+        boolean hasFreshStatus = !statusMessage.isEmpty() && now - statusReceivedAt <= STALE_AFTER_MS;
+        if (!hasFreshRecommendation && !hasFreshStatus) {
             return;
         }
 
         float scale = Settings.scale;
-        float width = 420.0F * scale;
-        float height = latest.risk.isEmpty() ? 118.0F * scale : 142.0F * scale;
+        float width = 440.0F * scale;
+        float height = panelHeight(hasFreshRecommendation);
         float x = Settings.WIDTH - width - 24.0F * scale;
         float y = Settings.HEIGHT - height - 104.0F * scale;
         float padding = 14.0F * scale;
@@ -47,6 +62,21 @@ public class InGameRecommendationPanel {
         float textX = x + padding;
         float textY = y + height - padding;
         FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, "STS Agent", textX, textY, Settings.GOLD_COLOR);
+
+        if (!hasFreshRecommendation) {
+            FontHelper.renderSmartText(
+                sb,
+                FontHelper.tipBodyFont,
+                clamp(statusMessage, 120),
+                textX,
+                textY - 30.0F * scale,
+                width - padding * 2.0F,
+                22.0F * scale,
+                Settings.RED_TEXT_COLOR
+            );
+            return;
+        }
+
         FontHelper.renderFontLeftTopAligned(
             sb,
             FontHelper.tipHeaderFont,
@@ -91,6 +121,14 @@ public class InGameRecommendationPanel {
                 Settings.RED_TEXT_COLOR
             );
         }
+    }
+
+    private float panelHeight(boolean hasFreshRecommendation) {
+        float scale = Settings.scale;
+        if (!hasFreshRecommendation) {
+            return 84.0F * scale;
+        }
+        return latest.risk.isEmpty() ? 118.0F * scale : 142.0F * scale;
     }
 
     private String clamp(String text, int maxLength) {

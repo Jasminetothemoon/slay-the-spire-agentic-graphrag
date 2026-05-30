@@ -135,6 +135,32 @@ powershell -ExecutionPolicy Bypass -File scripts\run_demo.ps1 -Delay 0 -Loops 1
 
 The structure check confirms that the Java bridge has the expected manifest, protocol endpoints, response parser, in-game panel, and state fields. Full Java compilation requires the local game, ModTheSpire, and BaseMod jars in `mod-bridge/libs`.
 
+## In-Game Acceptance Checklist
+
+Before launching the game:
+
+- Start the local API with `scripts\run_api.ps1`.
+- Open `http://127.0.0.1:8000` to watch the browser overlay while testing.
+- Launch Slay the Spire through ModTheSpire with BaseMod and `STS Agent Bridge` enabled.
+
+During a run, verify these scenes:
+
+- New run map: opening the Act map should produce path recommendations even before the first room is selected.
+- Card reward: the panel should show the top card, score, confidence, reason, and risk.
+- Normal relic reward: the panel should refresh to a relic recommendation when a relic reward appears.
+- Boss relic reward: the panel should refresh to one of the boss relic choices.
+- Shop: the panel should compare visible card purchases and card removal when affordable.
+- Combat: the panel should suggest a play sequence from the current hand.
+- Backend unavailable: if the API is stopped, the panel should display a local API connection warning instead of silently disappearing.
+- Toggle: pressing `F8` should hide/show the in-game panel without stopping backend state sync.
+
+Record these observations after each scene:
+
+- Did the browser overlay receive the same current state?
+- Did the in-game panel update within about one second?
+- Did the recommendation correspond to a legal visible choice?
+- Did the panel overlap important game UI?
+
 ## Next Engineering Steps
 
 - Play through card reward, shop, and combat screens to tune panel placement.

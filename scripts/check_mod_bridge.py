@@ -54,11 +54,11 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
-        ["PostRenderSubscriber", "receivePostRender", "panel.update"],
+        ["PostRenderSubscriber", "receivePostRender", "panel.update", "Input.Keys.F8", "panel.toggleVisible"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
-        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult"],
+        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/GameStateCollector.java",

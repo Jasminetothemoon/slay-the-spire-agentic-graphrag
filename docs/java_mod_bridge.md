@@ -37,6 +37,7 @@ Implemented in `mod-bridge`:
   - combat hands
 - API response parsing for the top option, score, confidence, reason, and risk.
 - Compact in-game recommendation panel rendered through BaseMod `PostRenderSubscriber`.
+- `F8` toggles the in-game recommendation panel on or off during a run.
 
 This version keeps the browser overlay for debugging and demos, while also rendering the current top recommendation directly inside the game.
 
@@ -138,5 +139,4 @@ The structure check confirms that the Java bridge has the expected manifest, pro
 
 - Play through card reward, shop, and combat screens to tune panel placement.
 - Play through relic reward, boss relic, and map screens to tune decision signatures.
-- Add a hotkey or config toggle for hiding/showing the in-game panel.
 - Add localized in-game panel text once CJK font rendering is verified in the game client.

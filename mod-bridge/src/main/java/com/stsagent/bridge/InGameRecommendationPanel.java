@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 public class InGameRecommendationPanel {
     private static final long STALE_AFTER_MS = 15000L;
     private RecommendationResult latest;
+    private boolean visible = true;
 
     public void update(RecommendationResult result) {
         if (result != null && result.hasContent()) {
@@ -16,8 +17,16 @@ public class InGameRecommendationPanel {
         }
     }
 
+    public void toggleVisible() {
+        visible = !visible;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
     public void render(SpriteBatch sb) {
-        if (latest == null || System.currentTimeMillis() - latest.receivedAt > STALE_AFTER_MS) {
+        if (!visible || latest == null || System.currentTimeMillis() - latest.receivedAt > STALE_AFTER_MS) {
             return;
         }
 

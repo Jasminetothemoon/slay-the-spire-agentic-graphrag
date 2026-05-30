@@ -5,6 +5,8 @@ import basemod.interfaces.PostInitializeSubscriber;
 import basemod.interfaces.PostRenderSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -42,7 +44,12 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
     @Override
     public void receivePostUpdate() {
         try {
-            if (AbstractDungeon.player == null || AbstractDungeon.currMapNode == null) {
+            if (Gdx.input != null && Gdx.input.isKeyJustPressed(Input.Keys.F8)) {
+                panel.toggleVisible();
+                System.out.println("[STS Agent Bridge] In-game panel visible: " + panel.isVisible());
+            }
+
+            if (AbstractDungeon.player == null) {
                 return;
             }
 

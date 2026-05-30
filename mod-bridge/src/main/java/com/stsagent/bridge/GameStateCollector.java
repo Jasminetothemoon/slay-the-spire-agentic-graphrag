@@ -2,10 +2,13 @@ package com.stsagent.bridge;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.map.MapEdge;
+import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.CardRewardScreen;
 import com.megacrit.cardcrawl.shop.ShopScreen;
@@ -64,6 +67,7 @@ public class GameStateCollector {
         json.append("\"draw_pile\":").append(cards(AbstractDungeon.player.drawPile == null ? null : AbstractDungeon.player.drawPile.group)).append(",");
         json.append("\"discard_pile\":").append(cards(AbstractDungeon.player.discardPile == null ? null : AbstractDungeon.player.discardPile.group)).append(",");
         json.append("\"enemies\":").append(enemies()).append(",");
+        json.append("\"map_options\":").append(mapOptions()).append(",");
         json.append("\"combat_state\":").append(combatState());
         json.append("}");
         return json.toString();
@@ -92,6 +96,26 @@ public class GameStateCollector {
             }
         }
 
+        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
+            List<String> relicOptions = combatRewardRelics();
+            if (!relicOptions.isEmpty()) {
+                return new Decision("relic_pick", relicOptions, "Relic reward from live Java bridge.");
+            }
+        }
+
+        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.BOSS_REWARD) {
+            List<String> bossRelicOptions = bossRelics();
+            if (!bossRelicOptions.isEmpty()) {
+                return new Decision("relic_pick", bossRelicOptions, "Boss relic reward from live Java bridge.");
+            }
+        }
+
+        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
+            if (!nextMapNodes().isEmpty()) {
+                return new Decision("pathing", new ArrayList<String>(), "Map route choice from live Java bridge.");
+            }
+        }
+
         AbstractRoom room = currentRoom();
         if (room != null && room.phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player != null) {
             List<String> hand = cardNames(AbstractDungeon.player.hand == null ? null : AbstractDungeon.player.hand.group);
@@ -101,6 +125,38 @@ public class GameStateCollector {
         }
 
         return Decision.none();
+    }
+
+    private List<String> combatRewardRelics() {
+        List<String> options = new ArrayList<String>();
+        try {
+            if (AbstractDungeon.combatRewardScreen == null || AbstractDungeon.combatRewardScreen.rewards == null) {
+                return options;
+            }
+            for (RewardItem reward : AbstractDungeon.combatRewardScreen.rewards) {
+                if (reward != null && reward.type == RewardItem.RewardType.RELIC && reward.relic != null) {
+                    options.add(relicId(reward.relic));
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return options;
+    }
+
+    private List<String> bossRelics() {
+        List<String> options = new ArrayList<String>();
+        try {
+            if (AbstractDungeon.bossRelicScreen == null || AbstractDungeon.bossRelicScreen.relics == null) {
+                return options;
+            }
+            for (AbstractRelic relic : AbstractDungeon.bossRelicScreen.relics) {
+                if (relic != null) {
+                    options.add(relicId(relic));
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return options;
     }
 
     private String characterClass() {
@@ -171,6 +227,10 @@ public class GameStateCollector {
         return JsonUtil.stringArray(names);
     }
 
+    private String relicId(AbstractRelic relic) {
+        return relic.relicId != null ? relic.relicId : relic.name;
+    }
+
     private String potions() {
         List<String> names = new ArrayList<String>();
         if (AbstractDungeon.player == null || AbstractDungeon.player.potions == null) {
@@ -228,6 +288,136 @@ public class GameStateCollector {
 
     private String combatState() {
         return "{\"incoming_damage\":" + incomingDamage() + "}";
+    }
+
+    private String mapOptions() {
+        List<MapRoomNode> nodes = nextMapNodes();
+        StringBuilder json = new StringBuilder("[");
+        for (int i = 0; i < nodes.size(); i++) {
+            if (i > 0) {
+                json.append(",");
+            }
+            MapRoomNode node = nodes.get(i);
+            String nodeType = mapNodeType(node);
+            String id = "route_" + node.x + "_" + node.y + "_" + nodeType;
+            json.append("{");
+            json.append("\"id\":\"").append(JsonUtil.escape(id)).append("\",");
+            json.append("\"name\":\"").append(JsonUtil.escape(displayNodeType(nodeType))).append("\",");
+            json.append("\"nodes\":[\"").append(JsonUtil.escape(nodeType)).append("\"],");
+            json.append("\"floor\":").append(node.y + 1).append(",");
+            json.append("\"forced_elites\":").append("elite".equals(nodeType) ? 1 : 0).append(",");
+            json.append("\"rest_count\":").append("rest".equals(nodeType) ? 1 : 0).append(",");
+            json.append("\"shop_count\":").append("shop".equals(nodeType) ? 1 : 0).append(",");
+            json.append("\"treasure_count\":").append("treasure".equals(nodeType) ? 1 : 0);
+            json.append("}");
+        }
+        json.append("]");
+        return json.toString();
+    }
+
+    private List<MapRoomNode> nextMapNodes() {
+        List<MapRoomNode> nodes = new ArrayList<MapRoomNode>();
+        try {
+            if (AbstractDungeon.map == null || AbstractDungeon.map.isEmpty()) {
+                return nodes;
+            }
+            MapRoomNode current = AbstractDungeon.currMapNode;
+            if (current == null) {
+                return firstMapRowNodes();
+            }
+            if (current.getEdges() == null) {
+                return nodes;
+            }
+            for (MapEdge edge : current.getEdges()) {
+                if (edge == null || edge.dstY < 0 || edge.dstY >= AbstractDungeon.map.size()) {
+                    continue;
+                }
+                List<MapRoomNode> row = AbstractDungeon.map.get(edge.dstY);
+                if (row == null || edge.dstX < 0 || edge.dstX >= row.size()) {
+                    continue;
+                }
+                MapRoomNode node = row.get(edge.dstX);
+                if (node != null && node.getRoom() != null) {
+                    nodes.add(node);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return nodes;
+    }
+
+    private List<MapRoomNode> firstMapRowNodes() {
+        List<MapRoomNode> nodes = new ArrayList<MapRoomNode>();
+        try {
+            if (AbstractDungeon.map == null || AbstractDungeon.map.isEmpty()) {
+                return nodes;
+            }
+            List<MapRoomNode> row = AbstractDungeon.map.get(0);
+            if (row == null) {
+                return nodes;
+            }
+            for (MapRoomNode node : row) {
+                if (node != null && node.getRoom() != null) {
+                    nodes.add(node);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return nodes;
+    }
+
+    private String mapNodeType(MapRoomNode node) {
+        if (node == null || node.getRoom() == null) {
+            return "unknown";
+        }
+        String className = node.getRoom().getClass().getSimpleName().toLowerCase();
+        if (className.contains("elite")) {
+            return "elite";
+        }
+        if (className.contains("rest")) {
+            return "rest";
+        }
+        if (className.contains("shop")) {
+            return "shop";
+        }
+        if (className.contains("treasure")) {
+            return "treasure";
+        }
+        if (className.contains("event")) {
+            return "event";
+        }
+        if (className.contains("boss")) {
+            return "boss";
+        }
+        if (className.contains("monster")) {
+            return "monster";
+        }
+        return "unknown";
+    }
+
+    private String displayNodeType(String nodeType) {
+        if ("elite".equals(nodeType)) {
+            return "Elite";
+        }
+        if ("rest".equals(nodeType)) {
+            return "Rest Site";
+        }
+        if ("shop".equals(nodeType)) {
+            return "Shop";
+        }
+        if ("treasure".equals(nodeType)) {
+            return "Treasure";
+        }
+        if ("event".equals(nodeType)) {
+            return "Event";
+        }
+        if ("boss".equals(nodeType)) {
+            return "Boss";
+        }
+        if ("monster".equals(nodeType)) {
+            return "Monster";
+        }
+        return "Unknown";
     }
 
     private int incomingDamage() {

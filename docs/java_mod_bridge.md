@@ -27,9 +27,13 @@ Implemented in `mod-bridge`:
   - relics and potions
   - hand, draw pile, discard pile
   - enemies, HP, block, intent, estimated incoming damage
+  - next map route options when the map is open
 - Automatic recommendation request for:
   - card reward screens
+  - normal relic reward screens
+  - boss relic reward screens
   - shop choices
+  - map route choices
   - combat hands
 - API response parsing for the top option, score, confidence, reason, and risk.
 - Compact in-game recommendation panel rendered through BaseMod `PostRenderSubscriber`.
@@ -133,7 +137,6 @@ The structure check confirms that the Java bridge has the expected manifest, pro
 ## Next Engineering Steps
 
 - Play through card reward, shop, and combat screens to tune panel placement.
-- Add relic reward extraction.
-- Add map/path extraction.
+- Play through relic reward, boss relic, and map screens to tune decision signatures.
 - Add a hotkey or config toggle for hiding/showing the in-game panel.
 - Add localized in-game panel text once CJK font rendering is verified in the game client.

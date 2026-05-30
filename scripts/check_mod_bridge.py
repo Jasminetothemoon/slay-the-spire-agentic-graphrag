@@ -70,9 +70,20 @@ def main() -> None:
             "potions",
             "hand_cards",
             "enemies",
+            "map_options",
             "card_pick",
+            "relic_pick",
+            "COMBAT_REWARD",
+            "BOSS_REWARD",
+            "MAP",
+            "pathing",
+            "firstMapRowNodes",
             "combat",
         ],
+    )
+    assert_contains(
+        MOD_DIR / "src/main/java/com/stsagent/bridge/BridgePayload.java",
+        ['"pathing".equals(queryType)'],
     )
     assert_contains(
         MOD_DIR / "build.gradle",

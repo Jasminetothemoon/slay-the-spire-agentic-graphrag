@@ -1,6 +1,8 @@
 package com.stsagent.bridge;
 
 import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -16,17 +18,18 @@ public class BridgeClient {
         post("/mod/state", stateJson);
     }
 
-    public void postRecommendation(BridgePayload payload) {
+    public RecommendationResult postRecommendation(BridgePayload payload) {
         String body = "{"
             + "\"state\":" + payload.stateJson() + ","
             + "\"query_type\":\"" + JsonUtil.escape(payload.queryType()) + "\","
             + "\"options\":" + JsonUtil.stringArray(payload.options()) + ","
             + "\"user_query\":\"" + JsonUtil.escape(payload.userQuery()) + "\""
             + "}";
-        post("/mod/recommend", body);
+        String responseBody = post("/mod/recommend", body);
+        return RecommendationParser.parse(responseBody);
     }
 
-    private void post(String path, String body) {
+    private String post(String path, String body) {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(config.apiBaseUrl + path);
@@ -44,9 +47,11 @@ public class BridgeClient {
             }
 
             int status = connection.getResponseCode();
+            String responseBody = readResponse(connection, status);
             if (config.verbose) {
                 System.out.println("[STS Agent Bridge] POST " + path + " -> " + status);
             }
+            return responseBody;
         } catch (Exception ex) {
             if (config.verbose) {
                 System.out.println("[STS Agent Bridge] Failed to POST " + path + ": " + ex.getMessage());
@@ -54,6 +59,33 @@ public class BridgeClient {
         } finally {
             if (connection != null) {
                 connection.disconnect();
+            }
+        }
+        return "";
+    }
+
+    private String readResponse(HttpURLConnection connection, int status) {
+        InputStream stream = null;
+        try {
+            stream = status >= 400 ? connection.getErrorStream() : connection.getInputStream();
+            if (stream == null) {
+                return "";
+            }
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] chunk = new byte[1024];
+            int read;
+            while ((read = stream.read(chunk)) != -1) {
+                buffer.write(chunk, 0, read);
+            }
+            return new String(buffer.toByteArray(), StandardCharsets.UTF_8);
+        } catch (Exception ignored) {
+            return "";
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (Exception ignored) {
+                }
             }
         }
     }

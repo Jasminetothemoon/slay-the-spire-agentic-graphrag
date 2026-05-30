@@ -6,7 +6,8 @@ This is the first native ModTheSpire/BaseMod bridge for the project. It keeps th
 Slay the Spire Java Mod
   -> collect live game state
   -> POST http://127.0.0.1:8000/mod/state or /mod/recommend
-  -> web overlay receives WebSocket updates
+  -> parse top recommendation from the local API response
+  -> render a compact in-game panel and update the web overlay through WebSocket
 ```
 
 ## Current Scope
@@ -28,9 +29,12 @@ Implemented in `mod-bridge`:
   - enemies, HP, block, intent, estimated incoming damage
 - Automatic recommendation request for:
   - card reward screens
+  - shop choices
   - combat hands
+- API response parsing for the top option, score, confidence, reason, and risk.
+- Compact in-game recommendation panel rendered through BaseMod `PostRenderSubscriber`.
 
-This version displays recommendations through the existing browser overlay. It does not render an in-game panel yet.
+This version keeps the browser overlay for debugging and demos, while also rendering the current top recommendation directly inside the game.
 
 ## Local Dependencies
 
@@ -124,12 +128,12 @@ Run the existing backend/overlay live path:
 powershell -ExecutionPolicy Bypass -File scripts\run_demo.ps1 -Delay 0 -Loops 1
 ```
 
-The structure check confirms that the Java bridge has the expected manifest, protocol endpoints, and state fields. Full Java compilation requires the local game, ModTheSpire, and BaseMod jars in `mod-bridge/libs`.
+The structure check confirms that the Java bridge has the expected manifest, protocol endpoints, response parser, in-game panel, and state fields. Full Java compilation requires the local game, ModTheSpire, and BaseMod jars in `mod-bridge/libs`.
 
 ## Next Engineering Steps
 
-- Compile against local game jars and fix any API drift.
-- Add relic reward and shop screen extraction.
+- Play through card reward, shop, and combat screens to tune panel placement.
+- Add relic reward extraction.
 - Add map/path extraction.
-- Add a small in-game top recommendation panel after state capture is stable.
-- Capture response text in the Mod log for debugging.
+- Add a hotkey or config toggle for hiding/showing the in-game panel.
+- Add localized in-game panel text once CJK font rendering is verified in the game client.

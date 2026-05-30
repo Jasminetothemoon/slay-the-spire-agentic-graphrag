@@ -2,17 +2,20 @@ package com.stsagent.bridge;
 
 import basemod.BaseMod;
 import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.PostRenderSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 @SpireInitializer
-public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSubscriber {
+public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSubscriber, PostRenderSubscriber {
     private static final long POLL_INTERVAL_MS = 800L;
 
     private final BridgeClient client;
     private final GameStateCollector collector;
+    private final InGameRecommendationPanel panel;
     private long lastPostAt = 0L;
     private String lastSignature = "";
 
@@ -20,6 +23,7 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
         BridgeConfig config = BridgeConfig.fromRuntime();
         this.client = new BridgeClient(config);
         this.collector = new GameStateCollector(config);
+        this.panel = new InGameRecommendationPanel();
     }
 
     public static void initialize() {
@@ -57,12 +61,22 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
             lastSignature = signature;
 
             if (payload.hasDecision()) {
-                client.postRecommendation(payload);
+                RecommendationResult result = client.postRecommendation(payload);
+                panel.update(result);
             } else {
                 client.postState(payload.stateJson());
             }
         } catch (Exception ex) {
             System.out.println("[STS Agent Bridge] Ignoring update error: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void receivePostRender(SpriteBatch sb) {
+        try {
+            panel.render(sb);
+        } catch (Exception ex) {
+            System.out.println("[STS Agent Bridge] Ignoring render error: " + ex.getMessage());
         }
     }
 }

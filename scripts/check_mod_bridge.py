@@ -15,7 +15,10 @@ REQUIRED_FILES = [
     "src/main/java/com/stsagent/bridge/BridgeConfig.java",
     "src/main/java/com/stsagent/bridge/BridgePayload.java",
     "src/main/java/com/stsagent/bridge/GameStateCollector.java",
+    "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
     "src/main/java/com/stsagent/bridge/JsonUtil.java",
+    "src/main/java/com/stsagent/bridge/RecommendationParser.java",
+    "src/main/java/com/stsagent/bridge/RecommendationResult.java",
     "libs/README.md",
 ]
 
@@ -47,7 +50,15 @@ def main() -> None:
 
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/BridgeClient.java",
-        ["/mod/state", "/mod/recommend", "HttpURLConnection", "Content-Type"],
+        ["/mod/state", "/mod/recommend", "HttpURLConnection", "Content-Type", "RecommendationParser.parse"],
+    )
+    assert_contains(
+        MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
+        ["PostRenderSubscriber", "receivePostRender", "panel.update"],
+    )
+    assert_contains(
+        MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
+        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/GameStateCollector.java",

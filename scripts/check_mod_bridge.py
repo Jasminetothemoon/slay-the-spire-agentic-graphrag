@@ -54,16 +54,17 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
-        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "Input.Keys.F8", "panel.toggleVisible"],
+        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "panel.toggleVisible"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
-        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible", "updateStatus"],
+        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible", "updateStatus", "clear()"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/GameStateCollector.java",
         [
             "character_class",
+            "current_screen",
             "current_floor",
             "deck",
             "relics",
@@ -73,11 +74,14 @@ def main() -> None:
             "map_options",
             "card_pick",
             "relic_pick",
+            "shopRelicIds",
+            "shopPotionIds",
             "COMBAT_REWARD",
             "BOSS_REWARD",
             "MAP",
             "pathing",
             "firstMapRowNodes",
+            "!AbstractDungeon.isScreenUp",
             "combat",
         ],
     )
@@ -91,7 +95,7 @@ def main() -> None:
     )
     assert_contains(
         ROOT / "scripts/build_mod_bridge.ps1",
-        [".tools\\jdk17", ".tools\\gradle", "desktop-1.0.jar", "BaseMod.jar", "ModTheSpire.jar"],
+        [".tools\\jdk17", ".tools\\gradle", "desktop-1.0.jar", "BaseMod.jar", "ModTheSpire.jar", "ModsDir", "Copy-Item"],
     )
 
     print("Mod bridge structure checks passed.")

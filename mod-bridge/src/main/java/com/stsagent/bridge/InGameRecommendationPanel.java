@@ -21,8 +21,15 @@ public class InGameRecommendationPanel {
     }
 
     public void updateStatus(String message) {
+        latest = null;
         statusMessage = message == null ? "" : message;
         statusReceivedAt = System.currentTimeMillis();
+    }
+
+    public void clear() {
+        latest = null;
+        statusMessage = "";
+        statusReceivedAt = 0L;
     }
 
     public void toggleVisible() {

@@ -20,6 +20,7 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
     private final InGameRecommendationPanel panel;
     private long lastPostAt = 0L;
     private String lastSignature = "";
+    private String lastDecisionType = "";
 
     public StsAgentBridgeMod() {
         BridgeConfig config = BridgeConfig.fromRuntime();
@@ -68,6 +69,7 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
             lastSignature = signature;
 
             if (payload.hasDecision()) {
+                lastDecisionType = payload.queryType();
                 RecommendationResult result = client.postRecommendation(payload);
                 if (result != null && result.hasContent()) {
                     panel.update(result);
@@ -77,6 +79,10 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
                     panel.updateStatus("No recommendation found in API response.");
                 }
             } else {
+                if (!lastDecisionType.isEmpty()) {
+                    panel.clear();
+                    lastDecisionType = "";
+                }
                 client.postState(payload.stateJson());
                 if (client.hasLastError()) {
                     panel.updateStatus(client.lastError());

@@ -51,6 +51,7 @@ public class GameStateCollector {
         StringBuilder json = new StringBuilder("{");
         json.append("\"run_id\":\"").append(JsonUtil.escape(config.runId)).append("\",");
         json.append("\"source\":\"java_mod_bridge\",");
+        json.append("\"current_screen\":\"").append(JsonUtil.escape(currentScreenName())).append("\",");
         json.append("\"character_class\":\"").append(JsonUtil.escape(characterClass())).append("\",");
         json.append("\"ascension_level\":").append(AbstractDungeon.ascensionLevel).append(",");
         json.append("\"act\":").append(AbstractDungeon.actNum).append(",");
@@ -74,26 +75,14 @@ public class GameStateCollector {
     }
 
     private Decision collectDecision() {
-        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.CARD_REWARD) {
-            CardRewardScreen screen = AbstractDungeon.cardRewardScreen;
-            if (screen != null && screen.rewardGroup != null && !screen.rewardGroup.isEmpty()) {
-                return new Decision("card_pick", cardNames(screen.rewardGroup), "Card reward from live Java bridge.");
-            }
+        List<String> cardRewardOptions = cardRewardOptions();
+        if (!cardRewardOptions.isEmpty()) {
+            return new Decision("card_pick", cardRewardOptions, "Card reward from live Java bridge.");
         }
 
-        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP) {
-            ShopScreen shop = AbstractDungeon.shopScreen;
-            List<String> options = new ArrayList<String>();
-            if (shop != null) {
-                options.addAll(cardNames(shop.coloredCards));
-                options.addAll(cardNames(shop.colorlessCards));
-                if (shop.purgeAvailable && AbstractDungeon.player != null && AbstractDungeon.player.gold >= ShopScreen.actualPurgeCost) {
-                    options.add("Remove a Card");
-                }
-            }
-            if (!options.isEmpty()) {
-                return new Decision("shop", options, "Shop choice from live Java bridge.");
-            }
+        List<String> shopOptions = shopOptions();
+        if (!shopOptions.isEmpty()) {
+            return new Decision("shop", shopOptions, "Shop choice from live Java bridge.");
         }
 
         if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
@@ -117,7 +106,7 @@ public class GameStateCollector {
         }
 
         AbstractRoom room = currentRoom();
-        if (room != null && room.phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player != null) {
+        if (!AbstractDungeon.isScreenUp && room != null && room.phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player != null) {
             List<String> hand = cardNames(AbstractDungeon.player.hand == null ? null : AbstractDungeon.player.hand.group);
             if (!hand.isEmpty()) {
                 return new Decision("combat", hand, "Current combat turn from live Java bridge.");
@@ -125,6 +114,61 @@ public class GameStateCollector {
         }
 
         return Decision.none();
+    }
+
+    private String currentScreenName() {
+        return AbstractDungeon.screen == null ? "unknown" : AbstractDungeon.screen.name();
+    }
+
+    private List<String> cardRewardOptions() {
+        List<String> options = new ArrayList<String>();
+        try {
+            CardRewardScreen screen = AbstractDungeon.cardRewardScreen;
+            if (screen == null || screen.rewardGroup == null || screen.rewardGroup.isEmpty()) {
+                return options;
+            }
+            if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.CARD_REWARD || isRewardSelectionFallback()) {
+                options.addAll(cardNames(screen.rewardGroup));
+            }
+        } catch (Exception ignored) {
+        }
+        return options;
+    }
+
+    private List<String> shopOptions() {
+        List<String> options = new ArrayList<String>();
+        if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.SHOP) {
+            return options;
+        }
+        try {
+            ShopScreen shop = AbstractDungeon.shopScreen;
+            if (shop == null) {
+                return options;
+            }
+            options.addAll(cardNames(shop.coloredCards));
+            options.addAll(cardNames(shop.colorlessCards));
+            options.addAll(shopRelicIds(shop));
+            options.addAll(shopPotionIds(shop));
+            if (shop.purgeAvailable && AbstractDungeon.player != null && AbstractDungeon.player.gold >= ShopScreen.actualPurgeCost) {
+                options.add("Remove a Card");
+            }
+        } catch (Exception ignored) {
+        }
+        return options;
+    }
+
+    private boolean isRewardRoom() {
+        AbstractRoom room = currentRoom();
+        return room != null && room.phase == AbstractRoom.RoomPhase.COMPLETE;
+    }
+
+    private boolean isRewardSelectionFallback() {
+        if (!isRewardRoom()) {
+            return false;
+        }
+        return AbstractDungeon.screen != AbstractDungeon.CurrentScreen.SHOP
+            && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP
+            && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.BOSS_REWARD;
     }
 
     private List<String> combatRewardRelics() {
@@ -157,6 +201,74 @@ public class GameStateCollector {
         } catch (Exception ignored) {
         }
         return options;
+    }
+
+    private List<String> shopRelicIds(ShopScreen shop) {
+        List<String> options = new ArrayList<String>();
+        for (Object item : iterableField(shop, "relics")) {
+            AbstractRelic relic = null;
+            if (item instanceof AbstractRelic) {
+                relic = (AbstractRelic) item;
+            } else {
+                Object value = objectField(item, "relic");
+                if (value instanceof AbstractRelic) {
+                    relic = (AbstractRelic) value;
+                }
+            }
+            if (relic != null) {
+                options.add(relicId(relic));
+            }
+        }
+        return options;
+    }
+
+    private List<String> shopPotionIds(ShopScreen shop) {
+        List<String> options = new ArrayList<String>();
+        for (Object item : iterableField(shop, "potions")) {
+            AbstractPotion potion = null;
+            if (item instanceof AbstractPotion) {
+                potion = (AbstractPotion) item;
+            } else {
+                Object value = objectField(item, "potion");
+                if (value instanceof AbstractPotion) {
+                    potion = (AbstractPotion) value;
+                }
+            }
+            if (potion != null && potion.ID != null) {
+                options.add(potion.ID);
+            }
+        }
+        return options;
+    }
+
+    private List<Object> iterableField(Object owner, String fieldName) {
+        List<Object> values = new ArrayList<Object>();
+        Object fieldValue = objectField(owner, fieldName);
+        if (fieldValue instanceof Iterable) {
+            for (Object item : (Iterable<?>) fieldValue) {
+                if (item != null) {
+                    values.add(item);
+                }
+            }
+        }
+        return values;
+    }
+
+    private Object objectField(Object owner, String fieldName) {
+        if (owner == null) {
+            return null;
+        }
+        Class<?> type = owner.getClass();
+        while (type != null) {
+            try {
+                java.lang.reflect.Field field = type.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return field.get(owner);
+            } catch (Exception ignored) {
+                type = type.getSuperclass();
+            }
+        }
+        return null;
     }
 
     private String characterClass() {

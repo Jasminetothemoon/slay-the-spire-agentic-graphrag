@@ -78,6 +78,14 @@ powershell -ExecutionPolicy Bypass -File scripts\build_mod_bridge.ps1
 mod-bridge/build/libs/sts-agent-bridge-0.1.0.jar
 ```
 
+如果要在构建后直接复制到游戏的 `mods` 目录，可以使用：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build_mod_bridge.ps1 -ModsDir "D:\SteamLibrary\steamapps\common\SlayTheSpire\mods"
+```
+
+请把示例路径替换成你本机实际的 Slay the Spire `mods` 目录。复制完成后，需要重新启动游戏，ModTheSpire 才会加载新的 jar。
+
 ## 与后端一起运行
 
 先启动 Python API：

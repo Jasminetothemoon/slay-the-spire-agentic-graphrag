@@ -1,3 +1,7 @@
+param(
+  [string]$ModsDir = ""
+)
+
 $ErrorActionPreference = "Stop"
 
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
@@ -33,4 +37,16 @@ try {
 }
 finally {
   Pop-Location
+}
+
+if ($ModsDir -ne "") {
+  $OutputJar = Join-Path $ModBridge "build\libs\sts-agent-bridge-0.1.0.jar"
+  if (-not (Test-Path $OutputJar)) {
+    Write-Error "Built Mod jar not found: $OutputJar"
+  }
+  if (-not (Test-Path $ModsDir)) {
+    New-Item -ItemType Directory -Path $ModsDir | Out-Null
+  }
+  Copy-Item -LiteralPath $OutputJar -Destination (Join-Path $ModsDir "sts-agent-bridge-0.1.0.jar") -Force
+  Write-Host "Copied Mod jar to $ModsDir"
 }

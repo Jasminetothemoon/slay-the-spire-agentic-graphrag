@@ -162,6 +162,8 @@ def validate_overlay_fallback() -> List[str]:
         "loadLiveStateFallback",
         'fetch("/mod/live")',
         "applyIncomingState(state)",
+        "isLiveModSource",
+        "java_mod_bridge",
     ]
     return [f"web/app.js missing overlay fallback marker: {marker}" for marker in required if marker not in text]
 

@@ -276,6 +276,10 @@ function localizedList(key, fallback) {
   return fallback || [];
 }
 
+function isLiveModSource(source = latestState.source) {
+  return source === "java_mod_bridge" || source === "mod_bridge";
+}
+
 function renderStateInputs() {
   if (!latestState || !Object.keys(latestState).length) {
     return;
@@ -367,7 +371,7 @@ function applyIncomingState(state) {
   }
   if (Array.isArray(state.options) && state.options.length) {
     setLines("#options", localizedList("options", state.options));
-  } else if (state.source === "mod_bridge") {
+  } else if (isLiveModSource(state.source)) {
     setLines("#options", []);
   }
   updateRecommendationAvailability();
@@ -578,7 +582,7 @@ recommendButton.addEventListener("click", async () => {
     statusEl.textContent = t("startFirst");
     return;
   }
-  if (latestState.source !== "mod_bridge") {
+  if (!isLiveModSource()) {
     await syncState();
   }
   const options = lines("#options");
@@ -611,7 +615,7 @@ function updateRecommendationAvailability() {
     (queryTypeInput.value === "combat" && hasCombatHand) ||
     (queryTypeInput.value === "pathing" && hasRouteObjects);
   recommendButton.disabled = !hasDecision;
-  if (!hasDecision && latestState.source === "mod_bridge") {
+  if (!hasDecision && isLiveModSource()) {
     statusEl.textContent = t("waitingForDecision");
   }
 }

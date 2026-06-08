@@ -18,6 +18,7 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
     private final BridgeClient client;
     private final GameStateCollector collector;
     private final InGameRecommendationPanel panel;
+    private final BridgeCaptureLogger captureLogger;
     private long lastPostAt = 0L;
     private String lastSignature = "";
     private String lastDecisionType = "";
@@ -27,6 +28,7 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
         this.client = new BridgeClient(config);
         this.collector = new GameStateCollector(config);
         this.panel = new InGameRecommendationPanel();
+        this.captureLogger = new BridgeCaptureLogger(config);
     }
 
     public static void initialize() {
@@ -49,6 +51,10 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
                 panel.toggleVisible();
                 System.out.println("[STS Agent Bridge] In-game panel visible: " + panel.isVisible());
             }
+            if (Gdx.input != null && Gdx.input.isKeyJustPressed(Input.Keys.F9)) {
+                panel.toggleDebugVisible();
+                System.out.println("[STS Agent Bridge] Debug panel visible: " + panel.isDebugVisible());
+            }
 
             if (AbstractDungeon.player == null) {
                 return;
@@ -70,12 +76,26 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
 
             if (payload.hasDecision()) {
                 lastDecisionType = payload.queryType();
+                long requestStartedAt = System.currentTimeMillis();
+                panel.updateDebug("request query=" + payload.queryType() + " options=" + payload.options().size());
                 RecommendationResult result = client.postRecommendation(payload);
                 if (result != null && result.hasContent()) {
+                    panel.updateDebug(
+                        "screen=" + collector.currentScreenName()
+                            + " query=" + payload.queryType()
+                            + " options=" + payload.options().size()
+                            + " top=" + result.displayName()
+                            + " latency=" + (System.currentTimeMillis() - requestStartedAt) + "ms"
+                    );
+                    captureLogger.recordRecommendation(payload, result, collector.currentScreenName(), System.currentTimeMillis() - requestStartedAt, "");
                     panel.update(result);
                 } else if (client.hasLastError()) {
+                    panel.updateDebug("screen=" + collector.currentScreenName() + " query=" + payload.queryType() + " error=" + client.lastError());
+                    captureLogger.recordRecommendation(payload, null, collector.currentScreenName(), System.currentTimeMillis() - requestStartedAt, client.lastError());
                     panel.updateStatus(client.lastError());
                 } else {
+                    panel.updateDebug("screen=" + collector.currentScreenName() + " query=" + payload.queryType() + " no recommendation");
+                    captureLogger.recordRecommendation(payload, null, collector.currentScreenName(), System.currentTimeMillis() - requestStartedAt, "No recommendation found in API response.");
                     panel.updateStatus("No recommendation found in API response.");
                 }
             } else {
@@ -83,7 +103,9 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
                     panel.clear();
                     lastDecisionType = "";
                 }
+                panel.updateDebug("state screen=" + collector.currentScreenName() + " no active decision");
                 client.postState(payload.stateJson());
+                captureLogger.recordState(payload.stateJson(), collector.currentScreenName(), client.hasLastError() ? client.lastError() : "");
                 if (client.hasLastError()) {
                     panel.updateStatus(client.lastError());
                 }

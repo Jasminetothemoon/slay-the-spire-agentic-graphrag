@@ -12,6 +12,7 @@ REQUIRED_FILES = [
     "src/main/resources/ModTheSpire.json",
     "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
     "src/main/java/com/stsagent/bridge/BridgeClient.java",
+    "src/main/java/com/stsagent/bridge/BridgeCaptureLogger.java",
     "src/main/java/com/stsagent/bridge/BridgeConfig.java",
     "src/main/java/com/stsagent/bridge/BridgePayload.java",
     "src/main/java/com/stsagent/bridge/GameStateCollector.java",
@@ -24,6 +25,8 @@ REQUIRED_FILES = [
 
 REQUIRED_PROJECT_FILES = [
     "scripts/build_mod_bridge.ps1",
+    "scripts/replay_mod_payloads.py",
+    "data/mod_payload_replay_sample.jsonl",
 ]
 
 
@@ -54,11 +57,23 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
-        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "panel.toggleVisible"],
+        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "Input.Keys.F9", "panel.toggleDebugVisible", "captureLogger.recordRecommendation"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
-        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible", "updateStatus", "clear()"],
+        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible", "toggleDebugVisible", "updateStatus", "clear()", "sceneDisplayName", "badgeText"],
+    )
+    assert_contains(
+        MOD_DIR / "src/main/java/com/stsagent/bridge/BridgeCaptureLogger.java",
+        ["recordRecommendation", "recordState", "jsonl", "response_summary"],
+    )
+    assert_contains(
+        MOD_DIR / "src/main/java/com/stsagent/bridge/RecommendationParser.java",
+        ["scene_type", "display_badge", "why_not", "debugSummary"],
+    )
+    assert_contains(
+        MOD_DIR / "src/main/java/com/stsagent/bridge/BridgeConfig.java",
+        ["STS_AGENT_CAPTURE", "STS_AGENT_CAPTURE_DIR", "captureDir"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/GameStateCollector.java",

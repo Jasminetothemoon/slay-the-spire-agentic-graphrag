@@ -41,6 +41,11 @@ def post_json(base_url: str, path: str, payload: Dict[str, Any]) -> Dict[str, An
         return json.loads(response.read().decode("utf-8"))
 
 
+def get_json(base_url: str, path: str) -> Dict[str, Any]:
+    with request.urlopen(f"{base_url.rstrip('/')}{path}", timeout=15) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
 def wait_for_health(base_url: str, timeout_s: float) -> None:
     deadline = time.time() + timeout_s
     last_error: Exception | None = None
@@ -125,10 +130,16 @@ def validate_events(result: Dict[str, Any], scenario: Dict[str, Any]) -> List[st
         errors.append("WebSocket did not emit recommendation event.")
     recommendation = result["http_response"].get("recommendation", {})
     scores = recommendation.get("option_scores", [])
+    if not recommendation.get("scene_type"):
+        errors.append("HTTP /mod/recommend response did not include scene_type.")
+    if not recommendation.get("debug", {}).get("query_type"):
+        errors.append("HTTP /mod/recommend response did not include debug.query_type.")
     if not scores:
         errors.append("HTTP /mod/recommend response did not include option_scores.")
     elif scores[0].get("option_id") != recommendation.get("recommendation"):
         errors.append("Top score does not match recommendation id.")
+    elif not scores[0].get("grade") or not scores[0].get("display_badge"):
+        errors.append("Top score did not include grade/display_badge for in-game UI.")
     expected_options = set(scenario["decision"].get("options", []))
     returned_names = {score.get("name") for score in scores}
     if expected_options and not expected_options.intersection(returned_names):
@@ -208,6 +219,9 @@ def main() -> None:
                     "top_option": result["http_response"]["recommendation"]["option_scores"][0]["name"],
                 }
             )
+        diagnostics = get_json(base_url, "/mod/diagnostics")
+        if diagnostics.get("status") != "ok" or not diagnostics.get("events"):
+            all_errors.append("GET /mod/diagnostics did not return recent Mod events.")
         if all_errors:
             raise SystemExit("\n".join(all_errors))
         print(

@@ -14,13 +14,30 @@ public final class RecommendationParser {
         }
 
         String optionId = stringValue(recommendationBlock, "recommendation");
+        String sceneType = stringValue(recommendationBlock, "scene_type");
+        String debugBlock = objectForKey(recommendationBlock, "debug");
         String scoreBlock = firstObjectInArray(recommendationBlock, "option_scores");
         String name = stringValue(scoreBlock, "name");
         String score = rawValue(scoreBlock, "score");
         String confidence = rawValue(scoreBlock, "confidence");
+        String grade = stringValue(scoreBlock, "grade");
+        String displayBadge = stringValue(scoreBlock, "display_badge");
+        String whyNot = stringValue(scoreBlock, "why_not");
         String reason = firstStringInArray(scoreBlock, "reasons");
         String risk = firstStringInArray(scoreBlock, "risks");
-        return new RecommendationResult(optionId, name, reason, risk, score, confidence);
+        String debugSummary = debugSummary(debugBlock);
+        return new RecommendationResult(optionId, name, reason, risk, score, confidence, sceneType, grade, displayBadge, whyNot, debugSummary);
+    }
+
+    private static String debugSummary(String debugBlock) {
+        if (debugBlock == null || debugBlock.isEmpty()) {
+            return "";
+        }
+        String queryType = stringValue(debugBlock, "query_type");
+        String sceneType = stringValue(debugBlock, "scene_type");
+        String optionsCount = rawValue(debugBlock, "options_count");
+        String latency = rawValue(debugBlock, "latency_ms");
+        return "scene=" + sceneType + " query=" + queryType + " options=" + optionsCount + " latency=" + latency + "ms";
     }
 
     private static String objectForKey(String json, String key) {

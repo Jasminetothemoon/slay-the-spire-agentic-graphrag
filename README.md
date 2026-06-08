@@ -225,6 +225,12 @@ The first native ModTheSpire/BaseMod bridge scaffold is documented in:
 docs/java_mod_bridge.md
 ```
 
+The current product direction is Mod-first: recommendations should render inside the game, with the browser kept for debugging and replay. See:
+
+```text
+docs/in_game_mod_assistant.md
+```
+
 It lives under `mod-bridge` and sends live game snapshots to the existing `/mod/state` and `/mod/recommend` endpoints. The Java bridge requires local Slay the Spire, ModTheSpire, and BaseMod jars in `mod-bridge/libs` before it can be compiled.
 
 Build the Java bridge after the local jars and portable toolchain are present:

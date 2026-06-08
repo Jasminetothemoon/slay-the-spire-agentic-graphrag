@@ -20,6 +20,7 @@ try {
   & $Python scripts\check_graph_fixtures.py --data data\public_full_data.json
   & $Python scripts\check_decision_engine.py --data data\public_full_data.json
   & $Python scripts\check_live_bridge.py --data data\public_full_data.json --all-scenarios --check-replay --check-overlay-fallback
+  & $Python scripts\replay_mod_payloads.py data\mod_payload_replay_sample.jsonl --json
   & $Python scripts\evaluate.py --data data\public_full_data.json --eval data\public_eval_cases.json
   & $Python scripts\benchmark_report.py --data data\public_full_data.json --eval data\public_eval_cases.json --output reports\benchmark.md
 }

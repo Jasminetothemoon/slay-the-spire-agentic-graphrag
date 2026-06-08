@@ -116,7 +116,7 @@ public class GameStateCollector {
         return Decision.none();
     }
 
-    private String currentScreenName() {
+    public String currentScreenName() {
         return AbstractDungeon.screen == null ? "unknown" : AbstractDungeon.screen.name();
     }
 

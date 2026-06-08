@@ -1,6 +1,9 @@
+import time
 import uuid
+from collections import deque
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Deque, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
@@ -28,6 +31,8 @@ engine = build_graph()
 kb = load_knowledge_base()
 active_runs: Dict[str, Dict[str, Any]] = {}
 subscribers: List[WebSocket] = []
+mod_diagnostics: Deque[Dict[str, Any]] = deque(maxlen=20)
+mod_last_error: Optional[str] = None
 
 
 def with_localized_state(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -67,6 +72,7 @@ class UpdateStateRequest(BaseModel):
 
 class ModStatePayload(BaseModel):
     run_id: Optional[str] = None
+    current_screen: Optional[str] = None
     character_class: str = "silent"
     ascension_level: int = 0
     act: int = 1
@@ -105,12 +111,14 @@ class ModRecommendationRequest(BaseModel):
 class RecommendationResponse(BaseModel):
     recommendation: str
     reasoning: str
+    scene_type: str = ""
     explanation_panel: Dict[str, Any] = {}
     option_scores: List[Dict[str, Any]]
     graph_context: List[Dict[str, Any]]
     risk_report: Dict[str, Any]
     latency_ms: float
     backend: str
+    debug: Dict[str, Any] = {}
     localized: Dict[str, Any] = {}
 
 
@@ -197,20 +205,127 @@ def normalize_option_list(values: List[str], character_class: str) -> List[str]:
     return normalized
 
 
+def scene_type_for_state(state: Dict[str, Any]) -> str:
+    query_type = state.get("query_type", "")
+    current_screen = str(state.get("current_screen") or "").upper()
+    if query_type == "card_pick":
+        return "card_reward"
+    if query_type == "shop":
+        return "shop"
+    if query_type == "pathing":
+        return "map"
+    if query_type == "combat":
+        return "combat"
+    if query_type == "relic_pick":
+        if "BOSS" in current_screen:
+            return "boss_relic"
+        return "relic_reward"
+    return query_type or "unknown"
+
+
+def grade_for_score(score: Any) -> str:
+    try:
+        value = float(score)
+    except (TypeError, ValueError):
+        value = 0.0
+    if value >= 90:
+        return "S"
+    if value >= 78:
+        return "A"
+    if value >= 65:
+        return "B"
+    if value >= 50:
+        return "C"
+    if value >= 35:
+        return "D"
+    return "F"
+
+
+def score_breakdown(score: Dict[str, Any]) -> Dict[str, Any]:
+    reasons = score.get("reasons", []) or []
+    risks = score.get("risks", []) or []
+    return {
+        "base_strength": score.get("score", 0),
+        "strategy_fit": score.get("strategy_signal", 0),
+        "synergy": len(score.get("evidence", []) or []),
+        "risk_coverage": sum(1 for reason in reasons if any(word in reason.lower() for word in ("risk", "cover", "aoe", "defense", "frontload"))),
+        "risk_penalty": len(risks),
+        "confidence": score.get("confidence", 0),
+    }
+
+
+def enrich_option_scores(option_scores: List[Dict[str, Any]], explanation_panel: Dict[str, Any]) -> List[Dict[str, Any]]:
+    comparisons = {
+        item.get("option_id"): item
+        for item in explanation_panel.get("candidate_comparison", [])
+        if item.get("option_id")
+    }
+    enriched = []
+    for score in option_scores:
+        item = dict(score)
+        grade = grade_for_score(item.get("score"))
+        item["grade"] = grade
+        item["display_badge"] = f"{grade} {item.get('score', 0)}"
+        item["score_breakdown"] = score_breakdown(item)
+        item["why_not"] = comparisons.get(item.get("option_id"), {}).get("why_not", "")
+        enriched.append(item)
+    return enriched
+
+
+def response_debug(state: Dict[str, Any], final_state: Dict[str, Any], scene_type: str) -> Dict[str, Any]:
+    warnings = []
+    if not state.get("options") and scene_type not in {"combat", "map"}:
+        warnings.append("No explicit decision options were provided.")
+    if scene_type == "map" and not state.get("options") and not state.get("map_options"):
+        warnings.append("No map_options were available for pathing.")
+    return {
+        "query_type": state.get("query_type", ""),
+        "scene_type": scene_type,
+        "options_count": len(state.get("options") or []),
+        "map_options_count": len(state.get("map_options") or []),
+        "current_screen": state.get("current_screen", ""),
+        "latency_ms": final_state.get("latency_ms", 0.0),
+        "backend": "neo4j_or_local_fallback",
+        "normalization_warnings": warnings,
+    }
+
+
+def record_mod_event(event: Dict[str, Any]) -> None:
+    global mod_last_error
+    if event.get("error"):
+        mod_last_error = event["error"]
+    mod_diagnostics.appendleft(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            **event,
+        }
+    )
+
+
 def build_recommendation_response(current_state: Dict[str, Any]) -> RecommendationResponse:
     if current_state.get("query_type") == "pathing" and not current_state.get("options"):
         current_state = dict(current_state)
         current_state["options"] = list(current_state.get("map_options") or [])
+    started_at = time.perf_counter()
     final_state = engine.invoke(current_state)
+    scene_type = scene_type_for_state(current_state)
+    option_scores = enrich_option_scores(
+        final_state.get("option_scores", []),
+        final_state.get("explanation_panel", {}),
+    )
+    final_state["option_scores"] = option_scores
+    latency_ms = final_state.get("latency_ms", round((time.perf_counter() - started_at) * 1000, 2))
     response = RecommendationResponse(
         recommendation=final_state.get("recommendation", "skip"),
         reasoning=final_state.get("reasoning", ""),
+        scene_type=scene_type,
         explanation_panel=final_state.get("explanation_panel", {}),
-        option_scores=final_state.get("option_scores", []),
+        option_scores=option_scores,
         graph_context=final_state.get("graph_context", []),
         risk_report=final_state.get("risk_report", {}),
-        latency_ms=final_state.get("latency_ms", 0.0),
+        latency_ms=latency_ms,
         backend="neo4j_or_local_fallback",
+        debug=response_debug(current_state, final_state, scene_type),
     )
     response.localized = {"zh": localize_response(response.model_dump())}
     return response
@@ -263,12 +378,26 @@ async def mod_state(payload: ModStatePayload):
     state = normalize_mod_state(payload)
     run_id = state["run_id"]
     active_runs[run_id] = state
+    record_mod_event(
+        {
+            "kind": "state",
+            "run_id": run_id,
+            "current_screen": state.get("current_screen", ""),
+            "query_type": "",
+            "scene_type": "",
+            "options_count": 0,
+            "latency_ms": 0.0,
+            "top_recommendation": "",
+            "error": "",
+        }
+    )
     await broadcast({"type": "state_updated", "run_id": run_id, "state": state})
     return {"message": "Mod state accepted", "run_id": run_id, "state": state}
 
 
 @app.post("/mod/recommend")
 async def mod_recommend(req: ModRecommendationRequest):
+    started_at = time.perf_counter()
     state = normalize_mod_state(req.state)
     run_id = state["run_id"]
     state["query_type"] = req.query_type
@@ -290,8 +419,37 @@ async def mod_recommend(req: ModRecommendationRequest):
         }
     )
     response = build_recommendation_response(current_state)
+    record_mod_event(
+        {
+            "kind": "recommendation",
+            "run_id": run_id,
+            "current_screen": state.get("current_screen", ""),
+            "query_type": req.query_type,
+            "scene_type": response.scene_type,
+            "options_count": len(state.get("options") or []),
+            "map_options_count": len(state.get("map_options") or []),
+            "latency_ms": round((time.perf_counter() - started_at) * 1000, 2),
+            "top_recommendation": response.recommendation,
+            "error": "" if response.option_scores else "No option_scores returned.",
+        }
+    )
     await broadcast({"type": "recommendation", "run_id": run_id, "response": response.model_dump()})
     return {"message": "Mod recommendation generated", "run_id": run_id, "state": state, "recommendation": response}
+
+
+@app.get("/mod/diagnostics")
+def mod_diagnostics_endpoint():
+    latest = mod_diagnostics[0] if mod_diagnostics else {}
+    return {
+        "status": "ok",
+        "api_healthy": True,
+        "last_error": mod_last_error or "",
+        "current_run_id": latest.get("run_id", ""),
+        "scene_type": latest.get("scene_type", ""),
+        "query_type": latest.get("query_type", ""),
+        "options_count": latest.get("options_count", 0),
+        "events": list(mod_diagnostics),
+    }
 
 
 @app.get("/runs/{run_id}")

@@ -4,11 +4,15 @@ public class BridgeConfig {
     public final String apiBaseUrl;
     public final String runId;
     public final boolean verbose;
+    public final boolean capture;
+    public final String captureDir;
 
-    private BridgeConfig(String apiBaseUrl, String runId, boolean verbose) {
+    private BridgeConfig(String apiBaseUrl, String runId, boolean verbose, boolean capture, String captureDir) {
         this.apiBaseUrl = trimTrailingSlash(apiBaseUrl);
         this.runId = runId;
         this.verbose = verbose;
+        this.capture = capture;
+        this.captureDir = captureDir;
     }
 
     public static BridgeConfig fromRuntime() {
@@ -27,7 +31,17 @@ public class BridgeConfig {
             System.getenv("STS_AGENT_VERBOSE"),
             "false"
         ));
-        return new BridgeConfig(apiBaseUrl, runId, verbose);
+        boolean capture = Boolean.parseBoolean(firstNonBlank(
+            System.getProperty("sts.agent.capture"),
+            System.getenv("STS_AGENT_CAPTURE"),
+            "false"
+        ));
+        String captureDir = firstNonBlank(
+            System.getProperty("sts.agent.captureDir"),
+            System.getenv("STS_AGENT_CAPTURE_DIR"),
+            "artifacts/mod_payloads"
+        );
+        return new BridgeConfig(apiBaseUrl, runId, verbose, capture, captureDir);
     }
 
     private static String firstNonBlank(String first, String second, String fallback) {

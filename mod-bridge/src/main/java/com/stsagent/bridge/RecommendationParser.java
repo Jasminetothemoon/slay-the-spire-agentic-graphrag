@@ -255,6 +255,20 @@ public final class RecommendationParser {
                     case 'r':
                         out.append(' ');
                         break;
+                    case 'u':
+                        if (i + 4 < value.length()) {
+                            String hex = value.substring(i + 1, i + 5);
+                            try {
+                                out.append((char) Integer.parseInt(hex, 16));
+                                i += 4;
+                            } catch (NumberFormatException ex) {
+                                out.append("\\u").append(hex);
+                                i += 4;
+                            }
+                        } else {
+                            out.append("\\u");
+                        }
+                        break;
                     default:
                         out.append(next);
                 }

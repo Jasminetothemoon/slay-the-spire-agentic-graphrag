@@ -117,17 +117,13 @@ def main() -> None:
             "COMBAT_REWARD",
             "BOSS_REWARD",
             "MAP",
-            "pathing",
             "firstMapRowNodes",
             "!AbstractDungeon.isScreenUp",
             "combat",
             'options.add("Skip")',
         ],
     )
-    assert_contains(
-        MOD_DIR / "src/main/java/com/stsagent/bridge/BridgePayload.java",
-        ['"pathing".equals(queryType)'],
-    )
+    assert_contains(MOD_DIR / "src/main/java/com/stsagent/bridge/BridgePayload.java", ["hasDecision()"])
     assert_contains(
         MOD_DIR / "build.gradle",
         ["sourceCompatibility = JavaVersion.VERSION_1_8", "compileOnly fileTree", "copyJarToMods", 'options.encoding = "UTF-8"'],

@@ -136,11 +136,11 @@ public class RecommendationResult {
     }
 
     public String displayName(boolean chinese) {
-        if (chinese && !localizedRecommendationName.isEmpty()) {
-            return localizedRecommendationName;
-        }
         if (chinese && !optionScores.isEmpty() && !optionScores.get(0).zhName.isEmpty()) {
             return optionScores.get(0).zhName;
+        }
+        if (chinese && !localizedRecommendationName.isEmpty()) {
+            return localizedRecommendationName;
         }
         return displayName();
     }

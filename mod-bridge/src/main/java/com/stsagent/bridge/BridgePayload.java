@@ -33,7 +33,7 @@ public class BridgePayload {
     }
 
     public boolean hasDecision() {
-        return queryType != null && !queryType.isEmpty() && (!options.isEmpty() || "pathing".equals(queryType));
+        return queryType != null && !queryType.isEmpty() && !options.isEmpty();
     }
 
     public String signature() {

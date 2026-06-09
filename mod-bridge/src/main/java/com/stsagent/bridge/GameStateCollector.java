@@ -99,12 +99,6 @@ public class GameStateCollector {
             }
         }
 
-        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
-            if (!nextMapNodes().isEmpty()) {
-                return new Decision("pathing", new ArrayList<String>(), "Map route choice from live Java bridge.");
-            }
-        }
-
         AbstractRoom room = currentRoom();
         if (!AbstractDungeon.isScreenUp && room != null && room.phase == AbstractRoom.RoomPhase.COMBAT && AbstractDungeon.player != null) {
             List<String> hand = cardNames(AbstractDungeon.player.hand == null ? null : AbstractDungeon.player.hand.group);

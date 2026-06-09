@@ -1,0 +1,3572 @@
+{
+  "eval_file": "data\\public_eval_cases.json",
+  "cases": 54,
+  "baselines": {
+    "input_order": {
+      "summary": {
+        "cases": 54,
+        "top1_accuracy": 0.685,
+        "top3_accuracy": 0.759,
+        "mean_latency_ms": 0.0,
+        "p50_latency_ms": 0.0,
+        "p95_latency_ms": 0.0,
+        "p99_latency_ms": 0.0,
+        "no_recommendation_rate": 0.167,
+        "critic_warning_rate": 0.0,
+        "by_type": {
+          "card_pick": {
+            "cases": 22,
+            "top1_accuracy": 1.0,
+            "top3_accuracy": 1.0
+          },
+          "combat": {
+            "cases": 5,
+            "top1_accuracy": 0.0,
+            "top3_accuracy": 0.0
+          },
+          "pathing": {
+            "cases": 11,
+            "top1_accuracy": 0.273,
+            "top3_accuracy": 0.364
+          },
+          "relic_pick": {
+            "cases": 8,
+            "top1_accuracy": 0.875,
+            "top3_accuracy": 1.0
+          },
+          "shop": {
+            "cases": 8,
+            "top1_accuracy": 0.625,
+            "top3_accuracy": 0.875
+          }
+        },
+        "failures": [
+          {
+            "id": "public_pathing_low_hp_take_rest_route",
+            "ranked_top3": [
+              "elite",
+              "rest",
+              "monster_>_elite"
+            ],
+            "expected": "path_monster_rest_treasure"
+          },
+          {
+            "id": "public_shop_low_gold_skip",
+            "ranked_top3": [
+              "buy_relic",
+              "buy_card",
+              "remove_card"
+            ],
+            "expected": "skip_shop"
+          },
+          {
+            "id": "public_pathing_map_low_hp_rest",
+            "ranked_top3": [],
+            "expected": "safe_rest_route"
+          },
+          {
+            "id": "public_pathing_map_watcher_elite",
+            "ranked_top3": [],
+            "expected": "elite_rest_branch"
+          },
+          {
+            "id": "public_pathing_map_shop_before_elite",
+            "ranked_top3": [],
+            "expected": "shop_then_elite"
+          },
+          {
+            "id": "public_pathing_act2_take_events",
+            "ranked_top3": [
+              "monster_>_monster",
+              "event_>_event",
+              "elite"
+            ],
+            "expected": "path_event_event"
+          },
+          {
+            "id": "public_pathing_early_take_hallway_fights",
+            "ranked_top3": [
+              "monster_>_monster",
+              "event_>_event",
+              "shop"
+            ],
+            "expected": "path_monster_monster"
+          },
+          {
+            "id": "public_pathing_strong_ironclad_elite_rest",
+            "ranked_top3": [
+              "monster_>_elite_>_rest",
+              "monster_>_elite_>_elite",
+              "shop"
+            ],
+            "expected": "path_monster_elite_rest"
+          },
+          {
+            "id": "public_combat_silent_block_potion",
+            "ranked_top3": [],
+            "expected": "use_block_potion"
+          },
+          {
+            "id": "public_combat_silent_aoe_sequence",
+            "ranked_top3": [],
+            "expected": "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent"
+          },
+          {
+            "id": "public_combat_ironclad_attack_line",
+            "ranked_top3": [],
+            "expected": "play_bash_then_defend_ironclad"
+          },
+          {
+            "id": "public_combat_defect_block_with_glacier",
+            "ranked_top3": [],
+            "expected": "play_glacier_then_defend_defect"
+          },
+          {
+            "id": "public_combat_watcher_wrath_line",
+            "ranked_top3": [],
+            "expected": "play_eruption_then_strike_watcher_then_defend_watcher"
+          },
+          {
+            "id": "public_pathing_optional_elite_branch",
+            "ranked_top3": [],
+            "expected": "optional_elite_rest"
+          },
+          {
+            "id": "public_shop_medium_gold_buy_card_over_relic",
+            "ranked_top3": [
+              "buy_relic",
+              "buy_card",
+              "remove_card"
+            ],
+            "expected": "buy_card"
+          },
+          {
+            "id": "public_shop_unaffordable_relic_take_card",
+            "ranked_top3": [
+              "shuriken",
+              "dagger_spray",
+              "remove_card"
+            ],
+            "expected": "dagger_spray"
+          },
+          {
+            "id": "public_boss_relic_low_cost_take_empty_cage",
+            "ranked_top3": [
+              "snecko_eye",
+              "empty_cage",
+              "sozu"
+            ],
+            "expected": "empty_cage"
+          }
+        ]
+      },
+      "cases": [
+        {
+          "id": "public_silent_poison_take_catalyst",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "catalyst",
+            "backflip",
+            "dagger_spray"
+          ],
+          "expected": "catalyst",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_missing_aoe_take_dagger_spray",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "dagger_spray",
+            "deadly_poison",
+            "catalyst"
+          ],
+          "expected": "dagger_spray",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_strength_take_limit_break",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "limit_break",
+            "shockwave",
+            "backflip"
+          ],
+          "expected": "limit_break",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_focus_take_defragment",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "defragment",
+            "dagger_spray",
+            "wallop"
+          ],
+          "expected": "defragment",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_remove_card",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "buy_potion",
+            "skip"
+          ],
+          "expected": "remove_card",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_poison_needs_aoe_take_corpse_explosion",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "corpse_explosion",
+            "backflip",
+            "prepared"
+          ],
+          "expected": "corpse_explosion",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shiv_payoff_take_accuracy",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "accuracy",
+            "deadly_poison",
+            "dagger_spray"
+          ],
+          "expected": "accuracy",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_stance_take_rushdown",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "rushdown",
+            "wallop",
+            "evaluate"
+          ],
+          "expected": "rushdown",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_discard_take_tactician",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "tactician",
+            "deadly_poison",
+            "dagger_spray"
+          ],
+          "expected": "tactician",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_block_take_barricade",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "barricade",
+            "limit_break",
+            "inflame"
+          ],
+          "expected": "barricade",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_dark_take_recursion",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "recursion",
+            "glacier",
+            "dagger_spray"
+          ],
+          "expected": "recursion",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_divinity_take_brilliance",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "brilliance",
+            "wallop",
+            "evaluate"
+          ],
+          "expected": "brilliance",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_wraith_take_wraith_form",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "wraith_form",
+            "dagger_spray",
+            "deadly_poison"
+          ],
+          "expected": "wraith_form",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_self_damage_take_rupture",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "rupture",
+            "inflame",
+            "body_slam"
+          ],
+          "expected": "rupture",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_power_take_echo_form",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "echo_form",
+            "dagger_spray",
+            "wallop"
+          ],
+          "expected": "echo_form",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_retain_take_establishment",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "establishment",
+            "wallop",
+            "evaluate"
+          ],
+          "expected": "establishment",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_grand_finale_after_control",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "grand_finale",
+            "deadly_poison",
+            "dagger_spray"
+          ],
+          "expected": "grand_finale",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_searing_blow_after_upgrade_plan",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "searing_blow",
+            "inflame",
+            "body_slam"
+          ],
+          "expected": "searing_blow",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_claw_after_zero_cost_density",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "all_for_one",
+            "glacier",
+            "defragment"
+          ],
+          "expected": "all_for_one",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_pressure_points_second_copy",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "pressure_points",
+            "wallop",
+            "evaluate"
+          ],
+          "expected": "pressure_points",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_exhaust_take_dark_embrace",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "dark_embrace",
+            "inflame",
+            "body_slam"
+          ],
+          "expected": "dark_embrace",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_lightning_take_electrodynamics",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "electrodynamics",
+            "glacier",
+            "defragment"
+          ],
+          "expected": "electrodynamics",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_wrath_burst_take_wallop",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "wallop",
+            "evaluate",
+            "pressure_points"
+          ],
+          "expected": "wallop",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_low_hp_take_rest_route",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "elite",
+            "rest",
+            "monster_>_elite"
+          ],
+          "expected": "path_monster_rest_treasure",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_strong_watcher_take_elite_route",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "elite",
+            "monster_>_elite_>_rest",
+            "shop"
+          ],
+          "expected": "path_monster_elite_rest",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_rich_deck_take_shop_route",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "shop",
+            "elite",
+            "event_>_shop"
+          ],
+          "expected": "path_event_shop",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_rich_buy_relic",
+          "query_type": "shop",
+          "ranked_top3": [
+            "buy_relic",
+            "buy_card",
+            "remove_card"
+          ],
+          "expected": "buy_relic",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_low_gold_skip",
+          "query_type": "shop",
+          "ranked_top3": [
+            "buy_relic",
+            "buy_card",
+            "remove_card"
+          ],
+          "expected": "skip_shop",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_buy_card_defect_early",
+          "query_type": "shop",
+          "ranked_top3": [
+            "buy_card",
+            "buy_potion",
+            "skip"
+          ],
+          "expected": "buy_card",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_remove_large_watcher_deck",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "buy_card",
+            "skip"
+          ],
+          "expected": "remove_card",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_low_hp_buy_potion",
+          "query_type": "shop",
+          "ranked_top3": [
+            "buy_potion",
+            "buy_card",
+            "skip"
+          ],
+          "expected": "buy_potion",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_silent_shiv_take_shuriken",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "shuriken",
+            "tiny_chest",
+            "blue_candle"
+          ],
+          "expected": "shuriken",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_silent_poison_take_snecko_skull",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "snecko_skull",
+            "vajra",
+            "tiny_chest"
+          ],
+          "expected": "snecko_skull",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_ironclad_block_take_thread",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "thread_and_needle",
+            "vajra",
+            "tiny_chest"
+          ],
+          "expected": "thread_and_needle",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_defect_power_take_mummified_hand",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "mummified_hand",
+            "vajra",
+            "tiny_chest"
+          ],
+          "expected": "mummified_hand",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_watcher_draw_take_bag",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "bag_of_preparation",
+            "tiny_chest",
+            "blue_candle"
+          ],
+          "expected": "bag_of_preparation",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_map_low_hp_rest",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "safe_rest_route",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_map_watcher_elite",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "elite_rest_branch",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_map_shop_before_elite",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "shop_then_elite",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_act2_take_events",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "monster_>_monster",
+            "event_>_event",
+            "elite"
+          ],
+          "expected": "path_event_event",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_early_take_hallway_fights",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "monster_>_monster",
+            "event_>_event",
+            "shop"
+          ],
+          "expected": "path_monster_monster",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_low_hp_take_treasure",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "treasure",
+            "elite",
+            "monster_>_elite"
+          ],
+          "expected": "treasure",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_strong_ironclad_elite_rest",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "monster_>_elite_>_rest",
+            "monster_>_elite_>_elite",
+            "shop"
+          ],
+          "expected": "path_monster_elite_rest",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_combat_silent_block_potion",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "use_block_potion",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_silent_aoe_sequence",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_ironclad_attack_line",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_bash_then_defend_ironclad",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_defect_block_with_glacier",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_glacier_then_defend_defect",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_watcher_wrath_line",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_eruption_then_strike_watcher_then_defend_watcher",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_optional_elite_branch",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "optional_elite_rest",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_shop_medium_gold_buy_card_over_relic",
+          "query_type": "shop",
+          "ranked_top3": [
+            "buy_relic",
+            "buy_card",
+            "remove_card"
+          ],
+          "expected": "buy_card",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_silent_shiv_take_ornamental_fan",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "ornamental_fan",
+            "tiny_chest",
+            "blue_candle"
+          ],
+          "expected": "ornamental_fan",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_unaffordable_relic_take_card",
+          "query_type": "shop",
+          "ranked_top3": [
+            "shuriken",
+            "dagger_spray",
+            "remove_card"
+          ],
+          "expected": "dagger_spray",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_boss_relic_energy_need_take_coffee_dripper",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "coffee_dripper",
+            "tiny_house",
+            "runic_dome"
+          ],
+          "expected": "coffee_dripper",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_boss_relic_low_cost_take_empty_cage",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "snecko_eye",
+            "empty_cage",
+            "sozu"
+          ],
+          "expected": "empty_cage",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "input_order",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        }
+      ]
+    },
+    "base_value": {
+      "summary": {
+        "cases": 54,
+        "top1_accuracy": 0.593,
+        "top3_accuracy": 0.759,
+        "mean_latency_ms": 0.0,
+        "p50_latency_ms": 0.0,
+        "p95_latency_ms": 0.0,
+        "p99_latency_ms": 0.0,
+        "no_recommendation_rate": 0.167,
+        "critic_warning_rate": 0.0,
+        "by_type": {
+          "card_pick": {
+            "cases": 22,
+            "top1_accuracy": 0.955,
+            "top3_accuracy": 1.0
+          },
+          "combat": {
+            "cases": 5,
+            "top1_accuracy": 0.0,
+            "top3_accuracy": 0.0
+          },
+          "pathing": {
+            "cases": 11,
+            "top1_accuracy": 0.091,
+            "top3_accuracy": 0.364
+          },
+          "relic_pick": {
+            "cases": 8,
+            "top1_accuracy": 0.75,
+            "top3_accuracy": 1.0
+          },
+          "shop": {
+            "cases": 8,
+            "top1_accuracy": 0.5,
+            "top3_accuracy": 0.875
+          }
+        },
+        "failures": [
+          {
+            "id": "public_silent_missing_aoe_take_dagger_spray",
+            "ranked_top3": [
+              "catalyst",
+              "dagger_spray",
+              "deadly_poison"
+            ],
+            "expected": "dagger_spray"
+          },
+          {
+            "id": "public_pathing_low_hp_take_rest_route",
+            "ranked_top3": [
+              "elite",
+              "rest",
+              "monster_>_elite"
+            ],
+            "expected": "path_monster_rest_treasure"
+          },
+          {
+            "id": "public_pathing_rich_deck_take_shop_route",
+            "ranked_top3": [
+              "elite",
+              "shop",
+              "event_>_shop"
+            ],
+            "expected": "path_event_shop"
+          },
+          {
+            "id": "public_shop_rich_buy_relic",
+            "ranked_top3": [
+              "remove_card",
+              "buy_relic",
+              "buy_card"
+            ],
+            "expected": "buy_relic"
+          },
+          {
+            "id": "public_shop_low_gold_skip",
+            "ranked_top3": [
+              "remove_card",
+              "buy_relic",
+              "buy_card"
+            ],
+            "expected": "skip_shop"
+          },
+          {
+            "id": "public_shop_low_hp_buy_potion",
+            "ranked_top3": [
+              "buy_card",
+              "buy_potion",
+              "skip"
+            ],
+            "expected": "buy_potion"
+          },
+          {
+            "id": "public_relic_silent_shiv_take_shuriken",
+            "ranked_top3": [
+              "blue_candle",
+              "shuriken",
+              "tiny_chest"
+            ],
+            "expected": "shuriken"
+          },
+          {
+            "id": "public_pathing_map_low_hp_rest",
+            "ranked_top3": [],
+            "expected": "safe_rest_route"
+          },
+          {
+            "id": "public_pathing_map_watcher_elite",
+            "ranked_top3": [],
+            "expected": "elite_rest_branch"
+          },
+          {
+            "id": "public_pathing_map_shop_before_elite",
+            "ranked_top3": [],
+            "expected": "shop_then_elite"
+          },
+          {
+            "id": "public_pathing_act2_take_events",
+            "ranked_top3": [
+              "elite",
+              "event_>_event",
+              "monster_>_monster"
+            ],
+            "expected": "path_event_event"
+          },
+          {
+            "id": "public_pathing_early_take_hallway_fights",
+            "ranked_top3": [
+              "shop",
+              "event_>_event",
+              "monster_>_monster"
+            ],
+            "expected": "path_monster_monster"
+          },
+          {
+            "id": "public_pathing_low_hp_take_treasure",
+            "ranked_top3": [
+              "elite",
+              "treasure",
+              "monster_>_elite"
+            ],
+            "expected": "treasure"
+          },
+          {
+            "id": "public_pathing_strong_ironclad_elite_rest",
+            "ranked_top3": [
+              "shop",
+              "monster_>_elite_>_elite",
+              "monster_>_elite_>_rest"
+            ],
+            "expected": "path_monster_elite_rest"
+          },
+          {
+            "id": "public_combat_silent_block_potion",
+            "ranked_top3": [],
+            "expected": "use_block_potion"
+          },
+          {
+            "id": "public_combat_silent_aoe_sequence",
+            "ranked_top3": [],
+            "expected": "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent"
+          },
+          {
+            "id": "public_combat_ironclad_attack_line",
+            "ranked_top3": [],
+            "expected": "play_bash_then_defend_ironclad"
+          },
+          {
+            "id": "public_combat_defect_block_with_glacier",
+            "ranked_top3": [],
+            "expected": "play_glacier_then_defend_defect"
+          },
+          {
+            "id": "public_combat_watcher_wrath_line",
+            "ranked_top3": [],
+            "expected": "play_eruption_then_strike_watcher_then_defend_watcher"
+          },
+          {
+            "id": "public_pathing_optional_elite_branch",
+            "ranked_top3": [],
+            "expected": "optional_elite_rest"
+          },
+          {
+            "id": "public_shop_medium_gold_buy_card_over_relic",
+            "ranked_top3": [
+              "remove_card",
+              "buy_relic",
+              "buy_card"
+            ],
+            "expected": "buy_card"
+          },
+          {
+            "id": "public_relic_silent_shiv_take_ornamental_fan",
+            "ranked_top3": [
+              "blue_candle",
+              "ornamental_fan",
+              "tiny_chest"
+            ],
+            "expected": "ornamental_fan"
+          }
+        ]
+      },
+      "cases": [
+        {
+          "id": "public_silent_poison_take_catalyst",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "catalyst",
+            "backflip",
+            "dagger_spray"
+          ],
+          "expected": "catalyst",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_missing_aoe_take_dagger_spray",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "catalyst",
+            "dagger_spray",
+            "deadly_poison"
+          ],
+          "expected": "dagger_spray",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_strength_take_limit_break",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "limit_break",
+            "shockwave",
+            "backflip"
+          ],
+          "expected": "limit_break",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_focus_take_defragment",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "defragment",
+            "wallop",
+            "dagger_spray"
+          ],
+          "expected": "defragment",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_remove_card",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "buy_potion",
+            "skip"
+          ],
+          "expected": "remove_card",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_poison_needs_aoe_take_corpse_explosion",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "corpse_explosion",
+            "backflip",
+            "prepared"
+          ],
+          "expected": "corpse_explosion",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shiv_payoff_take_accuracy",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "accuracy",
+            "dagger_spray",
+            "deadly_poison"
+          ],
+          "expected": "accuracy",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_stance_take_rushdown",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "rushdown",
+            "wallop",
+            "evaluate"
+          ],
+          "expected": "rushdown",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_discard_take_tactician",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "tactician",
+            "dagger_spray",
+            "deadly_poison"
+          ],
+          "expected": "tactician",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_block_take_barricade",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "barricade",
+            "limit_break",
+            "inflame"
+          ],
+          "expected": "barricade",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_dark_take_recursion",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "glacier",
+            "dagger_spray",
+            "recursion"
+          ],
+          "expected": "recursion",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_divinity_take_brilliance",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "brilliance",
+            "wallop",
+            "evaluate"
+          ],
+          "expected": "brilliance",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_wraith_take_wraith_form",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "wraith_form",
+            "dagger_spray",
+            "deadly_poison"
+          ],
+          "expected": "wraith_form",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_self_damage_take_rupture",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "inflame",
+            "rupture",
+            "body_slam"
+          ],
+          "expected": "rupture",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_power_take_echo_form",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "echo_form",
+            "wallop",
+            "dagger_spray"
+          ],
+          "expected": "echo_form",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_retain_take_establishment",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "establishment",
+            "wallop",
+            "evaluate"
+          ],
+          "expected": "establishment",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_silent_grand_finale_after_control",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "grand_finale",
+            "dagger_spray",
+            "deadly_poison"
+          ],
+          "expected": "grand_finale",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_searing_blow_after_upgrade_plan",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "inflame",
+            "searing_blow",
+            "body_slam"
+          ],
+          "expected": "searing_blow",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_claw_after_zero_cost_density",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "all_for_one",
+            "defragment",
+            "glacier"
+          ],
+          "expected": "all_for_one",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_pressure_points_second_copy",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "wallop",
+            "evaluate",
+            "pressure_points"
+          ],
+          "expected": "pressure_points",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_ironclad_exhaust_take_dark_embrace",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "dark_embrace",
+            "inflame",
+            "body_slam"
+          ],
+          "expected": "dark_embrace",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_defect_lightning_take_electrodynamics",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "electrodynamics",
+            "defragment",
+            "glacier"
+          ],
+          "expected": "electrodynamics",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_watcher_wrath_burst_take_wallop",
+          "query_type": "card_pick",
+          "ranked_top3": [
+            "wallop",
+            "evaluate",
+            "pressure_points"
+          ],
+          "expected": "wallop",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_low_hp_take_rest_route",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "elite",
+            "rest",
+            "monster_>_elite"
+          ],
+          "expected": "path_monster_rest_treasure",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_strong_watcher_take_elite_route",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "elite",
+            "shop",
+            "event_>_shop"
+          ],
+          "expected": "path_monster_elite_rest",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_rich_deck_take_shop_route",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "elite",
+            "shop",
+            "event_>_shop"
+          ],
+          "expected": "path_event_shop",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_rich_buy_relic",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "buy_relic",
+            "buy_card"
+          ],
+          "expected": "buy_relic",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_low_gold_skip",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "buy_relic",
+            "buy_card"
+          ],
+          "expected": "skip_shop",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_buy_card_defect_early",
+          "query_type": "shop",
+          "ranked_top3": [
+            "buy_card",
+            "buy_potion",
+            "skip"
+          ],
+          "expected": "buy_card",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_remove_large_watcher_deck",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "buy_card",
+            "skip"
+          ],
+          "expected": "remove_card",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_low_hp_buy_potion",
+          "query_type": "shop",
+          "ranked_top3": [
+            "buy_card",
+            "buy_potion",
+            "skip"
+          ],
+          "expected": "buy_potion",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_silent_shiv_take_shuriken",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "blue_candle",
+            "shuriken",
+            "tiny_chest"
+          ],
+          "expected": "shuriken",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_silent_poison_take_snecko_skull",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "snecko_skull",
+            "tiny_chest",
+            "vajra"
+          ],
+          "expected": "snecko_skull",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_ironclad_block_take_thread",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "thread_and_needle",
+            "tiny_chest",
+            "vajra"
+          ],
+          "expected": "thread_and_needle",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_defect_power_take_mummified_hand",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "mummified_hand",
+            "tiny_chest",
+            "vajra"
+          ],
+          "expected": "mummified_hand",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_watcher_draw_take_bag",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "bag_of_preparation",
+            "blue_candle",
+            "tiny_chest"
+          ],
+          "expected": "bag_of_preparation",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_map_low_hp_rest",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "safe_rest_route",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_map_watcher_elite",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "elite_rest_branch",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_map_shop_before_elite",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "shop_then_elite",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_act2_take_events",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "elite",
+            "event_>_event",
+            "monster_>_monster"
+          ],
+          "expected": "path_event_event",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_early_take_hallway_fights",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "shop",
+            "event_>_event",
+            "monster_>_monster"
+          ],
+          "expected": "path_monster_monster",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_low_hp_take_treasure",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "elite",
+            "treasure",
+            "monster_>_elite"
+          ],
+          "expected": "treasure",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_pathing_strong_ironclad_elite_rest",
+          "query_type": "pathing",
+          "ranked_top3": [
+            "shop",
+            "monster_>_elite_>_elite",
+            "monster_>_elite_>_rest"
+          ],
+          "expected": "path_monster_elite_rest",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_combat_silent_block_potion",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "use_block_potion",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_silent_aoe_sequence",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_ironclad_attack_line",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_bash_then_defend_ironclad",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_defect_block_with_glacier",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_glacier_then_defend_defect",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_combat_watcher_wrath_line",
+          "query_type": "combat",
+          "ranked_top3": [],
+          "expected": "play_eruption_then_strike_watcher_then_defend_watcher",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_pathing_optional_elite_branch",
+          "query_type": "pathing",
+          "ranked_top3": [],
+          "expected": "optional_elite_rest",
+          "top1_hit": false,
+          "top3_hit": false,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": false,
+          "no_recommendation": true
+        },
+        {
+          "id": "public_shop_medium_gold_buy_card_over_relic",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "buy_relic",
+            "buy_card"
+          ],
+          "expected": "buy_card",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_relic_silent_shiv_take_ornamental_fan",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "blue_candle",
+            "ornamental_fan",
+            "tiny_chest"
+          ],
+          "expected": "ornamental_fan",
+          "top1_hit": false,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_shop_unaffordable_relic_take_card",
+          "query_type": "shop",
+          "ranked_top3": [
+            "remove_card",
+            "shuriken",
+            "dagger_spray"
+          ],
+          "expected": "dagger_spray",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_boss_relic_energy_need_take_coffee_dripper",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "coffee_dripper",
+            "runic_dome",
+            "tiny_house"
+          ],
+          "expected": "coffee_dripper",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        },
+        {
+          "id": "public_boss_relic_low_cost_take_empty_cage",
+          "query_type": "relic_pick",
+          "ranked_top3": [
+            "empty_cage",
+            "snecko_eye",
+            "sozu"
+          ],
+          "expected": "empty_cage",
+          "top1_hit": true,
+          "top3_hit": true,
+          "latency_ms": 0.0,
+          "selected_skill": "base_value",
+          "agent_trace_count": 0,
+          "critic_warnings": [],
+          "decision_valid": true,
+          "no_recommendation": false
+        }
+      ]
+    }
+  },
+  "full": {
+    "summary": {
+      "cases": 54,
+      "top1_accuracy": 1.0,
+      "top3_accuracy": 1.0,
+      "mean_latency_ms": 1.73,
+      "p50_latency_ms": 1.63,
+      "p95_latency_ms": 2.12,
+      "p99_latency_ms": 3.11,
+      "no_recommendation_rate": 0.0,
+      "critic_warning_rate": 0.0,
+      "by_type": {
+        "card_pick": {
+          "cases": 22,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "combat": {
+          "cases": 5,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "pathing": {
+          "cases": 11,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "relic_pick": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "shop": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        }
+      },
+      "failures": []
+    },
+    "cases": [
+      {
+        "id": "public_silent_poison_take_catalyst",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "catalyst",
+          "dagger_spray",
+          "backflip"
+        ],
+        "expected": "catalyst",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 3.71,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_silent_missing_aoe_take_dagger_spray",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "dagger_spray",
+          "catalyst",
+          "deadly_poison"
+        ],
+        "expected": "dagger_spray",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 2.12,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_ironclad_strength_take_limit_break",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "limit_break",
+          "shockwave",
+          "backflip"
+        ],
+        "expected": "limit_break",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.62,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_defect_focus_take_defragment",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "defragment",
+          "wallop",
+          "dagger_spray"
+        ],
+        "expected": "defragment",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.67,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_remove_card",
+        "query_type": "shop",
+        "ranked_top3": [
+          "remove_card",
+          "buy_potion",
+          "skip_shop"
+        ],
+        "expected": "remove_card",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.59,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_poison_needs_aoe_take_corpse_explosion",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "corpse_explosion",
+          "backflip",
+          "prepared"
+        ],
+        "expected": "corpse_explosion",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.64,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shiv_payoff_take_accuracy",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "accuracy",
+          "dagger_spray",
+          "deadly_poison"
+        ],
+        "expected": "accuracy",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.59,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_watcher_stance_take_rushdown",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "rushdown",
+          "wallop",
+          "evaluate"
+        ],
+        "expected": "rushdown",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.59,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_silent_discard_take_tactician",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "tactician",
+          "dagger_spray",
+          "deadly_poison"
+        ],
+        "expected": "tactician",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.68,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_ironclad_block_take_barricade",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "barricade",
+          "limit_break",
+          "inflame"
+        ],
+        "expected": "barricade",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.61,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_defect_dark_take_recursion",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "recursion",
+          "glacier",
+          "dagger_spray"
+        ],
+        "expected": "recursion",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.69,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_watcher_divinity_take_brilliance",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "brilliance",
+          "wallop",
+          "evaluate"
+        ],
+        "expected": "brilliance",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.67,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_silent_wraith_take_wraith_form",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "wraith_form",
+          "dagger_spray",
+          "deadly_poison"
+        ],
+        "expected": "wraith_form",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.61,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_ironclad_self_damage_take_rupture",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "rupture",
+          "body_slam",
+          "inflame"
+        ],
+        "expected": "rupture",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.59,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_defect_power_take_echo_form",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "echo_form",
+          "wallop",
+          "dagger_spray"
+        ],
+        "expected": "echo_form",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.61,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_watcher_retain_take_establishment",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "establishment",
+          "wallop",
+          "evaluate"
+        ],
+        "expected": "establishment",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.64,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_silent_grand_finale_after_control",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "grand_finale",
+          "dagger_spray",
+          "deadly_poison"
+        ],
+        "expected": "grand_finale",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.66,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_ironclad_searing_blow_after_upgrade_plan",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "searing_blow",
+          "body_slam",
+          "inflame"
+        ],
+        "expected": "searing_blow",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.61,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_defect_claw_after_zero_cost_density",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "all_for_one",
+          "defragment",
+          "glacier"
+        ],
+        "expected": "all_for_one",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.68,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_watcher_pressure_points_second_copy",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "pressure_points",
+          "wallop",
+          "evaluate"
+        ],
+        "expected": "pressure_points",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.65,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_ironclad_exhaust_take_dark_embrace",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "dark_embrace",
+          "body_slam",
+          "inflame"
+        ],
+        "expected": "dark_embrace",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.66,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_defect_lightning_take_electrodynamics",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "defragment",
+          "electrodynamics",
+          "glacier"
+        ],
+        "expected": "electrodynamics",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.7,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_watcher_wrath_burst_take_wallop",
+        "query_type": "card_pick",
+        "ranked_top3": [
+          "wallop",
+          "evaluate",
+          "pressure_points"
+        ],
+        "expected": "wallop",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.62,
+        "selected_skill": "card_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_low_hp_take_rest_route",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "path_monster_rest_treasure",
+          "rest",
+          "elite"
+        ],
+        "expected": "path_monster_rest_treasure",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.58,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_strong_watcher_take_elite_route",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "path_monster_elite_rest",
+          "elite",
+          "shop"
+        ],
+        "expected": "path_monster_elite_rest",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.62,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_rich_deck_take_shop_route",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "path_event_shop",
+          "shop",
+          "elite"
+        ],
+        "expected": "path_event_shop",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.55,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_rich_buy_relic",
+        "query_type": "shop",
+        "ranked_top3": [
+          "buy_relic",
+          "buy_card",
+          "remove_card"
+        ],
+        "expected": "buy_relic",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.55,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_low_gold_skip",
+        "query_type": "shop",
+        "ranked_top3": [
+          "skip_shop",
+          "buy_card",
+          "buy_relic"
+        ],
+        "expected": "skip_shop",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.51,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_buy_card_defect_early",
+        "query_type": "shop",
+        "ranked_top3": [
+          "buy_card",
+          "buy_potion",
+          "skip_shop"
+        ],
+        "expected": "buy_card",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.55,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_remove_large_watcher_deck",
+        "query_type": "shop",
+        "ranked_top3": [
+          "remove_card",
+          "buy_card",
+          "skip_shop"
+        ],
+        "expected": "remove_card",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.66,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_low_hp_buy_potion",
+        "query_type": "shop",
+        "ranked_top3": [
+          "buy_potion",
+          "buy_card",
+          "skip_shop"
+        ],
+        "expected": "buy_potion",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.54,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_relic_silent_shiv_take_shuriken",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "shuriken",
+          "blue_candle",
+          "tiny_chest"
+        ],
+        "expected": "shuriken",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.88,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_relic_silent_poison_take_snecko_skull",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "snecko_skull",
+          "vajra",
+          "tiny_chest"
+        ],
+        "expected": "snecko_skull",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.69,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_relic_ironclad_block_take_thread",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "thread_and_needle",
+          "vajra",
+          "tiny_chest"
+        ],
+        "expected": "thread_and_needle",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.63,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_relic_defect_power_take_mummified_hand",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "vajra",
+          "mummified_hand",
+          "tiny_chest"
+        ],
+        "expected": "mummified_hand",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.71,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_relic_watcher_draw_take_bag",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "blue_candle",
+          "bag_of_preparation",
+          "tiny_chest"
+        ],
+        "expected": "bag_of_preparation",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.65,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_map_low_hp_rest",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "safe_rest_route",
+          "forced_elite_no_rest"
+        ],
+        "expected": "safe_rest_route",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.55,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_map_watcher_elite",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "elite_rest_branch",
+          "safe_shop"
+        ],
+        "expected": "elite_rest_branch",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.47,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_map_shop_before_elite",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "shop_then_elite",
+          "event_chain"
+        ],
+        "expected": "shop_then_elite",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.52,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_act2_take_events",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "path_event_event",
+          "path_monster_monster",
+          "elite"
+        ],
+        "expected": "path_event_event",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.6,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_early_take_hallway_fights",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "path_monster_monster",
+          "shop",
+          "path_event_event"
+        ],
+        "expected": "path_monster_monster",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.54,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_low_hp_take_treasure",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "treasure",
+          "elite",
+          "path_monster_elite"
+        ],
+        "expected": "treasure",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.51,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_strong_ironclad_elite_rest",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "path_monster_elite_rest",
+          "path_monster_elite_elite",
+          "shop"
+        ],
+        "expected": "path_monster_elite_rest",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.52,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_combat_silent_block_potion",
+        "query_type": "combat",
+        "ranked_top3": [
+          "use_block_potion",
+          "play_neutralize_then_survivor_then_strike_silent_then_defend_silent",
+          "play_neutralize_then_survivor_then_defend_silent_then_strike_silent"
+        ],
+        "expected": "use_block_potion",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 3.11,
+        "selected_skill": "combat_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_combat_silent_aoe_sequence",
+        "query_type": "combat",
+        "ranked_top3": [
+          "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent",
+          "play_neutralize_then_dagger_spray_then_defend_silent_then_strike_silent",
+          "play_neutralize_then_strike_silent_then_dagger_spray_then_defend_silent"
+        ],
+        "expected": "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 2.88,
+        "selected_skill": "combat_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_combat_ironclad_attack_line",
+        "query_type": "combat",
+        "ranked_top3": [
+          "play_bash_then_strike_ironclad",
+          "play_bash_then_defend_ironclad",
+          "play_defend_ironclad_then_bash"
+        ],
+        "expected": "play_bash_then_defend_ironclad",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.71,
+        "selected_skill": "combat_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_combat_defect_block_with_glacier",
+        "query_type": "combat",
+        "ranked_top3": [
+          "play_glacier_then_defend_defect",
+          "play_defend_defect_then_glacier",
+          "play_glacier_then_zap"
+        ],
+        "expected": "play_glacier_then_defend_defect",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.87,
+        "selected_skill": "combat_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_combat_watcher_wrath_line",
+        "query_type": "combat",
+        "ranked_top3": [
+          "play_eruption_then_strike_watcher_then_defend_watcher",
+          "play_eruption_then_defend_watcher_then_strike_watcher",
+          "play_strike_watcher_then_eruption_then_defend_watcher"
+        ],
+        "expected": "play_eruption_then_strike_watcher_then_defend_watcher",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.88,
+        "selected_skill": "combat_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_pathing_optional_elite_branch",
+        "query_type": "pathing",
+        "ranked_top3": [
+          "optional_elite_rest",
+          "plain_events"
+        ],
+        "expected": "optional_elite_rest",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.55,
+        "selected_skill": "pathing_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_medium_gold_buy_card_over_relic",
+        "query_type": "shop",
+        "ranked_top3": [
+          "buy_card",
+          "remove_card",
+          "skip_shop"
+        ],
+        "expected": "buy_card",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.54,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_relic_silent_shiv_take_ornamental_fan",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "ornamental_fan",
+          "blue_candle",
+          "tiny_chest"
+        ],
+        "expected": "ornamental_fan",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.67,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_shop_unaffordable_relic_take_card",
+        "query_type": "shop",
+        "ranked_top3": [
+          "dagger_spray",
+          "remove_card",
+          "shuriken"
+        ],
+        "expected": "dagger_spray",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.67,
+        "selected_skill": "shop_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_boss_relic_energy_need_take_coffee_dripper",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "coffee_dripper",
+          "runic_dome",
+          "tiny_house"
+        ],
+        "expected": "coffee_dripper",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.75,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      },
+      {
+        "id": "public_boss_relic_low_cost_take_empty_cage",
+        "query_type": "relic_pick",
+        "ranked_top3": [
+          "empty_cage",
+          "snecko_eye",
+          "sozu"
+        ],
+        "expected": "empty_cage",
+        "top1_hit": true,
+        "top3_hit": true,
+        "latency_ms": 1.73,
+        "selected_skill": "relic_pick_skill",
+        "agent_trace_count": 7,
+        "critic_warnings": [],
+        "decision_valid": true,
+        "no_recommendation": false
+      }
+    ]
+  },
+  "ablations": {
+    "full": {
+      "cases": 54,
+      "top1_accuracy": 1.0,
+      "top3_accuracy": 1.0,
+      "mean_latency_ms": 1.67,
+      "p50_latency_ms": 1.6,
+      "p95_latency_ms": 1.85,
+      "p99_latency_ms": 2.95,
+      "no_recommendation_rate": 0.0,
+      "critic_warning_rate": 0.0,
+      "by_type": {
+        "card_pick": {
+          "cases": 22,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "combat": {
+          "cases": 5,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "pathing": {
+          "cases": 11,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "relic_pick": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "shop": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        }
+      },
+      "failures": []
+    },
+    "no_graph": {
+      "cases": 54,
+      "top1_accuracy": 0.981,
+      "top3_accuracy": 1.0,
+      "mean_latency_ms": 1.62,
+      "p50_latency_ms": 1.53,
+      "p95_latency_ms": 1.85,
+      "p99_latency_ms": 2.82,
+      "no_recommendation_rate": 0.0,
+      "critic_warning_rate": 0.0,
+      "by_type": {
+        "card_pick": {
+          "cases": 22,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "combat": {
+          "cases": 5,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "pathing": {
+          "cases": 11,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "relic_pick": {
+          "cases": 8,
+          "top1_accuracy": 0.875,
+          "top3_accuracy": 1.0
+        },
+        "shop": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        }
+      },
+      "failures": [
+        {
+          "id": "public_relic_silent_shiv_take_ornamental_fan",
+          "ranked_top3": [
+            "blue_candle",
+            "ornamental_fan",
+            "tiny_chest"
+          ],
+          "expected": "ornamental_fan"
+        }
+      ]
+    },
+    "no_strategy": {
+      "cases": 54,
+      "top1_accuracy": 0.87,
+      "top3_accuracy": 1.0,
+      "mean_latency_ms": 1.61,
+      "p50_latency_ms": 1.54,
+      "p95_latency_ms": 1.83,
+      "p99_latency_ms": 2.79,
+      "no_recommendation_rate": 0.0,
+      "critic_warning_rate": 0.0,
+      "by_type": {
+        "card_pick": {
+          "cases": 22,
+          "top1_accuracy": 0.682,
+          "top3_accuracy": 1.0
+        },
+        "combat": {
+          "cases": 5,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "pathing": {
+          "cases": 11,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "relic_pick": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "shop": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        }
+      },
+      "failures": [
+        {
+          "id": "public_shiv_payoff_take_accuracy",
+          "ranked_top3": [
+            "dagger_spray",
+            "accuracy",
+            "deadly_poison"
+          ],
+          "expected": "accuracy"
+        },
+        {
+          "id": "public_ironclad_block_take_barricade",
+          "ranked_top3": [
+            "limit_break",
+            "barricade",
+            "inflame"
+          ],
+          "expected": "barricade"
+        },
+        {
+          "id": "public_silent_wraith_take_wraith_form",
+          "ranked_top3": [
+            "dagger_spray",
+            "wraith_form",
+            "deadly_poison"
+          ],
+          "expected": "wraith_form"
+        },
+        {
+          "id": "public_ironclad_self_damage_take_rupture",
+          "ranked_top3": [
+            "body_slam",
+            "inflame",
+            "rupture"
+          ],
+          "expected": "rupture"
+        },
+        {
+          "id": "public_watcher_retain_take_establishment",
+          "ranked_top3": [
+            "evaluate",
+            "wallop",
+            "establishment"
+          ],
+          "expected": "establishment"
+        },
+        {
+          "id": "public_watcher_pressure_points_second_copy",
+          "ranked_top3": [
+            "evaluate",
+            "wallop",
+            "pressure_points"
+          ],
+          "expected": "pressure_points"
+        },
+        {
+          "id": "public_ironclad_exhaust_take_dark_embrace",
+          "ranked_top3": [
+            "body_slam",
+            "dark_embrace",
+            "inflame"
+          ],
+          "expected": "dark_embrace"
+        }
+      ]
+    },
+    "no_risk": {
+      "cases": 54,
+      "top1_accuracy": 0.981,
+      "top3_accuracy": 1.0,
+      "mean_latency_ms": 1.62,
+      "p50_latency_ms": 1.56,
+      "p95_latency_ms": 1.78,
+      "p99_latency_ms": 2.8,
+      "no_recommendation_rate": 0.0,
+      "critic_warning_rate": 0.0,
+      "by_type": {
+        "card_pick": {
+          "cases": 22,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "combat": {
+          "cases": 5,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "pathing": {
+          "cases": 11,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "relic_pick": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "shop": {
+          "cases": 8,
+          "top1_accuracy": 0.875,
+          "top3_accuracy": 1.0
+        }
+      },
+      "failures": [
+        {
+          "id": "public_shop_low_hp_buy_potion",
+          "ranked_top3": [
+            "buy_card",
+            "buy_potion",
+            "skip_shop"
+          ],
+          "expected": "buy_potion"
+        }
+      ]
+    },
+    "no_critic": {
+      "cases": 54,
+      "top1_accuracy": 1.0,
+      "top3_accuracy": 1.0,
+      "mean_latency_ms": 1.64,
+      "p50_latency_ms": 1.58,
+      "p95_latency_ms": 1.86,
+      "p99_latency_ms": 2.81,
+      "no_recommendation_rate": 0.0,
+      "critic_warning_rate": 0.0,
+      "by_type": {
+        "card_pick": {
+          "cases": 22,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "combat": {
+          "cases": 5,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "pathing": {
+          "cases": 11,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "relic_pick": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        },
+        "shop": {
+          "cases": 8,
+          "top1_accuracy": 1.0,
+          "top3_accuracy": 1.0
+        }
+      },
+      "failures": []
+    }
+  },
+  "comparisons": {
+    "input_order": {
+      "top1_delta_vs_full": -0.315,
+      "top3_delta_vs_full": -0.241
+    },
+    "base_value": {
+      "top1_delta_vs_full": -0.407,
+      "top3_delta_vs_full": -0.241
+    },
+    "full": {
+      "top1_delta_vs_full": 0.0,
+      "top3_delta_vs_full": 0.0,
+      "p95_delta_ms_vs_full": -0.27
+    },
+    "no_graph": {
+      "top1_delta_vs_full": -0.019,
+      "top3_delta_vs_full": 0.0,
+      "p95_delta_ms_vs_full": -0.27
+    },
+    "no_strategy": {
+      "top1_delta_vs_full": -0.13,
+      "top3_delta_vs_full": 0.0,
+      "p95_delta_ms_vs_full": -0.29
+    },
+    "no_risk": {
+      "top1_delta_vs_full": -0.019,
+      "top3_delta_vs_full": 0.0,
+      "p95_delta_ms_vs_full": -0.34
+    },
+    "no_critic": {
+      "top1_delta_vs_full": 0.0,
+      "top3_delta_vs_full": 0.0,
+      "p95_delta_ms_vs_full": -0.26
+    }
+  }
+}

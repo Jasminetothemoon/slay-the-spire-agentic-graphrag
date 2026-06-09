@@ -29,6 +29,9 @@ From the current local benchmark and harness:
 | Fixed eval cases | 54 |
 | Eval Top-1 / Top-3 | 1.0 / 1.0 |
 | Harness P95 latency | about 2-3 ms locally |
+| Naive base-value baseline Top-1 / Top-3 | 0.593 / 0.759 |
+| No-strategy ablation Top-1 / Top-3 | 0.87 / 1.0 |
+| Agent trace audit | 6/6 complete traces |
 | Chinese localization coverage | 560/612 entities, 91.5% |
 | Relationships missing provenance | 0 |
 
@@ -149,6 +152,18 @@ It covers:
 - Ablation Harness: disables graph, strategy, risk, or critic components.
 - Latency Harness: P50/P95/P99 recommendation latency.
 
+Interview-ready reports:
+
+```powershell
+python scripts\ablation_insights.py
+python scripts\agent_trace_audit.py
+```
+
+Generated reports:
+
+- `reports/ablation_insights.md`: compares input-order and base-value baselines against the full system and module ablations.
+- `reports/agent_trace_audit.md`: expands representative cases into State/Router/Retrieval/Risk/Scoring/Critic/Explainer traces.
+
 Real Mod payload replay:
 
 ```powershell
@@ -244,9 +259,13 @@ sts_engine/knowledge_base.py        Entity, strategy, and local graph lookup
 sts_engine/retriever.py             Neo4j-first GraphRAG retriever
 mod-bridge/                         ModTheSpire/BaseMod Java bridge
 scripts/decision_harness.py         Eval/replay/ablation/latency harness
+scripts/ablation_insights.py        Baseline and ablation insight report
+scripts/agent_trace_audit.py        Representative Multi-Agent trace report
 scripts/replay_mod_payloads.py      Real Mod payload replay
 scripts/replay_analysis.py          Replay tuning analysis
 reports/benchmark.md                Generated benchmark snapshot
+reports/ablation_insights.md        Baseline vs full-system comparison
+reports/agent_trace_audit.md        Agent trace audit examples
 docs/resume_project_summary.md      Resume-ready project writeup
 docs/ai_app_and_pm_polish_plan.md   AI application / AI PM polish plan
 docs/project_implementation_report.md Implementation report and interview story
@@ -279,7 +298,7 @@ Suggested bullets:
 - Designed a LangGraph multi-agent workflow with State, Router, Retrieval, Risk, Skill Scoring, Critic, and Explainer agents; exposed `agent_trace`, `selected_skill`, and critic warnings for debugging.
 - Modeled 666 entities and 1442 provenance-tracked relationships from public Slay the Spire data; supported Neo4j GraphRAG with local JSON fallback.
 - Implemented 6 pluggable Decision Skills covering card picks, relics, shops, pathing, combat, and rest-site choices.
-- Built replay/eval/ablation/latency harnesses over 54 fixed cases and real Mod JSONL payloads; measured millisecond-level P95 latency without external LLM calls in the realtime path.
+- Built replay/eval/ablation/latency harnesses over 54 fixed cases and real Mod JSONL payloads; compared the full system against input-order and base-value baselines, measured millisecond-level P95 latency, and generated representative Agent trace audits.
 
 Role-specific writeups:
 

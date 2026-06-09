@@ -40,6 +40,8 @@ class RecommendationScorer:
         risk_tags = [] if state.get("_ablation_disable_risk") else self.kb.risk_tags(state)
         deck_tags = self._deck_tags(state)
         strategy_matches = {} if state.get("_ablation_disable_strategy") else self.kb.strategy_matches(state, current_options)
+        shop_context = self._shop_context_by_option(state)
+        scene_type = str(state.get("scene_type") or "").lower()
         scores = []
         for option in self.kb.option_entities(current_options, state.get("character_class", "").lower()):
             option_id = option["id"]
@@ -59,6 +61,15 @@ class RecommendationScorer:
                 reasons.append(legality_reason)
             if legality_risk:
                 risks.append(legality_risk)
+
+            shop_adjustment, shop_reason, shop_risk = self._shop_item_adjustment(
+                option, query_type, state, shop_context.get(option_id)
+            )
+            score += shop_adjustment
+            if shop_reason:
+                reasons.append(shop_reason)
+            if shop_risk:
+                risks.append(shop_risk)
 
             skip_adjustment, skip_reason, skip_risk = self._skip_card_adjustment(option, query_type, state)
             score += skip_adjustment
@@ -96,6 +107,15 @@ class RecommendationScorer:
             score += class_adjustment
             if class_reason:
                 reasons.append(class_reason)
+
+            relic_adjustment, relic_reasons, relic_risks, relic_evidence = self._relic_context_adjustment(
+                option, query_type, state, deck_tags, risk_tags, scene_type
+            )
+            score += relic_adjustment
+            reasons.extend(relic_reasons)
+            risks.extend(relic_risks)
+            if relic_evidence:
+                option_evidence = option_evidence + relic_evidence
 
             redundancy_penalty = self._redundancy_penalty(option_tags, deck_tags)
             if redundancy_penalty:
@@ -148,6 +168,241 @@ class RecommendationScorer:
             else:
                 normalized.append(option)
         return normalized
+
+    def _shop_context_by_option(self, state: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+        character_class = state.get("character_class", "").lower()
+        context: Dict[str, Dict[str, Any]] = {}
+        for item in state.get("shop_items", []) or []:
+            if not isinstance(item, dict):
+                continue
+            raw_id = str(item.get("id") or item.get("name") or "")
+            option_id = self.kb.resolve_id(raw_id, character_class) or raw_id
+            if option_id:
+                context[option_id] = item
+            normalized_name = str(item.get("name") or "").strip().lower().replace(" ", "_").replace("-", "_")
+            if normalized_name == "remove_a_card":
+                context["remove_card"] = item
+            item_type = str(item.get("item_type") or "").lower()
+            if item_type == "card":
+                context.setdefault("buy_card", item)
+            elif item_type == "relic":
+                context.setdefault("buy_relic", item)
+            elif item_type == "potion":
+                context.setdefault("buy_potion", item)
+            elif item_type == "remove":
+                context.setdefault("remove_card", item)
+        return context
+
+    def _shop_item_adjustment(
+        self, option: Dict[str, Any], query_type: str, state: Dict[str, Any], context: Dict[str, Any] | None
+    ) -> tuple[float, str, str]:
+        if query_type != "shop" or not context:
+            return 0.0, "", ""
+        price = int(context.get("price") or 0)
+        affordable = bool(context.get("affordable", True))
+        item_type = str(context.get("item_type") or option.get("entity_type", "")).lower()
+        gold = int(state.get("gold", 0) or 0)
+        if not affordable or (price and price > gold):
+            return -90.0, "", f"Cannot afford this shop option: costs {price} gold with {gold} available."
+
+        score = 0.0
+        reasons: List[str] = []
+        risks: List[str] = []
+        if price:
+            reasons.append(f"Affordable shop option at {price} gold.")
+            remaining = gold - price
+            if remaining < 30:
+                score -= 8.0
+                risks.append("Buying this leaves very little gold for removal or potions.")
+            elif remaining >= 75:
+                score += 4.0
+                reasons.append("Leaves enough gold for a later purchase.")
+        if item_type == "remove":
+            starter_density = self._starter_density(state)
+            score += 10.0 + starter_density * 18.0
+            reasons.append("Removal value scales with starter-card density.")
+        elif item_type == "potion":
+            if len(state.get("potions", [])) >= 3:
+                score -= 35.0
+                risks.append("Potion slots appear full, so buying a potion is constrained.")
+            if "low_hp" in self.kb.risk_tags(state):
+                score += 10.0
+                reasons.append("Low HP makes a safety potion more attractive.")
+        elif item_type == "relic":
+            score += 4.0 if gold >= 180 else -4.0
+        return score, " ".join(reasons[:2]), " ".join(risks[:2])
+
+    def _starter_density(self, state: Dict[str, Any]) -> float:
+        deck = [str(card).lower() for card in state.get("deck", [])]
+        if not deck:
+            return 0.0
+        starter_names = {
+            "strike",
+            "defend",
+            "neutralize",
+            "survivor",
+            "bash",
+            "zap",
+            "dualcast",
+            "eruption",
+            "vigilance",
+        }
+        starter_count = sum(1 for card in deck if any(card.startswith(name) for name in starter_names))
+        return starter_count / max(1, len(deck))
+
+    def _relic_context_adjustment(
+        self,
+        option: Dict[str, Any],
+        query_type: str,
+        state: Dict[str, Any],
+        deck_tags: List[str],
+        risk_tags: List[str],
+        scene_type: str,
+    ) -> tuple[float, List[str], List[str], List[Dict[str, Any]]]:
+        if option.get("entity_type") != "relic" or query_type not in {"relic_pick", "shop"}:
+            return 0.0, [], [], []
+
+        option_id = option.get("id", "")
+        score = 0.0
+        reasons: List[str] = []
+        risks: List[str] = []
+        evidence: List[Dict[str, Any]] = []
+        is_boss_relic = self._is_boss_relic_context(state, scene_type)
+        energy_relics = {
+            "coffee_dripper",
+            "cursed_key",
+            "ectoplasm",
+            "fusion_hammer",
+            "mark_of_pain",
+            "philosophers_stone",
+            "runic_dome",
+            "slavers_collar",
+            "sozu",
+            "velvet_choker",
+        }
+        deck_energy_need = self._deck_needs_energy(state)
+        deck_size = len(state.get("deck", []))
+        hp_ratio = float(state.get("current_hp", 0) or 0) / max(float(state.get("max_hp", 1) or 1), 1.0)
+        starter_density = self._starter_density(state)
+        tag_counts = Counter(deck_tags)
+
+        if is_boss_relic:
+            if option_id in energy_relics:
+                if deck_energy_need:
+                    score += 28.0
+                    reasons.append("Boss energy relic helps a deck with expensive cards or Act 2+ energy pressure.")
+                else:
+                    score += 4.0
+                    reasons.append("Extra energy is broadly useful, but this deck is not desperate for it.")
+            if option_id == "coffee_dripper" and (hp_ratio < 0.55 or "low_hp" in risk_tags):
+                score -= 18.0
+                risks.append("Coffee Dripper is risky while HP is low because it removes resting.")
+            if option_id == "sozu":
+                if len(state.get("potions", [])) <= 1 and state.get("act", 1) <= 2:
+                    score -= 32.0
+                    risks.append("Sozu blocks future potion support, which matters before difficult acts.")
+                if not deck_energy_need:
+                    score -= 8.0
+                    risks.append("Sozu is less attractive when the deck is not under strong energy pressure.")
+                else:
+                    reasons.append("Sozu downside is smaller when potion support is already less important.")
+            if option_id == "ectoplasm" and state.get("act", 1) <= 2:
+                score -= 24.0
+                risks.append("Ectoplasm blocks future gold, reducing shop and removal flexibility.")
+            if option_id == "runic_dome":
+                score -= 30.0
+                risks.append("Runic Dome hides intents, which is dangerous for real-time advice and high-variance fights.")
+            if option_id == "fusion_hammer" and len(state.get("upgraded_cards", [])) < max(2, deck_size // 5):
+                score -= 16.0
+                risks.append("Fusion Hammer removes upgrades while the deck still has many upgrade targets.")
+            if option_id == "busted_crown" and deck_size < 22:
+                score -= 28.0
+                risks.append("Busted Crown is costly before the deck is mostly complete.")
+            if option_id == "velvet_choker" and (tag_counts["draw"] + tag_counts["shiv"] + tag_counts["zero_cost"] >= 3):
+                score -= 18.0
+                risks.append("Velvet Choker conflicts with draw, shiv, or low-cost multi-card turns.")
+            if option_id == "snecko_eye":
+                if self._average_card_cost(state) >= 1.45:
+                    score += 16.0
+                    reasons.append("Snecko Eye fits a higher-cost deck and adds strong draw.")
+                else:
+                    score -= 26.0
+                    risks.append("Snecko Eye is less reliable when the deck is mostly cheap cards.")
+            if option_id == "runic_pyramid":
+                score += 12.0
+                reasons.append("Runic Pyramid improves hand control and lets key cards wait for the right turn.")
+                if tag_counts["discard"] >= 2:
+                    score += 6.0
+                    reasons.append("Existing discard tools help manage Pyramid hand clog.")
+            if option_id == "empty_cage" and starter_density >= 0.25:
+                score += 18.0
+                reasons.append("Empty Cage is strong with many starter cards left to remove.")
+            if option_id == "black_star" and self._elite_ready(state, deck_tags, state.get("character_class", "").lower()):
+                score += 12.0
+                reasons.append("Black Star is better when the deck can safely take elites.")
+            if option_id == "tiny_house":
+                score -= 22.0
+                risks.append("Tiny House is stable but usually lower impact than a focused Boss relic.")
+            evidence.append(
+                {
+                    "type": "boss_relic_rule",
+                    "deck_energy_need": deck_energy_need,
+                    "hp_ratio": round(hp_ratio, 3),
+                    "starter_density": round(starter_density, 3),
+                    "source": "internal://skills/boss-relic-rules",
+                    "confidence": 0.72,
+                }
+            )
+
+        if option_id in {"kunai", "shuriken", "ornamental_fan"} and tag_counts["shiv"] + tag_counts["attack_count"] >= 2:
+            score += 16.0
+            reasons.append("Attack-count relic scales well with shiv or multi-attack decks.")
+        if option_id == "thread_and_needle" and ("low_defense" in risk_tags or "low_hp" in risk_tags):
+            score += 12.0
+            reasons.append("Thread and Needle improves safety immediately.")
+        if option_id == "bag_of_preparation" and (tag_counts["draw"] >= 2 or deck_size >= 18):
+            score += 10.0
+            reasons.append("Opening draw improves consistency for a larger or draw-focused deck.")
+        if option_id == "mummified_hand" and tag_counts["power"] >= 2:
+            score += 14.0
+            reasons.append("Mummified Hand scales strongly with a Power-heavy deck.")
+        if option_id in {"snecko_skull", "the_specimen"} and tag_counts["poison"] >= 2:
+            score += 15.0
+            reasons.append("Poison relic has strong payoff because the deck already applies Poison.")
+
+        return score, reasons[:3], risks[:3], evidence
+
+    def _is_boss_relic_context(self, state: Dict[str, Any], scene_type: str) -> bool:
+        current_screen = str(state.get("current_screen") or "").upper()
+        return scene_type == "boss_relic" or "BOSS" in current_screen
+
+    def _average_card_cost(self, state: Dict[str, Any]) -> float:
+        character_class = state.get("character_class", "").lower()
+        costs: List[float] = []
+        for card_id in self.kb.resolve_many(state.get("deck", []), character_class):
+            card = self.kb.get(card_id, character_class) or {}
+            cost = card.get("energy_cost")
+            if isinstance(cost, int):
+                costs.append(float(max(0, cost)))
+            elif cost == "X":
+                costs.append(1.5)
+        if not costs:
+            return 1.0
+        return sum(costs) / len(costs)
+
+    def _deck_needs_energy(self, state: Dict[str, Any]) -> bool:
+        act = int(state.get("act", 1) or 1)
+        energy = int(state.get("energy", 3) or 3)
+        avg_cost = self._average_card_cost(state)
+        character_class = state.get("character_class", "").lower()
+        deck_ids = self.kb.resolve_many(state.get("deck", []), character_class)
+        expensive_count = 0
+        for card_id in deck_ids:
+            card = self.kb.get(card_id, character_class) or {}
+            cost = card.get("energy_cost")
+            if isinstance(cost, int) and cost >= 2:
+                expensive_count += 1
+        return energy <= 3 and (act >= 2 or avg_cost >= 1.35 or expensive_count >= 4)
 
     def _apply_skip_card_context(self, scores: List[Dict[str, Any]], query_type: str, state: Dict[str, Any]) -> None:
         if query_type != "card_pick":

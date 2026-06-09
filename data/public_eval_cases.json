@@ -1384,5 +1384,74 @@
     "options": ["Ornamental Fan", "Tiny Chest", "Blue Candle"],
     "expected_top": "ornamental_fan",
     "acceptable": ["ornamental_fan"]
+  },
+  {
+    "id": "public_shop_unaffordable_relic_take_card",
+    "query_type": "shop",
+    "state": {
+      "run_id": "public_eval_shop_008",
+      "character_class": "silent",
+      "ascension_level": 15,
+      "act": 1,
+      "current_floor": 6,
+      "current_hp": 48,
+      "max_hp": 70,
+      "gold": 80,
+      "deck": ["Strike", "Strike", "Defend", "Defend", "Neutralize", "Survivor"],
+      "relics": [],
+      "potions": [],
+      "shop_items": [
+        {"id": "shuriken", "name": "Shuriken", "item_type": "relic", "price": 260, "affordable": false},
+        {"id": "dagger_spray", "name": "Dagger Spray", "item_type": "card", "price": 55, "affordable": true},
+        {"id": "remove_card", "name": "Remove a Card", "item_type": "remove", "price": 75, "affordable": true}
+      ]
+    },
+    "options": ["Shuriken", "Dagger Spray", "Remove a Card"],
+    "expected_top": "dagger_spray",
+    "acceptable": ["dagger_spray", "remove_card"]
+  },
+  {
+    "id": "public_boss_relic_energy_need_take_coffee_dripper",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_boss_relic_001",
+      "current_screen": "BOSS_REWARD",
+      "character_class": "ironclad",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 17,
+      "current_hp": 60,
+      "max_hp": 80,
+      "gold": 120,
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Bash", "Carnage", "Uppercut", "Demon Form", "Immolate"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Coffee Dripper", "Tiny House", "Runic Dome"],
+    "expected_top": "coffee_dripper",
+    "acceptable": ["coffee_dripper"]
+  },
+  {
+    "id": "public_boss_relic_low_cost_take_empty_cage",
+    "query_type": "relic_pick",
+    "state": {
+      "run_id": "public_eval_boss_relic_002",
+      "current_screen": "BOSS_REWARD",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 1,
+      "current_floor": 16,
+      "current_hp": 52,
+      "max_hp": 70,
+      "gold": 120,
+      "energy": 3,
+      "deck": ["Strike", "Defend", "Neutralize", "Survivor", "Blade Dance", "Cloak and Dagger", "Prepared"],
+      "relics": [],
+      "potions": []
+    },
+    "options": ["Snecko Eye", "Empty Cage", "Sozu"],
+    "expected_top": "empty_cage",
+    "acceptable": ["empty_cage"]
   }
 ]

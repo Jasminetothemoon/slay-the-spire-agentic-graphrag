@@ -225,6 +225,84 @@ def check_card_skip_option() -> List[str]:
     return errors
 
 
+def check_structured_shop_context() -> List[str]:
+    engine = build_graph()
+    state: Dict[str, Any] = {
+        "run_id": "structured_shop_check",
+        "character_class": "silent",
+        "query_type": "shop",
+        "gold": 80,
+        "deck": ["Strike", "Strike", "Defend", "Defend", "Neutralize", "Survivor"],
+        "relics": [],
+        "potions": [],
+        "options": ["Shuriken", "Dagger Spray", "Remove a Card"],
+        "shop_items": [
+            {"id": "shuriken", "name": "Shuriken", "item_type": "relic", "price": 260, "affordable": False},
+            {"id": "dagger_spray", "name": "Dagger Spray", "item_type": "card", "price": 55, "affordable": True},
+            {"id": "remove_card", "name": "Remove a Card", "item_type": "remove", "price": 75, "affordable": True},
+        ],
+    }
+    result = engine.invoke(state)
+    scores = result.get("option_scores", [])
+    errors: List[str] = []
+    if not scores:
+        errors.append("Structured shop scenario should return scores.")
+        return errors
+    if scores[0].get("option_id") == "shuriken":
+        errors.append("Structured shop scoring should not recommend unaffordable Shuriken.")
+    shuriken = next((item for item in scores if item.get("option_id") == "shuriken"), {})
+    if not any("Cannot afford" in risk for risk in shuriken.get("risks", [])):
+        errors.append(f"Unaffordable shop item should expose a risk, got {shuriken.get('risks')}")
+    errors.extend(check_agent_contract(result, "shop_skill"))
+    return errors
+
+
+def check_boss_relic_context() -> List[str]:
+    engine = build_graph()
+    energy_state: Dict[str, Any] = {
+        "run_id": "boss_relic_energy_check",
+        "current_screen": "BOSS_REWARD",
+        "character_class": "ironclad",
+        "query_type": "relic_pick",
+        "act": 2,
+        "energy": 3,
+        "current_hp": 60,
+        "max_hp": 80,
+        "deck": ["Strike", "Defend", "Bash", "Carnage", "Uppercut", "Demon Form", "Immolate"],
+        "relics": [],
+        "potions": [],
+        "options": ["Coffee Dripper", "Tiny House", "Runic Dome"],
+    }
+    low_cost_state: Dict[str, Any] = {
+        "run_id": "boss_relic_low_cost_check",
+        "current_screen": "BOSS_REWARD",
+        "character_class": "silent",
+        "query_type": "relic_pick",
+        "act": 1,
+        "energy": 3,
+        "deck": ["Strike", "Defend", "Neutralize", "Survivor", "Blade Dance", "Cloak and Dagger", "Prepared"],
+        "relics": [],
+        "potions": [],
+        "options": ["Snecko Eye", "Empty Cage", "Sozu"],
+    }
+    errors: List[str] = []
+    energy_result = engine.invoke(energy_state)
+    if energy_result.get("option_scores", [{}])[0].get("option_id") != "coffee_dripper":
+        errors.append(
+            "Boss relic energy scenario should prefer Coffee Dripper, "
+            f"got {energy_result.get('option_scores', [{}])[0].get('option_id')}"
+        )
+    low_cost_result = engine.invoke(low_cost_state)
+    if low_cost_result.get("option_scores", [{}])[0].get("option_id") != "empty_cage":
+        errors.append(
+            "Low-cost Boss relic scenario should prefer Empty Cage, "
+            f"got {low_cost_result.get('option_scores', [{}])[0].get('option_id')}"
+        )
+    errors.extend(check_agent_contract(energy_result, "relic_pick_skill"))
+    errors.extend(check_agent_contract(low_cost_result, "relic_pick_skill"))
+    return errors
+
+
 def check_pathing_route_objects() -> List[str]:
     engine = build_graph()
     state: Dict[str, Any] = {
@@ -316,6 +394,8 @@ def main() -> None:
     errors.extend(check_combat_advice())
     errors.extend(check_combat_setup_order())
     errors.extend(check_card_skip_option())
+    errors.extend(check_structured_shop_context())
+    errors.extend(check_boss_relic_context())
     errors.extend(check_pathing_route_objects())
     errors.extend(check_live_mod_normalization())
     if errors:
@@ -329,6 +409,8 @@ def main() -> None:
             "combat_advice",
             "combat_setup_order",
             "card_skip_option",
+            "structured_shop_context",
+            "boss_relic_context",
             "pathing_route_objects",
             "live_mod_normalization",
         ],

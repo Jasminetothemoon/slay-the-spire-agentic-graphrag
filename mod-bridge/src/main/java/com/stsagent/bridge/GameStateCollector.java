@@ -69,6 +69,7 @@ public class GameStateCollector {
         json.append("\"discard_pile\":").append(cards(AbstractDungeon.player.discardPile == null ? null : AbstractDungeon.player.discardPile.group)).append(",");
         json.append("\"enemies\":").append(enemies()).append(",");
         json.append("\"map_options\":").append(mapOptions()).append(",");
+        json.append("\"shop_items\":").append(shopItems()).append(",");
         json.append("\"combat_state\":").append(combatState());
         json.append("}");
         return json.toString();
@@ -236,6 +237,126 @@ public class GameStateCollector {
         return options;
     }
 
+    private String shopItems() {
+        if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.SHOP) {
+            return "[]";
+        }
+        try {
+            ShopScreen shop = AbstractDungeon.shopScreen;
+            if (shop == null || AbstractDungeon.player == null) {
+                return "[]";
+            }
+            StringBuilder json = new StringBuilder("[");
+            boolean[] first = new boolean[] {true};
+            appendShopCards(json, first, shop.coloredCards);
+            appendShopCards(json, first, shop.colorlessCards);
+            appendShopRelics(json, first, shop);
+            appendShopPotions(json, first, shop);
+            if (shop.purgeAvailable) {
+                appendShopItem(json, first, "remove_card", "Remove a Card", "remove", ShopScreen.actualPurgeCost);
+            }
+            json.append("]");
+            return json.toString();
+        } catch (Exception ignored) {
+            return "[]";
+        }
+    }
+
+    private void appendShopCards(StringBuilder json, boolean[] first, List<AbstractCard> cards) {
+        if (cards == null) {
+            return;
+        }
+        for (AbstractCard card : cards) {
+            if (card != null) {
+                appendShopItem(json, first, card.cardID != null ? card.cardID : card.name, card.name, "card", estimatedCardPrice(card));
+            }
+        }
+    }
+
+    private void appendShopRelics(StringBuilder json, boolean[] first, ShopScreen shop) {
+        for (Object item : iterableField(shop, "relics")) {
+            AbstractRelic relic = item instanceof AbstractRelic ? (AbstractRelic) item : null;
+            if (relic == null) {
+                Object value = objectField(item, "relic");
+                if (value instanceof AbstractRelic) {
+                    relic = (AbstractRelic) value;
+                }
+            }
+            if (relic == null) {
+                continue;
+            }
+            int price = intField(item, "price", intField(relic, "price", estimatedRelicPrice(relic)));
+            appendShopItem(json, first, relicId(relic), relic.name, "relic", price);
+        }
+    }
+
+    private void appendShopPotions(StringBuilder json, boolean[] first, ShopScreen shop) {
+        for (Object item : iterableField(shop, "potions")) {
+            AbstractPotion potion = item instanceof AbstractPotion ? (AbstractPotion) item : null;
+            if (potion == null) {
+                Object value = objectField(item, "potion");
+                if (value instanceof AbstractPotion) {
+                    potion = (AbstractPotion) value;
+                }
+            }
+            if (potion == null || potion.ID == null) {
+                continue;
+            }
+            int price = intField(item, "price", intField(potion, "price", 60));
+            appendShopItem(json, first, potion.ID, potion.name, "potion", price);
+        }
+    }
+
+    private void appendShopItem(StringBuilder json, boolean[] first, String id, String name, String itemType, int price) {
+        if (!first[0]) {
+            json.append(",");
+        }
+        first[0] = false;
+        int normalizedPrice = Math.max(0, price);
+        int gold = AbstractDungeon.player == null ? 0 : AbstractDungeon.player.gold;
+        json.append("{");
+        json.append("\"id\":\"").append(JsonUtil.escape(id)).append("\",");
+        json.append("\"name\":\"").append(JsonUtil.escape(name)).append("\",");
+        json.append("\"item_type\":\"").append(JsonUtil.escape(itemType)).append("\",");
+        json.append("\"price\":").append(normalizedPrice).append(",");
+        json.append("\"affordable\":").append(gold >= normalizedPrice);
+        json.append("}");
+    }
+
+    private int estimatedCardPrice(AbstractCard card) {
+        if (card == null || card.rarity == null) {
+            return 75;
+        }
+        switch (card.rarity) {
+            case RARE:
+                return 150;
+            case UNCOMMON:
+                return 95;
+            case COMMON:
+                return 55;
+            default:
+                return 75;
+        }
+    }
+
+    private int estimatedRelicPrice(AbstractRelic relic) {
+        if (relic == null || relic.tier == null) {
+            return 150;
+        }
+        switch (relic.tier) {
+            case RARE:
+                return 300;
+            case UNCOMMON:
+                return 250;
+            case COMMON:
+                return 150;
+            case SHOP:
+                return 160;
+            default:
+                return 150;
+        }
+    }
+
     private List<Object> iterableField(Object owner, String fieldName) {
         List<Object> values = new ArrayList<Object>();
         Object fieldValue = objectField(owner, fieldName);
@@ -264,6 +385,14 @@ public class GameStateCollector {
             }
         }
         return null;
+    }
+
+    private int intField(Object owner, String fieldName, int fallback) {
+        Object value = objectField(owner, fieldName);
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        }
+        return fallback;
     }
 
     private String characterClass() {

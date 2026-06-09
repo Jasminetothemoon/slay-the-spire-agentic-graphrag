@@ -38,6 +38,7 @@ class OptionScore(TypedDict, total=False):
 class RunState(TypedDict, total=False):
     run_id: str
     source: str
+    current_screen: str
     game: str
     patch_version: str
     character_class: str
@@ -58,10 +59,12 @@ class RunState(TypedDict, total=False):
     draw_pile: List[str]
     discard_pile: List[str]
     map_options: List[RouteNode]
+    shop_items: List[Dict[str, Any]]
     boss: Optional[str]
     query_type: DecisionType
     scene_type: str
     options: List[Any]
+    raw_options: List[Any]
     user_query: str
     skill_options: List[Any]
     selected_skill: str

@@ -67,6 +67,7 @@ class UpdateStateRequest(BaseModel):
     draw_pile: Optional[List[str]] = None
     discard_pile: Optional[List[str]] = None
     map_options: Optional[List[Dict[str, Any]]] = None
+    shop_items: Optional[List[Dict[str, Any]]] = None
     boss: Optional[str] = None
 
 
@@ -91,6 +92,7 @@ class ModStatePayload(BaseModel):
     draw_pile: List[str] = []
     discard_pile: List[str] = []
     map_options: List[Dict[str, Any]] = []
+    shop_items: List[Dict[str, Any]] = []
     boss: Optional[str] = None
 
 
@@ -150,6 +152,7 @@ def default_state(run_id: str, req: StartRunRequest) -> Dict[str, Any]:
         "draw_pile": [],
         "discard_pile": [],
         "map_options": [],
+        "shop_items": [],
     }
 
 
@@ -179,6 +182,7 @@ def normalize_mod_state(payload: ModStatePayload) -> Dict[str, Any]:
     state["hand_cards"] = normalize_entity_list(state.get("hand_cards", []), character_class)
     state["draw_pile"] = normalize_entity_list(state.get("draw_pile", []), character_class)
     state["discard_pile"] = normalize_entity_list(state.get("discard_pile", []), character_class)
+    state["shop_items"] = normalize_shop_items(state.get("shop_items", []), character_class)
     state.update(
         {
             "run_id": run_id,
@@ -206,6 +210,27 @@ def normalize_option_list(values: List[str], character_class: str) -> List[str]:
         text = str(value)
         entity_id = kb.resolve_id(text, character_class)
         normalized.append(entity_id or text)
+    return normalized
+
+
+def normalize_shop_items(values: List[Dict[str, Any]], character_class: str) -> List[Dict[str, Any]]:
+    normalized = []
+    for item in values or []:
+        if not isinstance(item, dict):
+            continue
+        raw_id = str(item.get("id") or item.get("name") or "")
+        entity_id = kb.resolve_id(raw_id, character_class) or raw_id
+        normalized_item = dict(item)
+        normalized_item["id"] = entity_id
+        normalized_item["raw_id"] = raw_id
+        normalized_item["name"] = str(item.get("name") or raw_id)
+        try:
+            normalized_item["price"] = int(item.get("price") or 0)
+        except (TypeError, ValueError):
+            normalized_item["price"] = 0
+        if "affordable" not in normalized_item:
+            normalized_item["affordable"] = True
+        normalized.append(normalized_item)
     return normalized
 
 

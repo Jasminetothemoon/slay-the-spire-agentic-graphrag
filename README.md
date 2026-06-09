@@ -337,7 +337,7 @@ Implemented:
 - Multi-Agent trace output with selected skill, critic warnings, and decision-valid flags for the Mod debug panel.
 - Structured scoring and explanations.
 - Neo4j ingestion script and local fallback.
-- FastAPI, WebSocket, mod-state bridge contract, and compact overlay HUD.
+- FastAPI, WebSocket, mod-state bridge contract, compact overlay HUD, and in-game candidate score badges.
 - CommunicationMod-style adapter with offline debug mode.
 - Data validation, graph fixture checks, live bridge e2e check, replay harness, ablation harness, latency harness, and evaluation harness.
 - Shallow combat advisor for current hand, energy, incoming damage, enemy board, and defensive potion prompts.
@@ -346,5 +346,5 @@ Still to expand:
 
 - Base-game event coverage and live-game validation for a few enemy/minion variants.
 - Larger strategy/evaluation knowledge base.
-- Real ModTheSpire/BaseMod bridge or direct CommunicationMod integration.
+- More live-game validation for candidate badge placement across all shop/reward UI variants.
 - Deeper combat search, exact card text parsing, and broader potion planning.

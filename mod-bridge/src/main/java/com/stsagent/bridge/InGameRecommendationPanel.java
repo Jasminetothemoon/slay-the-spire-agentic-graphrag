@@ -2,9 +2,19 @@ package com.stsagent.bridge;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.rewards.RewardItem;
+import com.megacrit.cardcrawl.shop.ShopScreen;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class InGameRecommendationPanel {
     private static final long STALE_AFTER_MS = 15000L;
@@ -14,12 +24,14 @@ public class InGameRecommendationPanel {
     private String bridgeDebug = "";
     private boolean visible = true;
     private boolean debugVisible = false;
+    private int lastBadgeMatches = 0;
+    private int lastBadgeUnmatched = 0;
 
     public void update(RecommendationResult result) {
         if (result != null && result.hasContent()) {
             latest = result;
             statusMessage = "";
-            bridgeDebug = result.debugSummary;
+            bridgeDebug = result.debugSummary + " scores=" + result.optionScoreCount();
         }
     }
 
@@ -65,6 +77,9 @@ public class InGameRecommendationPanel {
         boolean hasFreshStatus = !statusMessage.isEmpty() && now - statusReceivedAt <= STALE_AFTER_MS;
         if (!hasFreshRecommendation && !hasFreshStatus) {
             return;
+        }
+        if (hasFreshRecommendation) {
+            renderCandidateBadges(sb, latest);
         }
 
         float scale = Settings.scale;
@@ -156,6 +171,7 @@ public class InGameRecommendationPanel {
 
         if (debugVisible) {
             String debug = bridgeDebug.isEmpty() ? "F9 Debug: waiting for bridge event." : bridgeDebug;
+            debug = debug + " badges=" + lastBadgeMatches + "/" + latest.optionScoreCount() + " unmatched=" + lastBadgeUnmatched;
             FontHelper.renderSmartText(
                 sb,
                 FontHelper.tipBodyFont,
@@ -179,6 +195,285 @@ public class InGameRecommendationPanel {
                 );
             }
         }
+    }
+
+    private void renderCandidateBadges(SpriteBatch sb, RecommendationResult result) {
+        lastBadgeMatches = 0;
+        lastBadgeUnmatched = 0;
+        if (result == null || result.optionScores.isEmpty()) {
+            return;
+        }
+        Set<RecommendationResult.OptionScore> matched = new HashSet<RecommendationResult.OptionScore>();
+        String scene = result.sceneType;
+        if ("card_reward".equals(scene)) {
+            renderCardRewardBadges(sb, result, matched);
+        } else if ("shop".equals(scene)) {
+            renderShopBadges(sb, result, matched);
+        } else if ("relic_reward".equals(scene)) {
+            renderCombatRewardRelicBadges(sb, result, matched);
+        } else if ("boss_relic".equals(scene)) {
+            renderBossRelicBadges(sb, result, matched);
+        } else {
+            return;
+        }
+        lastBadgeMatches = matched.size();
+        lastBadgeUnmatched = Math.max(0, result.optionScoreCount() - matched.size());
+    }
+
+    private void renderCardRewardBadges(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched) {
+        try {
+            if (AbstractDungeon.cardRewardScreen == null || AbstractDungeon.cardRewardScreen.rewardGroup == null) {
+                return;
+            }
+            renderCardBadges(sb, result, matched, AbstractDungeon.cardRewardScreen.rewardGroup, -34.0F * Settings.scale);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void renderShopBadges(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched) {
+        try {
+            ShopScreen shop = AbstractDungeon.shopScreen;
+            if (shop == null) {
+                return;
+            }
+            renderCardBadges(sb, result, matched, shop.coloredCards, -30.0F * Settings.scale);
+            renderCardBadges(sb, result, matched, shop.colorlessCards, -30.0F * Settings.scale);
+            renderShopRelicBadges(sb, result, matched, shop);
+            renderShopPotionBadges(sb, result, matched, shop);
+            renderShopPurgeBadge(sb, result, matched, shop);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void renderCardBadges(
+        SpriteBatch sb,
+        RecommendationResult result,
+        Set<RecommendationResult.OptionScore> matched,
+        List<AbstractCard> cards,
+        float yOffset
+    ) {
+        if (cards == null) {
+            return;
+        }
+        for (AbstractCard card : cards) {
+            if (card == null) {
+                continue;
+            }
+            RecommendationResult.OptionScore score = result.findScore(card.cardID, card.name);
+            if (score == null) {
+                continue;
+            }
+            matched.add(score);
+            float x = card.hb == null ? card.current_x : card.hb.cX;
+            float y = card.hb == null ? card.current_y - 210.0F * Settings.scale : card.hb.cY - card.hb.height / 2.0F + yOffset;
+            renderBadge(sb, score, x, y, isTopScore(result, score));
+        }
+    }
+
+    private void renderCombatRewardRelicBadges(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched) {
+        try {
+            if (AbstractDungeon.combatRewardScreen == null || AbstractDungeon.combatRewardScreen.rewards == null) {
+                return;
+            }
+            for (RewardItem reward : AbstractDungeon.combatRewardScreen.rewards) {
+                if (reward == null || reward.type != RewardItem.RewardType.RELIC || reward.relic == null) {
+                    continue;
+                }
+                RecommendationResult.OptionScore score = result.findScore(relicId(reward.relic), reward.relic.name);
+                if (score == null) {
+                    continue;
+                }
+                matched.add(score);
+                float[] position = positionForObject(reward, reward.relic);
+                renderBadge(sb, score, position[0], position[1] - 30.0F * Settings.scale, isTopScore(result, score));
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void renderBossRelicBadges(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched) {
+        try {
+            if (AbstractDungeon.bossRelicScreen == null || AbstractDungeon.bossRelicScreen.relics == null) {
+                return;
+            }
+            for (AbstractRelic relic : AbstractDungeon.bossRelicScreen.relics) {
+                if (relic == null) {
+                    continue;
+                }
+                RecommendationResult.OptionScore score = result.findScore(relicId(relic), relic.name);
+                if (score == null) {
+                    continue;
+                }
+                matched.add(score);
+                float[] position = positionForObject(relic, relic);
+                renderBadge(sb, score, position[0], position[1] - 44.0F * Settings.scale, isTopScore(result, score));
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void renderShopRelicBadges(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched, ShopScreen shop) {
+        for (Object item : iterableField(shop, "relics")) {
+            AbstractRelic relic = item instanceof AbstractRelic ? (AbstractRelic) item : null;
+            if (relic == null) {
+                Object value = objectField(item, "relic");
+                if (value instanceof AbstractRelic) {
+                    relic = (AbstractRelic) value;
+                }
+            }
+            if (relic == null) {
+                continue;
+            }
+            RecommendationResult.OptionScore score = result.findScore(relicId(relic), relic.name);
+            if (score == null) {
+                continue;
+            }
+            matched.add(score);
+            float[] position = positionForObject(item, relic);
+            renderBadge(sb, score, position[0], position[1] - 34.0F * Settings.scale, isTopScore(result, score));
+        }
+    }
+
+    private void renderShopPotionBadges(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched, ShopScreen shop) {
+        for (Object item : iterableField(shop, "potions")) {
+            AbstractPotion potion = item instanceof AbstractPotion ? (AbstractPotion) item : null;
+            if (potion == null) {
+                Object value = objectField(item, "potion");
+                if (value instanceof AbstractPotion) {
+                    potion = (AbstractPotion) value;
+                }
+            }
+            if (potion == null) {
+                continue;
+            }
+            RecommendationResult.OptionScore score = result.findScore(potion.ID, potion.name);
+            if (score == null) {
+                continue;
+            }
+            matched.add(score);
+            float[] position = positionForObject(item, potion);
+            renderBadge(sb, score, position[0], position[1] - 34.0F * Settings.scale, isTopScore(result, score));
+        }
+    }
+
+    private void renderShopPurgeBadge(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched, ShopScreen shop) {
+        if (!shop.purgeAvailable) {
+            return;
+        }
+        RecommendationResult.OptionScore score = result.findScore("remove_card", "Remove a Card");
+        if (score == null) {
+            return;
+        }
+        matched.add(score);
+        renderBadge(sb, score, Settings.WIDTH * 0.77F, Settings.HEIGHT * 0.18F, isTopScore(result, score));
+    }
+
+    private void renderBadge(SpriteBatch sb, RecommendationResult.OptionScore score, float centerX, float centerY, boolean top) {
+        String label = score.displayBadge();
+        if (label.isEmpty()) {
+            return;
+        }
+        float scale = Settings.scale;
+        float width = Math.max(58.0F * scale, Math.min(92.0F * scale, (label.length() * 8.0F + 18.0F) * scale));
+        float height = 24.0F * scale;
+        float x = centerX - width / 2.0F;
+        float y = centerY - height / 2.0F;
+        Color previous = sb.getColor().cpy();
+        if (score.hasRisk()) {
+            sb.setColor(new Color(0.65F, 0.12F, 0.12F, 0.92F));
+        } else if (top) {
+            sb.setColor(new Color(0.10F, 0.48F, 0.22F, 0.94F));
+        } else {
+            sb.setColor(new Color(0.05F, 0.07F, 0.10F, 0.86F));
+        }
+        sb.draw(ImageMaster.WHITE_SQUARE_IMG, x, y, width, height);
+        sb.setColor(top ? Settings.GOLD_COLOR : Settings.CREAM_COLOR);
+        FontHelper.renderFontLeftTopAligned(
+            sb,
+            FontHelper.topPanelInfoFont,
+            label,
+            x + 8.0F * scale,
+            y + height - 5.0F * scale,
+            top ? Settings.GOLD_COLOR : Settings.CREAM_COLOR
+        );
+        sb.setColor(previous);
+    }
+
+    private boolean isTopScore(RecommendationResult result, RecommendationResult.OptionScore score) {
+        return result != null && !result.optionScores.isEmpty() && result.optionScores.get(0) == score;
+    }
+
+    private String relicId(AbstractRelic relic) {
+        return relic.relicId == null ? relic.name : relic.relicId;
+    }
+
+    private float[] positionForObject(Object owner, Object fallback) {
+        float[] hitbox = hitboxCenter(owner);
+        if (hitbox != null) {
+            return hitbox;
+        }
+        hitbox = hitboxCenter(fallback);
+        if (hitbox != null) {
+            return hitbox;
+        }
+        float x = floatField(owner, "currentX", Float.NaN);
+        float y = floatField(owner, "currentY", Float.NaN);
+        if (Float.isNaN(x) || Float.isNaN(y)) {
+            x = floatField(fallback, "currentX", Settings.WIDTH / 2.0F);
+            y = floatField(fallback, "currentY", Settings.HEIGHT / 2.0F);
+        }
+        return new float[] {x, y};
+    }
+
+    private float[] hitboxCenter(Object owner) {
+        Object hb = objectField(owner, "hb");
+        if (hb == null) {
+            return null;
+        }
+        float x = floatField(hb, "cX", Float.NaN);
+        float y = floatField(hb, "cY", Float.NaN);
+        if (Float.isNaN(x) || Float.isNaN(y)) {
+            return null;
+        }
+        return new float[] {x, y};
+    }
+
+    private List<Object> iterableField(Object owner, String fieldName) {
+        java.util.ArrayList<Object> values = new java.util.ArrayList<Object>();
+        Object fieldValue = objectField(owner, fieldName);
+        if (fieldValue instanceof Iterable) {
+            for (Object item : (Iterable<?>) fieldValue) {
+                if (item != null) {
+                    values.add(item);
+                }
+            }
+        }
+        return values;
+    }
+
+    private Object objectField(Object owner, String fieldName) {
+        if (owner == null) {
+            return null;
+        }
+        Class<?> type = owner.getClass();
+        while (type != null) {
+            try {
+                java.lang.reflect.Field field = type.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return field.get(owner);
+            } catch (Exception ignored) {
+                type = type.getSuperclass();
+            }
+        }
+        return null;
+    }
+
+    private float floatField(Object owner, String fieldName, float fallback) {
+        Object value = objectField(owner, fieldName);
+        if (value instanceof Number) {
+            return ((Number) value).floatValue();
+        }
+        return fallback;
     }
 
     private float panelHeight(boolean hasFreshRecommendation) {

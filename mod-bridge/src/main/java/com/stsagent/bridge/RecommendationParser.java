@@ -1,5 +1,8 @@
 package com.stsagent.bridge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class RecommendationParser {
     private RecommendationParser() {
     }
@@ -16,17 +19,40 @@ public final class RecommendationParser {
         String optionId = stringValue(recommendationBlock, "recommendation");
         String sceneType = stringValue(recommendationBlock, "scene_type");
         String debugBlock = objectForKey(recommendationBlock, "debug");
-        String scoreBlock = firstObjectInArray(recommendationBlock, "option_scores");
-        String name = stringValue(scoreBlock, "name");
-        String score = rawValue(scoreBlock, "score");
-        String confidence = rawValue(scoreBlock, "confidence");
-        String grade = stringValue(scoreBlock, "grade");
-        String displayBadge = stringValue(scoreBlock, "display_badge");
-        String whyNot = stringValue(scoreBlock, "why_not");
-        String reason = firstStringInArray(scoreBlock, "reasons");
-        String risk = firstStringInArray(scoreBlock, "risks");
+        List<RecommendationResult.OptionScore> optionScores = optionScores(recommendationBlock);
+        RecommendationResult.OptionScore top = optionScores.isEmpty()
+            ? new RecommendationResult.OptionScore("", "", "", "", "", "", "", "", "")
+            : optionScores.get(0);
+        String name = top.name;
+        String score = top.score;
+        String confidence = top.confidence;
+        String grade = top.grade;
+        String displayBadge = top.displayBadge;
+        String whyNot = top.whyNot;
+        String reason = top.reason;
+        String risk = top.risk;
         String debugSummary = debugSummary(debugBlock);
-        return new RecommendationResult(optionId, name, reason, risk, score, confidence, sceneType, grade, displayBadge, whyNot, debugSummary);
+        return new RecommendationResult(optionId, name, reason, risk, score, confidence, sceneType, grade, displayBadge, whyNot, debugSummary, optionScores);
+    }
+
+    private static List<RecommendationResult.OptionScore> optionScores(String recommendationBlock) {
+        List<RecommendationResult.OptionScore> scores = new ArrayList<RecommendationResult.OptionScore>();
+        for (String scoreBlock : objectsInArray(recommendationBlock, "option_scores")) {
+            scores.add(
+                new RecommendationResult.OptionScore(
+                    stringValue(scoreBlock, "option_id"),
+                    stringValue(scoreBlock, "name"),
+                    rawValue(scoreBlock, "score"),
+                    rawValue(scoreBlock, "confidence"),
+                    stringValue(scoreBlock, "grade"),
+                    stringValue(scoreBlock, "display_badge"),
+                    stringValue(scoreBlock, "why_not"),
+                    firstStringInArray(scoreBlock, "reasons"),
+                    firstStringInArray(scoreBlock, "risks")
+                )
+            );
+        }
+        return scores;
     }
 
     private static String debugSummary(String debugBlock) {
@@ -56,17 +82,38 @@ public final class RecommendationParser {
     }
 
     private static String firstObjectInArray(String json, String key) {
+        List<String> objects = objectsInArray(json, key);
+        return objects.isEmpty() ? "" : objects.get(0);
+    }
+
+    private static List<String> objectsInArray(String json, String key) {
+        List<String> objects = new ArrayList<String>();
         int keyIndex = json.indexOf("\"" + key + "\"");
         if (keyIndex < 0) {
-            return "";
+            return objects;
         }
         int arrayStart = json.indexOf("[", keyIndex);
-        int objectStart = json.indexOf("{", arrayStart);
-        if (arrayStart < 0 || objectStart < 0) {
-            return "";
+        if (arrayStart < 0) {
+            return objects;
         }
-        int end = matching(json, objectStart, '{', '}');
-        return end < 0 ? "" : json.substring(objectStart, end + 1);
+        int arrayEnd = matching(json, arrayStart, '[', ']');
+        if (arrayEnd < 0) {
+            return objects;
+        }
+        int cursor = arrayStart + 1;
+        while (cursor < arrayEnd) {
+            int objectStart = json.indexOf("{", cursor);
+            if (objectStart < 0 || objectStart >= arrayEnd) {
+                break;
+            }
+            int objectEnd = matching(json, objectStart, '{', '}');
+            if (objectEnd < 0 || objectEnd > arrayEnd) {
+                break;
+            }
+            objects.add(json.substring(objectStart, objectEnd + 1));
+            cursor = objectEnd + 1;
+        }
+        return objects;
     }
 
     private static String firstStringInArray(String json, String key) {

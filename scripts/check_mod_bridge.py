@@ -61,7 +61,23 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
-        ["render(SpriteBatch sb)", "STS Agent", "ImageMaster.WHITE_SQUARE_IMG", "RecommendationResult", "toggleVisible", "toggleDebugVisible", "updateStatus", "clear()", "sceneDisplayName", "badgeText"],
+        [
+            "render(SpriteBatch sb)",
+            "STS Agent",
+            "ImageMaster.WHITE_SQUARE_IMG",
+            "RecommendationResult",
+            "toggleVisible",
+            "toggleDebugVisible",
+            "updateStatus",
+            "clear()",
+            "sceneDisplayName",
+            "badgeText",
+            "renderCandidateBadges",
+            "renderCardRewardBadges",
+            "renderShopBadges",
+            "renderBossRelicBadges",
+            "lastBadgeUnmatched",
+        ],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/BridgeCaptureLogger.java",
@@ -69,7 +85,11 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/RecommendationParser.java",
-        ["scene_type", "display_badge", "why_not", "debugSummary"],
+        ["scene_type", "display_badge", "why_not", "debugSummary", "objectsInArray", "optionScores"],
+    )
+    assert_contains(
+        MOD_DIR / "src/main/java/com/stsagent/bridge/RecommendationResult.java",
+        ["class OptionScore", "optionScores", "findScore", "normalizeKey", "displayBadge()"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/BridgeConfig.java",

@@ -9,6 +9,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from api.main import build_recommendation_response
+from scripts.replay_analysis import replay_analysis
 
 
 def load_jsonl(path: Path) -> List[Dict[str, Any]]:
@@ -45,6 +46,8 @@ def replay_record(record: Dict[str, Any]) -> Dict[str, Any]:
     )
     response = build_recommendation_response(state)
     scores = response.option_scores
+    response_data = response.model_dump()
+    analysis = replay_analysis(record, response_data, response.latency_ms)
     return {
         "kind": "recommendation",
         "status": "passed" if scores else "failed",
@@ -56,6 +59,7 @@ def replay_record(record: Dict[str, Any]) -> Dict[str, Any]:
         "top_option": scores[0].get("name") if scores else "",
         "scores": len(scores),
         "latency_ms": response.latency_ms,
+        "analysis": analysis,
     }
 
 
@@ -88,6 +92,18 @@ def main() -> None:
                 f"- {item['status']} {item.get('screen', '')} {item.get('query_type', '')}: "
                 f"{item.get('top_option', '') or item.get('recommendation', '')} ({item.get('scores', 0)} scores)"
             )
+            analysis = item.get("analysis", {})
+            if analysis:
+                flags = ", ".join(analysis.get("quality_flags", [])) or "none"
+                print(
+                    f"  target={analysis.get('preferred_archetype') or 'auto'} "
+                    f"gap={analysis.get('score_gap')} skip_rank={analysis.get('skip_rank')} flags={flags}"
+                )
+                for option in analysis.get("option_summaries", [])[:3]:
+                    print(
+                        f"  #{option.get('option_id')} score={option.get('score')} "
+                        f"strategy={option.get('strategy_signal')} risks={len(option.get('risks', []))}"
+                    )
     if failures:
         raise SystemExit(1)
 

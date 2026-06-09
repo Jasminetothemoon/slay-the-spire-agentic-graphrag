@@ -20,6 +20,8 @@ DEFAULT_REPLAY = ROOT / "data" / "mod_payload_replay_sample.jsonl"
 DEFAULT_JSON_OUTPUT = ROOT / "reports" / "decision_harness_report.json"
 DEFAULT_MD_OUTPUT = ROOT / "reports" / "decision_harness_report.md"
 
+from scripts.replay_analysis import replay_analysis
+
 
 ABLATIONS = {
     "full": {},
@@ -157,6 +159,7 @@ def replay_record(engine: Any, record: Dict[str, Any]) -> Dict[str, Any]:
     result = engine.invoke(state)
     elapsed = (time.perf_counter() - started) * 1000
     scores = result.get("option_scores", [])
+    analysis = replay_analysis(record, result, elapsed)
     return {
         "status": "passed" if scores else "failed",
         "screen": record.get("screen", ""),
@@ -168,6 +171,7 @@ def replay_record(engine: Any, record: Dict[str, Any]) -> Dict[str, Any]:
         "latency_ms": round(elapsed, 2),
         "selected_skill": result.get("selected_skill", ""),
         "critic_warnings": result.get("critic_warnings", []),
+        "analysis": analysis,
     }
 
 
@@ -233,6 +237,18 @@ def markdown_report(report: Dict[str, Any]) -> str:
                 "",
             ]
         )
+        for item in replay.get("reports", [])[:10]:
+            if item.get("status") == "skipped":
+                continue
+            analysis = item.get("analysis", {})
+            flags = ", ".join(analysis.get("quality_flags", [])) or "none"
+            lines.append(
+                f"- {item.get('screen', '')} `{item.get('query_type', '')}`: "
+                f"{item.get('top_option', '') or item.get('recommendation', '')}; "
+                f"target={analysis.get('preferred_archetype') or 'auto'}, "
+                f"gap={analysis.get('score_gap')}, skip_rank={analysis.get('skip_rank')}, flags={flags}"
+            )
+        lines.append("")
     return "\n".join(lines)
 
 

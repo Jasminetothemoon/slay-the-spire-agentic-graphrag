@@ -248,6 +248,8 @@ scripts/replay_mod_payloads.py      Real Mod payload replay
 scripts/replay_analysis.py          Replay tuning analysis
 reports/benchmark.md                Generated benchmark snapshot
 docs/resume_project_summary.md      Resume-ready project writeup
+docs/ai_app_and_pm_polish_plan.md   AI application / AI PM polish plan
+docs/project_implementation_report.md Implementation report and interview story
 ```
 
 ## Verification
@@ -273,6 +275,11 @@ Suggested bullets:
 - Modeled 666 entities and 1442 provenance-tracked relationships from public Slay the Spire data; supported Neo4j GraphRAG with local JSON fallback.
 - Implemented 6 pluggable Decision Skills covering card picks, relics, shops, pathing, combat, and rest-site choices.
 - Built replay/eval/ablation/latency harnesses over 54 fixed cases and real Mod JSONL payloads; measured millisecond-level P95 latency without external LLM calls in the realtime path.
+
+Role-specific writeups:
+
+- AI application developer: see `docs/resume_project_summary.md` and `docs/ai_app_and_pm_polish_plan.md`.
+- AI product manager: see `docs/project_implementation_report.md`, especially the product evolution, metrics, and roadmap sections.
 
 ## Current Gaps
 

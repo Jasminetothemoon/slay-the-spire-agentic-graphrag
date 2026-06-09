@@ -1,0 +1,23 @@
+{
+  "inputs": [
+    "data/mod_payload_replay_sample.jsonl"
+  ],
+  "records_total": 1,
+  "imported_cases": 1,
+  "skipped": {},
+  "by_query_type": {
+    "card_pick": 1
+  },
+  "by_screen": {
+    "CARD_REWARD": 1
+  },
+  "quality_flags": {
+    "low_top_separation": 1
+  },
+  "review_priority": {
+    "high": 1
+  },
+  "sample_case_ids": [
+    "captured_capture_replay_sample_card_reward_card_pick_1760000000000_1_1"
+  ]
+}

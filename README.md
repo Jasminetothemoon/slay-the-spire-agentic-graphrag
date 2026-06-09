@@ -27,6 +27,7 @@ From the current local benchmark and harness:
 | Tracked archetypes | 20 |
 | Seeded archetype rule coverage | 100% |
 | Fixed eval cases | 54 |
+| Captured eval candidates | 1 machine-seeded sample |
 | Eval Top-1 / Top-3 | 1.0 / 1.0 |
 | Harness P95 latency | about 2-3 ms locally |
 | Naive base-value baseline Top-1 / Top-3 | 0.593 / 0.759 |
@@ -170,6 +171,15 @@ Real Mod payload replay:
 python scripts\replay_mod_payloads.py data\mod_payload_replay_sample.jsonl
 ```
 
+Captured payloads can also be converted into machine-seeded eval candidates for human review:
+
+```powershell
+python scripts\import_captured_payloads.py artifacts\mod_payloads\*.jsonl
+python scripts\decision_harness.py --mode eval --eval data\captured_eval_candidates.json
+```
+
+Generated candidates are marked `machine_seeded_needs_human_review` and should be reviewed before being merged into the fixed eval set.
+
 Replay output includes tuning fields:
 
 - target archetype
@@ -232,6 +242,7 @@ Captured payloads are written as JSONL and can be replayed:
 
 ```powershell
 python scripts\replay_mod_payloads.py artifacts\mod_payloads\<capture-file>.jsonl
+python scripts\import_captured_payloads.py artifacts\mod_payloads\<capture-file>.jsonl
 ```
 
 ## Neo4j
@@ -262,13 +273,17 @@ scripts/decision_harness.py         Eval/replay/ablation/latency harness
 scripts/ablation_insights.py        Baseline and ablation insight report
 scripts/agent_trace_audit.py        Representative Multi-Agent trace report
 scripts/replay_mod_payloads.py      Real Mod payload replay
+scripts/import_captured_payloads.py Captured payload to eval-candidate importer
 scripts/replay_analysis.py          Replay tuning analysis
+data/captured_eval_candidates.json  Machine-seeded real-payload eval candidates
 reports/benchmark.md                Generated benchmark snapshot
 reports/ablation_insights.md        Baseline vs full-system comparison
 reports/agent_trace_audit.md        Agent trace audit examples
+reports/captured_payload_import_report.md Captured payload import summary
 docs/resume_project_summary.md      Resume-ready project writeup
 docs/ai_app_and_pm_polish_plan.md   AI application / AI PM polish plan
 docs/project_implementation_report.md Implementation report and interview story
+docs/real_payload_eval_workflow.md  Real Mod payload labeling workflow
 docs/product_prd.md                 Product requirements document
 docs/user_journey.md                User journey and in-game UX design
 docs/competitor_analysis.md         Companion/overlay competitor analysis
@@ -298,7 +313,7 @@ Suggested bullets:
 - Designed a LangGraph multi-agent workflow with State, Router, Retrieval, Risk, Skill Scoring, Critic, and Explainer agents; exposed `agent_trace`, `selected_skill`, and critic warnings for debugging.
 - Modeled 666 entities and 1442 provenance-tracked relationships from public Slay the Spire data; supported Neo4j GraphRAG with local JSON fallback.
 - Implemented 6 pluggable Decision Skills covering card picks, relics, shops, pathing, combat, and rest-site choices.
-- Built replay/eval/ablation/latency harnesses over 54 fixed cases and real Mod JSONL payloads; compared the full system against input-order and base-value baselines, measured millisecond-level P95 latency, and generated representative Agent trace audits.
+- Built replay/eval/ablation/latency harnesses over 54 fixed cases and real Mod JSONL payloads; added a captured-payload importer that turns live Mod JSONL into human-reviewable eval candidates, compared the full system against input-order and base-value baselines, and generated representative Agent trace audits.
 
 Role-specific writeups:
 

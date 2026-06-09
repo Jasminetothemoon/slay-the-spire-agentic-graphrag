@@ -14,7 +14,7 @@ Built a real-time in-game AI decision assistant that combines a Java Mod bridge,
 - Designed a LangGraph workflow with State, Scene Router, Retrieval, Risk, Skill Scoring, Critic, and Explainer agents; exposed structured `agent_trace`, `selected_skill`, critic warnings, and decision validity for debugging and replay.
 - Implemented a pluggable Decision Skill system covering card picks, relic picks, shops, pathing, combat turns, and rest-site decisions, with deterministic scoring instead of external LLM calls in the real-time path.
 - Built a provenance-tracked knowledge graph from public game data with 666 entities and 1442 relationships; supported Neo4j GraphRAG retrieval with local JSON fallback for reliable offline demos.
-- Added replay/eval/ablation/latency harnesses over 54 fixed scenarios and real Mod JSONL payloads; compared the full system against input-order and base-value baselines, reported Top-1/Top-3, P95 latency, no-recommendation rate, critic warnings, and tuning flags such as low score separation.
+- Added replay/eval/ablation/latency harnesses over 54 fixed scenarios and real Mod JSONL payloads; built a captured-payload importer that converts live Mod JSONL into `machine_seeded_needs_human_review` eval candidates, compared the full system against input-order and base-value baselines, and reported Top-1/Top-3, P95 latency, no-recommendation rate, critic warnings, and low-separation flags.
 
 ## AI 应用开发方向简历版本
 
@@ -32,7 +32,7 @@ Built a real-time in-game AI decision assistant that combines a Java Mod bridge,
 - 设计 LangGraph 多 Agent 工作流，将推荐链路拆分为 State、Scene Router、Retrieval、Risk、Skill Scoring、Critic、Explainer 节点，输出 `agent_trace`、`selected_skill`、critic warnings 和结构化解释，提升可观测性与可调试性。
 - 实现可插拔 Decision Skill 系统，覆盖选牌、遗物、商店、路线、战斗和营火决策；实时链路使用 deterministic scoring，不依赖外部 LLM，保证低延迟、低成本和可回归。
 - 构建包含 666 个实体、1442 条关系的来源可追踪知识图谱，支持 Neo4j GraphRAG 检索与本地 JSON fallback，内部使用稳定英文 id，展示层支持中文/英文名称。
-- 搭建 replay/eval/ablation/latency harness，支持真实 Mod JSONL payload 回放、固定局面 Top-1/Top-3 评测、朴素基线对比、模块消融和 P95 延迟统计；当前 curated eval 中完整系统 Top-1/Top-3 为 1.0/1.0，base-value 基线为 0.593/0.759，关闭 strategy 后 Top-1 降至 0.87。
+- 搭建 replay/eval/ablation/latency harness，支持真实 Mod JSONL payload 回放、候选评测集导入、固定局面 Top-1/Top-3 评测、朴素基线对比、模块消融和 P95 延迟统计；当前 curated eval 中完整系统 Top-1/Top-3 为 1.0/1.0，base-value 基线为 0.593/0.759，关闭 strategy 后 Top-1 降至 0.87。
 
 ### 面试主线
 
@@ -114,6 +114,7 @@ The harness is the strongest engineering signal:
 - Ablation Harness shows the effect of graph, strategy, risk, and critic components.
 - Latency Harness tracks P50/P95/P99.
 - Replay analysis flags low top separation, skip ranking, captured-vs-replay drift, and critic warnings.
+- Captured-payload import turns live Mod JSONL into machine-seeded eval candidates for human review.
 - Baseline insights compare input-order and base-value policies against the full Multi-Agent Decision Harness.
 - Agent trace audit expands representative cases into State, Router, Retrieval, Risk, Scoring, Critic, and Explainer steps.
 
@@ -144,7 +145,7 @@ This turns subjective "the recommendation feels wrong" feedback into reproducibl
 The next high-value version should add:
 
 - More real captured payloads from full runs.
-- Human labels for high-level card, relic, shop, and Boss relic choices.
+- Human review of machine-seeded captured eval candidates for high-level card, relic, shop, and Boss relic choices.
 - A tuning report showing recommendation changes before and after calibration.
 - More community-derived archetype rules with source URLs and confidence scores.
 - A short demo GIF/video showing Mod launch, F11 archetype selection, candidate badges, and replay report.

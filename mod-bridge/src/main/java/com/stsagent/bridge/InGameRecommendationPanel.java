@@ -1,6 +1,8 @@
 package com.stsagent.bridge;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
@@ -92,11 +94,12 @@ public class InGameRecommendationPanel {
         }
 
         float scale = Settings.scale;
-        float width = 440.0F * scale;
+        float width = 500.0F * scale;
         float height = panelHeight(hasFreshRecommendation);
         float x = Settings.WIDTH - width - 24.0F * scale;
         float y = Settings.HEIGHT - height - 104.0F * scale;
         float padding = 14.0F * scale;
+        float contentWidth = width - padding * 2.0F;
 
         Color previous = sb.getColor().cpy();
         sb.setColor(new Color(0.03F, 0.05F, 0.08F, 0.78F));
@@ -110,13 +113,13 @@ public class InGameRecommendationPanel {
         FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, panelTitle(), textX, textY, Settings.GOLD_COLOR);
 
         if (!hasFreshRecommendation) {
-            FontHelper.renderSmartText(
+            renderWrappedLines(
                 sb,
-                FontHelper.tipBodyFont,
                 clamp(statusMessage, 120),
                 textX,
                 textY - 30.0F * scale,
-                width - padding * 2.0F,
+                contentWidth,
+                2,
                 22.0F * scale,
                 Settings.RED_TEXT_COLOR
             );
@@ -133,51 +136,54 @@ public class InGameRecommendationPanel {
             Settings.GREEN_TEXT_COLOR
         );
 
-        FontHelper.renderSmartText(
+        float cursorY = textY - 48.0F * scale;
+        cursorY = renderWrappedLines(
             sb,
-            FontHelper.tipHeaderFont,
-            clamp(latest.displayName(chineseVisible), chineseVisible ? 42 : 58),
+            clamp(latest.displayName(chineseVisible), chineseVisible ? 40 : 72),
             textX,
-            textY - 48.0F * scale,
-            width - padding * 2.0F,
-            24.0F * scale,
-            Settings.CREAM_COLOR
+            cursorY,
+            contentWidth,
+            2,
+            22.0F * scale,
+            Settings.CREAM_COLOR,
+            true
         );
 
-        String metrics = "Score " + latest.score + " | Confidence " + latest.confidence;
+        String metrics = metricsText();
         FontHelper.renderFontLeftTopAligned(
             sb,
             FontHelper.topPanelInfoFont,
             metrics,
             textX,
-            textY - 76.0F * scale,
+            cursorY - 2.0F * scale,
             Settings.GREEN_TEXT_COLOR
         );
+        cursorY -= 24.0F * scale;
 
         String reasonText = latest.reason(chineseVisible);
         if (!reasonText.isEmpty()) {
-            FontHelper.renderSmartText(
+            cursorY = renderWrappedLines(
                 sb,
-                FontHelper.tipBodyFont,
-                clamp(reasonText, chineseVisible ? 92 : 150),
+                clamp(reasonText, chineseVisible ? 110 : 190),
                 textX,
-                textY - 104.0F * scale,
-                width - padding * 2.0F,
-                22.0F * scale,
+                cursorY,
+                contentWidth,
+                3,
+                20.0F * scale,
                 Settings.CREAM_COLOR
             );
         }
 
         String riskText = latest.risk(chineseVisible);
         if (!riskText.isEmpty()) {
-            FontHelper.renderSmartText(
+            cursorY = renderWrappedLines(
                 sb,
-                FontHelper.tipBodyFont,
                 riskLabel() + clamp(riskText, chineseVisible ? 54 : 96),
                 textX,
-                textY - 136.0F * scale,
-                width - padding * 2.0F,
-                22.0F * scale,
+                cursorY - 4.0F * scale,
+                contentWidth,
+                2,
+                20.0F * scale,
                 Settings.RED_TEXT_COLOR
             );
         }
@@ -185,25 +191,25 @@ public class InGameRecommendationPanel {
         if (debugVisible) {
             String debug = bridgeDebug.isEmpty() ? "F9 Debug: waiting for bridge event." : bridgeDebug;
             debug = debug + " badges=" + lastBadgeMatches + "/" + latest.optionScoreCount() + " unmatched=" + lastBadgeUnmatched;
-            FontHelper.renderSmartText(
+            cursorY = renderWrappedLines(
                 sb,
-                FontHelper.tipBodyFont,
                 "F9 Debug: " + clamp(debug, 160),
                 textX,
-                textY - (riskText.isEmpty() ? 136.0F : 164.0F) * scale,
-                width - padding * 2.0F,
-                22.0F * scale,
+                cursorY - 4.0F * scale,
+                contentWidth,
+                2,
+                18.0F * scale,
                 Settings.BLUE_TEXT_COLOR
             );
             if (!latest.whyNot.isEmpty()) {
-                FontHelper.renderSmartText(
+                renderWrappedLines(
                     sb,
-                    FontHelper.tipBodyFont,
                     "Why: " + clamp(latest.whyNot, 130),
                     textX,
-                    textY - (riskText.isEmpty() ? 164.0F : 192.0F) * scale,
-                    width - padding * 2.0F,
-                    22.0F * scale,
+                    cursorY - 2.0F * scale,
+                    contentWidth,
+                    2,
+                    18.0F * scale,
                     Settings.CREAM_COLOR
                 );
             }
@@ -387,7 +393,8 @@ public class InGameRecommendationPanel {
             return;
         }
         float scale = Settings.scale;
-        float width = Math.max(58.0F * scale, Math.min(92.0F * scale, (label.length() * 8.0F + 18.0F) * scale));
+        label = clamp(label, 8);
+        float width = Math.max(58.0F * scale, Math.min(98.0F * scale, textWidth(FontHelper.topPanelInfoFont, label) + 18.0F * scale));
         float height = 24.0F * scale;
         float x = centerX - width / 2.0F;
         float y = centerY - height / 2.0F;
@@ -494,11 +501,114 @@ public class InGameRecommendationPanel {
         if (!hasFreshRecommendation) {
             return 84.0F * scale;
         }
-        float height = latest.risk(chineseVisible).isEmpty() ? 154.0F * scale : 184.0F * scale;
+        float height = latest.risk(chineseVisible).isEmpty() ? 190.0F * scale : 224.0F * scale;
         if (debugVisible) {
-            height += latest.whyNot.isEmpty() ? 36.0F * scale : 62.0F * scale;
+            height += latest.whyNot.isEmpty() ? 48.0F * scale : 84.0F * scale;
         }
         return height;
+    }
+
+    private float renderWrappedLines(
+        SpriteBatch sb,
+        String text,
+        float x,
+        float y,
+        float maxWidth,
+        int maxLines,
+        float lineHeight,
+        Color color
+    ) {
+        return renderWrappedLines(sb, text, x, y, maxWidth, maxLines, lineHeight, color, false);
+    }
+
+    private float renderWrappedLines(
+        SpriteBatch sb,
+        String text,
+        float x,
+        float y,
+        float maxWidth,
+        int maxLines,
+        float lineHeight,
+        Color color,
+        boolean header
+    ) {
+        if (text == null || text.isEmpty()) {
+            return y;
+        }
+        BitmapFont font = header ? FontHelper.tipHeaderFont : FontHelper.tipBodyFont;
+        java.util.List<String> lines = wrapText(text, font, maxWidth, maxLines);
+        float cursor = y;
+        for (String line : lines) {
+            FontHelper.renderFontLeftTopAligned(
+                sb,
+                font,
+                line,
+                x,
+                cursor,
+                color
+            );
+            cursor -= lineHeight;
+        }
+        return cursor;
+    }
+
+    private java.util.List<String> wrapText(String text, BitmapFont font, float maxWidth, int maxLines) {
+        java.util.ArrayList<String> lines = new java.util.ArrayList<String>();
+        String remaining = text == null ? "" : text.trim();
+        while (!remaining.isEmpty() && lines.size() < maxLines) {
+            if (textWidth(font, remaining) <= maxWidth) {
+                lines.add(remaining);
+                return lines;
+            }
+            int cut = findWrapCut(remaining, font, maxWidth);
+            String line = remaining.substring(0, cut).trim();
+            if (line.isEmpty()) {
+                line = remaining.substring(0, Math.min(1, remaining.length()));
+                cut = line.length();
+            }
+            remaining = remaining.substring(cut).trim();
+            if (lines.size() == maxLines - 1 && !remaining.isEmpty()) {
+                line = ellipsizeToWidth(line, font, maxWidth);
+                lines.add(line);
+                return lines;
+            }
+            lines.add(line);
+        }
+        return lines;
+    }
+
+    private int findWrapCut(String text, BitmapFont font, float maxWidth) {
+        int best = 1;
+        int lastSpace = -1;
+        for (int i = 1; i <= text.length(); i++) {
+            char c = text.charAt(i - 1);
+            if (Character.isWhitespace(c)) {
+                lastSpace = i - 1;
+            }
+            if (textWidth(font, text.substring(0, i)) > maxWidth) {
+                if (lastSpace > 8) {
+                    return lastSpace;
+                }
+                return Math.max(1, best);
+            }
+            best = i;
+        }
+        return best;
+    }
+
+    private String ellipsizeToWidth(String text, BitmapFont font, float maxWidth) {
+        String suffix = "...";
+        String value = text == null ? "" : text.trim();
+        while (!value.isEmpty() && textWidth(font, value + suffix) > maxWidth) {
+            value = value.substring(0, value.length() - 1).trim();
+        }
+        return value.isEmpty() ? suffix : value + suffix;
+    }
+
+    private float textWidth(BitmapFont font, String text) {
+        GlyphLayout layout = new GlyphLayout();
+        layout.setText(font, text == null ? "" : text);
+        return layout.width;
     }
 
     private String panelTitle() {
@@ -507,6 +617,13 @@ public class InGameRecommendationPanel {
 
     private String riskLabel() {
         return chineseVisible ? "风险：" : "Risk: ";
+    }
+
+    private String metricsText() {
+        if (chineseVisible) {
+            return "分数 " + latest.score + " | 置信度 " + latest.confidence;
+        }
+        return "Score " + latest.score + " | Confidence " + latest.confidence;
     }
 
     private String badgeText() {

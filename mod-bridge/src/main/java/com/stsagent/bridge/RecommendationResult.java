@@ -146,11 +146,11 @@ public class RecommendationResult {
     }
 
     public String reason(boolean chinese) {
-        if (chinese && !localizedReasoning.isEmpty()) {
-            return localizedReasoning;
-        }
         if (chinese && !optionScores.isEmpty() && !optionScores.get(0).zhReason.isEmpty()) {
             return optionScores.get(0).zhReason;
+        }
+        if (chinese && !localizedReasoning.isEmpty()) {
+            return localizedReasoning;
         }
         return reason;
     }

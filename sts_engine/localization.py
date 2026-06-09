@@ -220,12 +220,20 @@ def localize_risk_report(risk_report: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def localize_state(state: Dict[str, Any]) -> Dict[str, Any]:
+    def option_name(item: Any) -> Any:
+        if isinstance(item, dict):
+            label_value = item.get("name") or item.get("label") or item.get("id") or item.get("route_id") or "route"
+            localized = dict(item)
+            localized["name"] = localize_text(str(label_value))
+            return localized
+        return entity_name(str(item), str(item))
+
     return {
         "character_class": label(state.get("character_class", "")),
         "deck": [entity_name(item, item) for item in state.get("deck", [])],
         "relics": [entity_name(item, item) for item in state.get("relics", [])],
         "potions": [entity_name(item, item) for item in state.get("potions", [])],
         "hand_cards": [entity_name(item, item) for item in state.get("hand_cards", [])],
-        "options": [entity_name(item, item) for item in state.get("options", [])],
+        "options": [option_name(item) for item in state.get("options", [])],
         "query_type": label(state.get("query_type", "")),
     }

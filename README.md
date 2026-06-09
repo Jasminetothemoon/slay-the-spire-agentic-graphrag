@@ -1,273 +1,336 @@
-# Slay the Spire Agentic GraphRAG Decision System
+# Slay the Spire Mod-First Multi-Agent Decision Harness
 
-This project is a realtime AI decision assistant for **Slay the Spire 1**. The game is the domain, but the engineering goal is broader: build a production-shaped AI application that combines knowledge graphs, Agent workflows, structured recommendation scoring, realtime state sync, and evaluation.
+A **real-time in-game AI decision assistant** for **Slay the Spire 1**. The game is the domain, but the project is designed as an AI application engineering showcase: Mod-first UX, LangGraph multi-agent workflow, pluggable Decision Skills, GraphRAG retrieval, deterministic scoring, replay harness, ablation harness, latency metrics, and Chinese/English in-game presentation.
 
-## What It Does
+The current product direction is not a webpage companion. The core experience is a native ModTheSpire/BaseMod bridge that shows recommendations directly inside the game.
 
-- Models cards, relics, potions, enemies, bosses, mechanics, shops, routes, and archetypes as a knowledge graph.
-- Uses GraphRAG retrieval to find multi-hop synergies and risks for the current run state.
-- Uses a LangGraph workflow to validate state, retrieve graph context, assess risks, score options, and explain decisions.
-- Returns structured recommendations for card picks, relic picks, shops, routes, and shallow combat play sequences.
-- Provides a FastAPI service, WebSocket updates, and a lightweight web demo.
-- Runs without Neo4j by falling back to the local JSON knowledge base; Neo4j remains the preferred graph backend for larger data.
+## What It Demonstrates
+
+- **Mod-first realtime AI product**: Java Mod reads game state and renders recommendations in-game.
+- **Multi-Agent workflow**: LangGraph routes state through State, Router, Retrieval, Risk, Skill Scoring, Critic, and Explainer agents.
+- **Decision Skill system**: Card pick, relic pick, shop, pathing, combat, and rest-site skills share one contract but can evolve independently.
+- **GraphRAG + scoring**: Neo4j-first graph retrieval with local JSON fallback, then structured scoring instead of direct LLM guessing.
+- **Replay/eval harness**: fixed eval cases, real Mod payload replay, ablation switches, latency percentiles, and tuning flags.
+- **Game-facing UX**: F8/F9/F10/F11 controls, candidate score badges, hover details, target archetype selection, and Chinese display.
+
+## Current Metrics
+
+From the current local benchmark and harness:
+
+| Area | Current Snapshot |
+| --- | ---: |
+| Graph entities | 666 |
+| Graph relationships | 1442 |
+| Cards / relics / potions | 367 / 146 / 42 |
+| Enemy entries | 57 |
+| Mechanics / shop actions / path nodes | 35 / 5 / 7 |
+| Tracked archetypes | 20 |
+| Seeded archetype rule coverage | 100% |
+| Fixed eval cases | 54 |
+| Captured eval candidates | 1 machine-seeded sample |
+| Eval Top-1 / Top-3 | 1.0 / 1.0 |
+| Harness P95 latency | about 2-3 ms locally |
+| Naive base-value baseline Top-1 / Top-3 | 0.593 / 0.759 |
+| No-strategy ablation Top-1 / Top-3 | 0.87 / 1.0 |
+| Agent trace audit | 6/6 complete traces |
+| Chinese localization coverage | 560/612 entities, 91.5% |
+| Relationships missing provenance | 0 |
+
+The eval set is still intentionally small and curated. The next quality milestone is to expand it with real-game captured payloads and human-labeled high-level decisions.
 
 ## Architecture
 
-```text
-Game / Mod Bridge
-      |
-      v
-FastAPI state API + WebSocket
-      |
-      v
-LangGraph Agent Workflow
-  - validate_state
-  - retrieve_context
-  - assess_risk
-  - score_options
-  - explain_decision
-      |
-      v
-Neo4j GraphRAG or local JSON fallback
-      |
-      v
-Structured recommendation response
+```mermaid
+flowchart TD
+    A["Slay the Spire 1"] --> B["Java Mod Bridge"]
+    B --> C["FastAPI /mod/state + /mod/recommend"]
+    C --> D["LangGraph Multi-Agent Workflow"]
+    D --> E["StateAgent"]
+    E --> F["SceneRouterAgent"]
+    F --> G["RetrievalAgent"]
+    G --> H["RiskAgent"]
+    H --> I["SkillScoringAgent"]
+    I --> J["CriticAgent"]
+    J --> K["ExplainerAgent"]
+    K --> L["Structured Recommendation"]
+    L --> M["In-Game Panel + Candidate Badges"]
+    G --> N["Neo4j GraphRAG"]
+    G --> O["Local JSON Fallback"]
+    I --> P["Decision Skills"]
+    Q["Replay / Eval / Ablation / Latency Harness"] --> C
 ```
 
-## Project Layout
+## In-Game Mod Features
+
+The Java bridge lives in `mod-bridge` and posts live game snapshots to the local API.
+
+Current controls:
+
+| Key | Action |
+| --- | --- |
+| F8 | Show/hide recommendation panel |
+| F9 | Show/hide debug panel |
+| F10 | Toggle English/Chinese display |
+| F11 | Cycle target archetype for the current character |
+
+Current in-game surfaces:
+
+- Compact top-right recommendation panel.
+- Candidate score badges for card rewards, relic rewards, Boss relics, and shop options.
+- Hover details for individual candidates: score, confidence, reasons, risks, shop price, affordability.
+- Target archetype display, for example `Silent Poison` / `猎手毒流`.
+- Debug visibility for selected skill, scene, request status, badge matching, shop context, and target archetype.
+
+Map recommendation from the Java Mod is currently kept conservative because the earlier live map capture path was unstable. The backend pathing skill and fixtures still exist for harness testing.
+
+## Decision Skills
+
+`sts_engine/skills` exposes pluggable skills:
+
+- `CardPickSkill`
+- `RelicPickSkill`
+- `ShopSkill`
+- `PathingSkill`
+- `CombatSkill`
+- `RestSiteSkill`
+
+Each skill follows the same high-level contract: build options, retrieve context, score options, explain, and validate. This lets the project tell a concrete "Skill implementation" story in interviews instead of presenting one monolithic scoring function.
+
+## Multi-Agent Workflow
+
+`sts_engine/agent.py` uses LangGraph when available, with a sequential fallback for dependency-light execution.
+
+Agents:
+
+- `StateAgent`: validates run id, character, query type, and scene.
+- `SceneRouterAgent`: selects the right Decision Skill.
+- `RetrievalAgent`: retrieves graph and strategy context.
+- `RiskAgent`: detects missing AoE, low defense, low HP, slow scaling, and shop readiness.
+- `SkillScoringAgent`: calls the selected skill.
+- `CriticAgent`: checks empty options, scene/query mismatches, and invalid recommendations.
+- `ExplainerAgent`: returns structured reasons, risks, score breakdown, and candidate comparisons.
+
+Runtime recommendations are deterministic and do not require external LLM calls. LLMs can be added later for offline strategy summarization or richer natural-language explanations, but the real-time core stays cheap and low-latency.
+
+## Knowledge and Strategy Layer
+
+Main data:
 
 ```text
-api/main.py                 FastAPI app, WebSocket endpoint, mod-state ingestion stub
-sts_engine/agent.py         LangGraph workflow
-sts_engine/knowledge_base.py Local knowledge-base loader and graph-style lookup
-sts_engine/retriever.py     Neo4j-first GraphRAG retriever with local fallback
-sts_engine/scoring.py       Structured recommendation scorer
-sts_engine/state.py         RunState and response types
-scripts/ingest_graph.py     Neo4j ingestion
-scripts/validate_data.py    Data integrity checks
-scripts/evaluate.py         Recommendation evaluation harness
-web/                        Lightweight demo UI
-data/public_full_data.json  Real public-data snapshot used by the default app
-data/public_eval_cases.json Public-data evaluation scenarios
+data/public_full_data.json
+data/strategy/archetypes.json
+data/strategy/community_rules.json
+data/localization_zhs.json
 ```
+
+The project uses stable English ids internally; Chinese and English names are presentation fields.
+
+The strategy layer currently tracks 20 seeded archetypes:
+
+- Silent: Poison, Shiv, Discard, Wraith Form / Apparition Defense, Grand Finale / Deck Control
+- Ironclad: Strength, Exhaust / Corruption, Barricade Block, Self Damage, Searing Blow
+- Defect: Frost Focus, Lightning / Electrodynamics, Dark Orb, Power / Creative AI, Claw / Zero Cost
+- Watcher: Stance Dance, Wrath Burst, Divinity / Mantra, Retain, Pressure Points
+
+Run coverage inventory:
+
+```powershell
+python scripts\strategy_coverage_report.py
+```
+
+## Harness and Evaluation
+
+The unified harness is the most resume-relevant part after the Mod bridge:
+
+```powershell
+python scripts\decision_harness.py --mode all --no-write --summary-only
+```
+
+It covers:
+
+- Eval Harness: Top-1/Top-3 on fixed cases.
+- Replay Harness: replays real Java Mod JSONL payloads.
+- Ablation Harness: disables graph, strategy, risk, or critic components.
+- Latency Harness: P50/P95/P99 recommendation latency.
+
+Interview-ready reports:
+
+```powershell
+python scripts\ablation_insights.py
+python scripts\agent_trace_audit.py
+```
+
+Generated reports:
+
+- `reports/ablation_insights.md`: compares input-order and base-value baselines against the full system and module ablations.
+- `reports/agent_trace_audit.md`: expands representative cases into State/Router/Retrieval/Risk/Scoring/Critic/Explainer traces.
+
+Real Mod payload replay:
+
+```powershell
+python scripts\replay_mod_payloads.py data\mod_payload_replay_sample.jsonl
+```
+
+Captured payloads can also be converted into machine-seeded eval candidates for human review:
+
+```powershell
+python scripts\import_captured_payloads.py artifacts\mod_payloads\*.jsonl
+python scripts\decision_harness.py --mode eval --eval data\captured_eval_candidates.json
+```
+
+Generated candidates are marked `machine_seeded_needs_human_review` and should be reviewed before being merged into the fixed eval set.
+
+Replay output includes tuning fields:
+
+- target archetype
+- candidate options
+- Top vs runner-up score gap
+- score spread
+- skip rank
+- top reasons and risks
+- per-option score summaries
+- quality flags such as `low_top_separation`
+
+This makes live-game errors reproducible and lets recommendation quality improve through evidence instead of guesswork.
 
 ## Quick Start
 
-Use Python 3.11 or 3.12. On Windows:
+Use Python 3.11 or 3.12 on Windows.
 
 ```powershell
-py -3.12 -m venv .venv
+py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-.\scripts\dev_check.ps1
-.\scripts\run_api.ps1
+powershell -ExecutionPolicy Bypass -File scripts\dev_check.ps1
+powershell -ExecutionPolicy Bypass -File scripts\run_api.ps1
 ```
 
-Open `http://127.0.0.1:8000` and start a demo run.
+Open:
 
-To run the first-version demo path on Windows:
+```text
+http://127.0.0.1:8000
+```
+
+The webpage is mainly a debug/demo surface. The core product is the in-game Mod.
+
+## Build and Install the Mod Bridge
+
+The build script uses local Slay the Spire, ModTheSpire, and BaseMod jars.
 
 ```powershell
-.\scripts\run_demo.ps1
+powershell -ExecutionPolicy Bypass -File scripts\build_mod_bridge.ps1
 ```
 
-This starts the API if needed, verifies the live bridge event path, and replays card, relic, shop, pathing, and combat scenarios into the overlay.
-
-For detailed Windows setup and troubleshooting, see:
+This project is configured locally to copy the latest JAR to:
 
 ```text
-docs/windows_setup.md
+E:\SteamLibrary\steamapps\common\SlayTheSpire\mods\sts-agent-bridge-0.1.0.jar
 ```
 
-## Neo4j Ingestion
+You can override the target with `STS_AGENT_MODS_DIR` or `mod-bridge/local.modsdir.txt`.
 
-Neo4j is optional for local demos. To ingest the graph:
+Useful runtime options:
 
-```bash
-set NEO4J_URI=bolt://localhost:7687
-set NEO4J_USER=neo4j
-set NEO4J_PASSWORD=your_password
-python scripts/ingest_graph.py --dry-run
-python scripts/ingest_graph.py
+```powershell
+$env:STS_AGENT_API_URL="http://127.0.0.1:8000"
+$env:STS_AGENT_CAPTURE="true"
+$env:STS_AGENT_ARCHETYPE="silent_poison"
 ```
 
-The dry run validates relationship targets and prints node/relationship counts. Relationship ingestion preserves provenance fields such as `source`, `source_url`, `confidence`, `source_entity_id`, and `target_entity_id`.
+Captured payloads are written as JSONL and can be replayed:
 
-## Public Wiki Data Import
-
-The seed dataset is intentionally small. To build a larger public dataset from `slaythespire.gg`:
-
-```bash
-python scripts/import_public_wiki.py --links-only --output data/public_link_index.json
-python scripts/import_public_wiki.py --collections cards --output data/public_cards.json --checkpoint-every 50
-python scripts/import_public_wiki.py --output data/public_full_data.json --checkpoint-every 50
-python scripts/import_public_wiki.py --collections monsters --output data/public_monsters.json --checkpoint-every 10
-python scripts/merge_public_enemies.py --base data/public_full_data.json --supplement data/public_monsters.json --output data/public_full_data.json
-python scripts/normalize_dataset.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/normalize_system_entities.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/normalize_mechanics.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/normalize_provenance.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/validate_data.py --data data/public_cards.json
-python scripts/validate_data.py --data data/public_full_data.json
-python scripts/data_quality_report.py --data data/public_full_data.json
-python scripts/data_coverage_report.py --data data/public_full_data.json --fail-under 99
-python scripts/data_provenance_report.py --data data/public_full_data.json
-python scripts/ingest_graph.py --data data/public_full_data.json --dry-run
-python scripts/check_graph_fixtures.py --data data/public_full_data.json
+```powershell
+python scripts\replay_mod_payloads.py artifacts\mod_payloads\<capture-file>.jsonl
+python scripts\import_captured_payloads.py artifacts\mod_payloads\<capture-file>.jsonl
 ```
 
-To run the app with the public dataset explicitly:
+## Neo4j
 
-```bash
-set STS_KB_PATH=data/public_full_data.json
-uvicorn api.main:app --reload
+Neo4j is optional for local demos because the project has a local JSON fallback. To ingest the graph:
+
+```powershell
+$env:NEO4J_URI="bolt://localhost:7687"
+$env:NEO4J_USER="neo4j"
+$env:NEO4J_PASSWORD="your_password"
+python scripts\ingest_graph.py --data data\public_full_data.json --dry-run
+python scripts\ingest_graph.py --data data\public_full_data.json
 ```
 
-Current public import snapshot:
+The ingestion preserves provenance fields such as source, source URL, confidence, source entity id, and target entity id.
 
-- 367 cards, including class-specific starter Strike/Defend aliases for live state resolution
-- 146 relics
-- 42 potions
-- 57 enemy entries covering monsters, elites, and bosses
-- 35 extracted and normalized mechanics/risk nodes
-- 5 shop actions
-- 7 path node types
-
-For provenance coverage and known data gaps, see:
+## Important Files
 
 ```text
-docs/data_audit.md
+api/main.py                         FastAPI app and Mod endpoints
+sts_engine/agent.py                 LangGraph multi-agent workflow
+sts_engine/skills/                  Pluggable Decision Skills
+sts_engine/scoring.py               Deterministic scoring and risk adjustment
+sts_engine/knowledge_base.py        Entity, strategy, and local graph lookup
+sts_engine/retriever.py             Neo4j-first GraphRAG retriever
+mod-bridge/                         ModTheSpire/BaseMod Java bridge
+scripts/decision_harness.py         Eval/replay/ablation/latency harness
+scripts/ablation_insights.py        Baseline and ablation insight report
+scripts/agent_trace_audit.py        Representative Multi-Agent trace report
+scripts/replay_mod_payloads.py      Real Mod payload replay
+scripts/import_captured_payloads.py Captured payload to eval-candidate importer
+scripts/replay_analysis.py          Replay tuning analysis
+data/captured_eval_candidates.json  Machine-seeded real-payload eval candidates
+reports/benchmark.md                Generated benchmark snapshot
+reports/ablation_insights.md        Baseline vs full-system comparison
+reports/agent_trace_audit.md        Agent trace audit examples
+reports/captured_payload_import_report.md Captured payload import summary
+docs/resume_project_summary.md      Resume-ready project writeup
+docs/ai_app_and_pm_polish_plan.md   AI application / AI PM polish plan
+docs/project_implementation_report.md Implementation report and interview story
+docs/real_payload_eval_workflow.md  Real Mod payload labeling workflow
+docs/product_prd.md                 Product requirements document
+docs/user_journey.md                User journey and in-game UX design
+docs/competitor_analysis.md         Companion/overlay competitor analysis
+docs/feature_priority_matrix.md     Value/cost/risk feature prioritization
+docs/product_metrics.md             Product metrics and evaluation loop
 ```
 
-## Strategy Layer
+## Verification
 
-Mechanic extraction alone is not enough for strong recommendations, so the project includes a curated strategy layer:
+Full local check:
 
-```text
-data/strategy/archetypes.json
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\dev_check.ps1
 ```
 
-It currently covers 8 archetypes:
+The check validates Python dependencies, API import, data integrity, localization, community rules, Neo4j dry-run ingestion, graph fixtures, decision engine invariants, replay analysis, live bridge scenarios, replay fixture, unified harness, and benchmark generation.
 
-- Silent Poison
-- Silent Shiv
-- Ironclad Strength
-- Ironclad Exhaust
-- Defect Frost Focus
-- Defect Lightning
-- Watcher Stance Dance
-- Watcher Wrath Burst
+## Resume Framing
 
-These rules add explicit strategy signals such as enablers, payoffs, support cards, risk coverage, and archetype-specific pick bonuses. Example: `Catalyst` is scored as a Poison payoff only when the deck already has Poison sources, while `Corpse Explosion` is recognized as a Poison deck's AoE solution.
+Suggested one-line resume description:
 
-Run public-data strategy evaluation:
+> Built a Mod-first Multi-Agent Decision Harness for Slay the Spire, combining LangGraph agents, pluggable decision skills, Neo4j/JSON GraphRAG retrieval, deterministic scoring, in-game Java Mod overlays, real payload replay, ablation testing, and latency/evaluation reporting.
 
-```bash
-python scripts/evaluate.py --data data/public_full_data.json --eval data/public_eval_cases.json
-```
+Suggested bullets:
 
-Track strategy coverage:
+- Built a realtime in-game decision assistant with ModTheSpire/BaseMod, FastAPI, WebSocket sync, candidate score badges, hover explanations, Chinese/English UI, and target-archetype controls.
+- Designed a LangGraph multi-agent workflow with State, Router, Retrieval, Risk, Skill Scoring, Critic, and Explainer agents; exposed `agent_trace`, `selected_skill`, and critic warnings for debugging.
+- Modeled 666 entities and 1442 provenance-tracked relationships from public Slay the Spire data; supported Neo4j GraphRAG with local JSON fallback.
+- Implemented 6 pluggable Decision Skills covering card picks, relics, shops, pathing, combat, and rest-site choices.
+- Built replay/eval/ablation/latency harnesses over 54 fixed cases and real Mod JSONL payloads; added a captured-payload importer that turns live Mod JSONL into human-reviewable eval candidates, compared the full system against input-order and base-value baselines, and generated representative Agent trace audits.
 
-```bash
-python scripts/strategy_coverage_report.py
-```
+Role-specific writeups:
 
-The strategy layer is intentionally measured as coverage, not claimed as complete. The current coverage inventory tracks 20 archetypes across four classes; all 20 now have seeded scoring rules and evaluation signals.
+- AI application developer: see `docs/resume_project_summary.md` and `docs/ai_app_and_pm_polish_plan.md`.
+- AI product manager: see `docs/product_prd.md`, `docs/user_journey.md`, `docs/competitor_analysis.md`, `docs/feature_priority_matrix.md`, `docs/product_metrics.md`, and `docs/project_implementation_report.md`.
 
-## API Example
+For interviews, the strongest product story is:
 
-```bash
-curl -X POST http://127.0.0.1:8000/start_run ^
-  -H "Content-Type: application/json" ^
-  -d "{\"character_class\":\"silent\",\"ascension_level\":20,\"max_hp\":70}"
-```
+1. The user pain was not "missing AI", but "recommendations are outside the game flow".
+2. The product was refocused from a webpage demo to an in-game Mod-first assistant.
+3. The AI workflow was made observable through agent traces, Critic warnings, replay, ablation, and latency metrics.
+4. Recommendation quality is treated as a product loop: capture real payloads, replay failures, label cases, tune Skills, and compare baselines.
 
-```bash
-curl -X POST http://127.0.0.1:8000/get_recommendation ^
-  -H "Content-Type: application/json" ^
-  -d "{\"run_id\":\"run_xxxxxxxx\",\"query_type\":\"card_pick\",\"options\":[\"Catalyst\",\"Backflip\",\"Dagger Spray\"],\"user_query\":\"Which card should I pick?\"}"
-```
+## Current Gaps
 
-The response includes:
-
-- `recommendation`
-- `reasoning`
-- `option_scores`
-- `graph_context`
-- `risk_report`
-- `latency_ms`
-
-## Game-State Bridge
-
-The bridge protocol is documented in:
-
-```text
-docs/bridge_protocol.md
-```
-
-Run bridge scenarios without starting FastAPI:
-
-```bash
-python scripts/bridge_simulator.py --mode offline --data data/public_full_data.json
-```
-
-Run against a local API server:
-
-```bash
-set STS_KB_PATH=data/public_full_data.json
-uvicorn api.main:app --reload
-python scripts/bridge_simulator.py --mode http --base-url http://127.0.0.1:8000
-```
-
-The simulator posts full run-state snapshots in the same shape a future Mod/CommunicationMod bridge should send to `/mod/state`, then requests a recommendation for the active decision.
-
-Replay bridge scenarios with a delay so the web overlay updates like a live companion:
-
-```bash
-python scripts/bridge_demo_player.py --delay 3 --loops 1
-```
-
-Verify the full local bridge path in one command. This starts a temporary API server, connects to `/ws`, posts `/mod/recommend` payloads for card, relic, shop, pathing, and combat scenarios, and checks that both `state_updated` and `recommendation` events are broadcast for the overlay:
-
-```bash
-python scripts/check_live_bridge.py --data data/public_full_data.json --all-scenarios
-```
-
-For Mod clients, the shortest path is the one-shot endpoint:
-
-```text
-POST /mod/recommend
-```
-
-It accepts a game-state snapshot plus the active decision options, then broadcasts both state and recommendation updates to the overlay.
-
-## Resume-Oriented Targets
-
-The current repository implements a runnable first version with real public data, local graph fallback, a FastAPI bridge, WebSocket overlay updates, and deterministic scoring. The next high-value work is to deepen evaluation and game-side integration:
-
-- 600+ entities and 1400+ graph relationships.
-- 200+ labeled evaluation cases.
-- P95 recommendation latency below 500ms for non-LLM recommendations.
-- Comparison report: rules only vs pure LLM vs vector RAG vs GraphRAG + scoring.
-- Thin Java/CommunicationMod bridge that posts live game state into `/mod/recommend`.
-
-## Current Status
-
-Implemented:
-
-- UTF-8 schema plus real public data snapshot for cards, relics, potions, enemies, mechanics, shops, and path nodes.
-- Agentic GraphRAG workflow.
-- Structured scoring and explanations.
-- Neo4j ingestion script and local fallback.
-- FastAPI, WebSocket, mod-state bridge contract, and compact overlay HUD.
-- CommunicationMod-style adapter with offline debug mode.
-- Data validation, graph fixture checks, live bridge e2e check, and evaluation harness.
-- Shallow combat advisor for current hand, energy, incoming damage, enemy board, and defensive potion prompts.
-
-Still to expand:
-
-- Base-game event coverage and live-game validation for a few enemy/minion variants.
-- Larger strategy/evaluation knowledge base.
-- Real ModTheSpire/BaseMod bridge or direct CommunicationMod integration.
-- Deeper combat search, exact card text parsing, and broader potion planning.
+- The current eval set is useful but too curated; it should grow from 54 to 200+ human-labeled real-game cases.
+- Event recommendations are not yet covered.
+- Live map capture from Java Mod remains conservative after earlier instability.
+- Combat advice is shallow and rule/search based; deeper combat search and potion planning remain future work.
+- Recommendation quality still needs more high-level community/player validation through captured runs.

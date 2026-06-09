@@ -1,0 +1,73 @@
+[
+  {
+    "id": "captured_capture_replay_sample_card_reward_card_pick_1760000000000_1_1",
+    "query_type": "card_pick",
+    "state": {
+      "run_id": "captured_capture_replay_sample_card_reward_card_pick_1760000000000_1_1",
+      "source": "java_mod_bridge",
+      "current_screen": "CARD_REWARD",
+      "character_class": "silent",
+      "ascension_level": 20,
+      "act": 2,
+      "current_floor": 21,
+      "current_hp": 44,
+      "max_hp": 70,
+      "gold": 110,
+      "energy": 3,
+      "deck": [
+        "Strike",
+        "Defend",
+        "Deadly Poison",
+        "Bouncing Flask",
+        "Noxious Fumes"
+      ],
+      "upgraded_cards": [],
+      "relics": [
+        "Snecko Skull"
+      ],
+      "potions": [],
+      "hand_cards": [],
+      "draw_pile": [],
+      "discard_pile": [],
+      "enemies": [],
+      "map_options": [],
+      "combat_state": {},
+      "boss": "The Champ"
+    },
+    "options": [
+      "Catalyst",
+      "Corpse Explosion",
+      "Backflip"
+    ],
+    "expected_top": "catalyst",
+    "acceptable": [
+      "catalyst"
+    ],
+    "label_status": "machine_seeded_needs_human_review",
+    "label_source": "mod_payload_replay_top",
+    "metadata": {
+      "source_file": "data/mod_payload_replay_sample.jsonl",
+      "record_index": 1,
+      "timestamp": 1760000000000,
+      "screen": "CARD_REWARD",
+      "scene_type": "card_reward",
+      "selected_skill": "card_pick_skill",
+      "captured_top": "Catalyst",
+      "replay_top": "Catalyst",
+      "score_gap": 1.13,
+      "score_spread": 12.92,
+      "skip_rank": null,
+      "quality_flags": [
+        "low_top_separation"
+      ],
+      "critic_warnings": [],
+      "latency_ms": 1.76,
+      "top_reasons": [
+        "Graph synergy with current run: Poison.",
+        "Archetype fit: Silent Poison.",
+        "Poison payoff is premium once the deck already applies Poison."
+      ],
+      "top_risks": []
+    }
+  }
+]

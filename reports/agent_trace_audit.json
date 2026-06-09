@@ -1,0 +1,448 @@
+{
+  "eval_file": "data\\public_eval_cases.json",
+  "cases": 6,
+  "required_agents": [
+    "StateAgent",
+    "SceneRouterAgent",
+    "RetrievalAgent",
+    "RiskAgent",
+    "SkillScoringAgent",
+    "CriticAgent",
+    "ExplainerAgent"
+  ],
+  "valid_cases": 6,
+  "cases_with_complete_trace": 6,
+  "cases_with_critic_warnings": 0,
+  "audits": [
+    {
+      "id": "public_silent_poison_take_catalyst",
+      "query_type": "card_pick",
+      "scene_type": "card_reward",
+      "selected_skill": "card_pick_skill",
+      "decision_valid": true,
+      "critic_warnings": [],
+      "latency_ms": 1.88,
+      "expected_top": "catalyst",
+      "ranked_top3": [
+        "catalyst",
+        "dagger_spray",
+        "backflip"
+      ],
+      "top": {
+        "option_id": "catalyst",
+        "name": "Catalyst",
+        "score": 93.88,
+        "grade": "",
+        "confidence": 0.88,
+        "reasons": [
+          "Graph synergy with current run: Poison.",
+          "Archetype fit: Silent Poison.",
+          "Poison payoff is premium once the deck already applies Poison.",
+          "Matches the current character card pool."
+        ],
+        "risks": [],
+        "evidence_count": 5
+      },
+      "runner_up": {
+        "option_id": "dagger_spray",
+        "name": "Dagger Spray",
+        "score": 81.4,
+        "why_not": ""
+      },
+      "agent_trace": [
+        {
+          "agent": "StateAgent",
+          "scene_type": "card_reward",
+          "errors": 0
+        },
+        {
+          "agent": "SceneRouterAgent",
+          "selected_skill": "card_pick_skill",
+          "options_count": 3
+        },
+        {
+          "agent": "RetrievalAgent",
+          "context_count": 8
+        },
+        {
+          "agent": "RiskAgent",
+          "risks": []
+        },
+        {
+          "agent": "SkillScoringAgent",
+          "scores": 3,
+          "selected_skill": "card_pick_skill"
+        },
+        {
+          "agent": "CriticAgent",
+          "warnings": 0,
+          "decision_valid": true
+        },
+        {
+          "agent": "ExplainerAgent",
+          "recommendation": "catalyst"
+        }
+      ],
+      "missing_agents": []
+    },
+    {
+      "id": "public_shop_remove_card",
+      "query_type": "shop",
+      "scene_type": "shop",
+      "selected_skill": "shop_skill",
+      "decision_valid": true,
+      "critic_warnings": [],
+      "latency_ms": 1.22,
+      "expected_top": "remove_card",
+      "ranked_top3": [
+        "remove_card",
+        "buy_potion",
+        "skip_shop"
+      ],
+      "top": {
+        "option_id": "remove_card",
+        "name": "Remove a Card",
+        "score": 78.0,
+        "grade": "",
+        "confidence": 0.51,
+        "reasons": [
+          "Card removal improves deck consistency."
+        ],
+        "risks": [],
+        "evidence_count": 0
+      },
+      "runner_up": {
+        "option_id": "buy_potion",
+        "name": "Buy Potion",
+        "score": 48.0,
+        "why_not": ""
+      },
+      "agent_trace": [
+        {
+          "agent": "StateAgent",
+          "scene_type": "shop",
+          "errors": 0
+        },
+        {
+          "agent": "SceneRouterAgent",
+          "selected_skill": "shop_skill",
+          "options_count": 3
+        },
+        {
+          "agent": "RetrievalAgent",
+          "context_count": 0
+        },
+        {
+          "agent": "RiskAgent",
+          "risks": [
+            "slow_scaling",
+            "shop_ready"
+          ]
+        },
+        {
+          "agent": "SkillScoringAgent",
+          "scores": 3,
+          "selected_skill": "shop_skill"
+        },
+        {
+          "agent": "CriticAgent",
+          "warnings": 0,
+          "decision_valid": true
+        },
+        {
+          "agent": "ExplainerAgent",
+          "recommendation": "remove_card"
+        }
+      ],
+      "missing_agents": []
+    },
+    {
+      "id": "public_relic_silent_shiv_take_shuriken",
+      "query_type": "relic_pick",
+      "scene_type": "relic_reward",
+      "selected_skill": "relic_pick_skill",
+      "decision_valid": true,
+      "critic_warnings": [],
+      "latency_ms": 1.25,
+      "expected_top": "shuriken",
+      "ranked_top3": [
+        "shuriken",
+        "blue_candle",
+        "tiny_chest"
+      ],
+      "top": {
+        "option_id": "shuriken",
+        "name": "Shuriken",
+        "score": 80.92,
+        "grade": "",
+        "confidence": 0.8,
+        "reasons": [
+          "Graph synergy with current run: Frontload Damage, Shiv.",
+          "Archetype fit: Silent Shiv.",
+          "Shuriken covers slow_scaling for Silent Shiv."
+        ],
+        "risks": [],
+        "evidence_count": 4
+      },
+      "runner_up": {
+        "option_id": "blue_candle",
+        "name": "Blue Candle",
+        "score": 68.0,
+        "why_not": ""
+      },
+      "agent_trace": [
+        {
+          "agent": "StateAgent",
+          "scene_type": "relic_reward",
+          "errors": 0
+        },
+        {
+          "agent": "SceneRouterAgent",
+          "selected_skill": "relic_pick_skill",
+          "options_count": 3
+        },
+        {
+          "agent": "RetrievalAgent",
+          "context_count": 3
+        },
+        {
+          "agent": "RiskAgent",
+          "risks": [
+            "no_aoe",
+            "slow_scaling"
+          ]
+        },
+        {
+          "agent": "SkillScoringAgent",
+          "scores": 3,
+          "selected_skill": "relic_pick_skill"
+        },
+        {
+          "agent": "CriticAgent",
+          "warnings": 0,
+          "decision_valid": true
+        },
+        {
+          "agent": "ExplainerAgent",
+          "recommendation": "shuriken"
+        }
+      ],
+      "missing_agents": []
+    },
+    {
+      "id": "public_combat_silent_block_potion",
+      "query_type": "combat",
+      "scene_type": "combat",
+      "selected_skill": "combat_skill",
+      "decision_valid": true,
+      "critic_warnings": [],
+      "latency_ms": 2.64,
+      "expected_top": "use_block_potion",
+      "ranked_top3": [
+        "use_block_potion",
+        "play_neutralize_then_survivor_then_strike_silent_then_defend_silent",
+        "play_neutralize_then_survivor_then_defend_silent_then_strike_silent"
+      ],
+      "top": {
+        "option_id": "use_block_potion",
+        "name": "Use Block Potion",
+        "score": 82.0,
+        "grade": "",
+        "confidence": 0.62,
+        "reasons": [
+          "Incoming damage is high enough that a defensive potion can preserve HP."
+        ],
+        "risks": [
+          "Potion use spends a limited resource."
+        ],
+        "evidence_count": 1
+      },
+      "runner_up": {
+        "option_id": "play_neutralize_then_survivor_then_strike_silent_then_defend_silent",
+        "name": "Neutralize -> Survivor -> Strike -> Defend",
+        "score": 69.42,
+        "why_not": ""
+      },
+      "agent_trace": [
+        {
+          "agent": "StateAgent",
+          "scene_type": "combat",
+          "errors": 0
+        },
+        {
+          "agent": "SceneRouterAgent",
+          "selected_skill": "combat_skill",
+          "options_count": 4
+        },
+        {
+          "agent": "RetrievalAgent",
+          "context_count": 0
+        },
+        {
+          "agent": "RiskAgent",
+          "risks": [
+            "no_aoe"
+          ]
+        },
+        {
+          "agent": "SkillScoringAgent",
+          "scores": 5,
+          "selected_skill": "combat_skill"
+        },
+        {
+          "agent": "CriticAgent",
+          "warnings": 0,
+          "decision_valid": true
+        },
+        {
+          "agent": "ExplainerAgent",
+          "recommendation": "use_block_potion"
+        }
+      ],
+      "missing_agents": []
+    },
+    {
+      "id": "public_pathing_low_hp_take_rest_route",
+      "query_type": "pathing",
+      "scene_type": "map",
+      "selected_skill": "pathing_skill",
+      "decision_valid": true,
+      "critic_warnings": [],
+      "latency_ms": 1.13,
+      "expected_top": "path_monster_rest_treasure",
+      "ranked_top3": [
+        "path_monster_rest_treasure",
+        "rest",
+        "elite"
+      ],
+      "top": {
+        "option_id": "path_monster_rest_treasure",
+        "name": "Monster > Rest > Treasure",
+        "score": 78.0,
+        "grade": "",
+        "confidence": 0.59,
+        "reasons": [
+          "Rest site gives a recovery exit before the route becomes dangerous."
+        ],
+        "risks": [],
+        "evidence_count": 1
+      },
+      "runner_up": {
+        "option_id": "rest",
+        "name": "Rest Site",
+        "score": 72.0,
+        "why_not": ""
+      },
+      "agent_trace": [
+        {
+          "agent": "StateAgent",
+          "scene_type": "map",
+          "errors": 0
+        },
+        {
+          "agent": "SceneRouterAgent",
+          "selected_skill": "pathing_skill",
+          "options_count": 4
+        },
+        {
+          "agent": "RetrievalAgent",
+          "context_count": 0
+        },
+        {
+          "agent": "RiskAgent",
+          "risks": [
+            "no_aoe",
+            "low_hp"
+          ]
+        },
+        {
+          "agent": "SkillScoringAgent",
+          "scores": 4,
+          "selected_skill": "pathing_skill"
+        },
+        {
+          "agent": "CriticAgent",
+          "warnings": 0,
+          "decision_valid": true
+        },
+        {
+          "agent": "ExplainerAgent",
+          "recommendation": "path_monster_rest_treasure"
+        }
+      ],
+      "missing_agents": []
+    },
+    {
+      "id": "public_silent_missing_aoe_take_dagger_spray",
+      "query_type": "card_pick",
+      "scene_type": "card_reward",
+      "selected_skill": "card_pick_skill",
+      "decision_valid": true,
+      "critic_warnings": [],
+      "latency_ms": 1.11,
+      "expected_top": "dagger_spray",
+      "ranked_top3": [
+        "dagger_spray",
+        "catalyst",
+        "deadly_poison"
+      ],
+      "top": {
+        "option_id": "dagger_spray",
+        "name": "Dagger Spray",
+        "score": 87.7,
+        "grade": "",
+        "confidence": 0.63,
+        "reasons": [
+          "Graph synergy with current run: Frontload Damage.",
+          "Fixes an AoE weakness before multi-enemy fights.",
+          "Matches the current character card pool."
+        ],
+        "risks": [],
+        "evidence_count": 1
+      },
+      "runner_up": {
+        "option_id": "catalyst",
+        "name": "Catalyst",
+        "score": 66.0,
+        "why_not": ""
+      },
+      "agent_trace": [
+        {
+          "agent": "StateAgent",
+          "scene_type": "card_reward",
+          "errors": 0
+        },
+        {
+          "agent": "SceneRouterAgent",
+          "selected_skill": "card_pick_skill",
+          "options_count": 3
+        },
+        {
+          "agent": "RetrievalAgent",
+          "context_count": 1
+        },
+        {
+          "agent": "RiskAgent",
+          "risks": [
+            "no_aoe"
+          ]
+        },
+        {
+          "agent": "SkillScoringAgent",
+          "scores": 3,
+          "selected_skill": "card_pick_skill"
+        },
+        {
+          "agent": "CriticAgent",
+          "warnings": 0,
+          "decision_valid": true
+        },
+        {
+          "agent": "ExplainerAgent",
+          "recommendation": "dagger_spray"
+        }
+      ],
+      "missing_agents": []
+    }
+  ]
+}

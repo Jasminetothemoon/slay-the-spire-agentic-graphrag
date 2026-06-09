@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Literal, Optional, TypedDict
 
 
-DecisionType = Literal["card_pick", "relic_pick", "shop", "pathing", "combat"]
+DecisionType = Literal["card_pick", "relic_pick", "shop", "pathing", "combat", "rest_site", "smith"]
 
 
 class EnemyState(TypedDict, total=False):
@@ -38,6 +38,7 @@ class OptionScore(TypedDict, total=False):
 class RunState(TypedDict, total=False):
     run_id: str
     source: str
+    current_screen: str
     game: str
     patch_version: str
     character_class: str
@@ -58,14 +59,29 @@ class RunState(TypedDict, total=False):
     draw_pile: List[str]
     discard_pile: List[str]
     map_options: List[RouteNode]
+    shop_items: List[Dict[str, Any]]
     boss: Optional[str]
+    preferred_archetype: str
     query_type: DecisionType
-    options: List[str]
+    scene_type: str
+    options: List[Any]
+    raw_options: List[Any]
     user_query: str
+    skill_options: List[Any]
+    selected_skill: str
+    agent_trace: List[Dict[str, Any]]
+    critic_warnings: List[str]
+    decision_valid: bool
     validation_errors: List[str]
     graph_context: List[Dict[str, Any]]
     risk_report: Dict[str, Any]
     option_scores: List[OptionScore]
     recommendation: str
     reasoning: str
+    explanation_panel: Dict[str, Any]
     latency_ms: float
+    _started_at: float
+    _ablation_disable_graph: bool
+    _ablation_disable_strategy: bool
+    _ablation_disable_risk: bool
+    _ablation_disable_critic: bool

@@ -10,13 +10,24 @@ if (-not (Test-Path $Python)) {
 Push-Location $ProjectRoot
 try {
   & $Python scripts\dev_check.py
+  & $Python scripts\check_mod_bridge.py
+  & powershell -ExecutionPolicy Bypass -File scripts\build_mod_bridge.ps1
   & $Python -m compileall api sts_engine scripts
   & $Python scripts\data_coverage_report.py --data data\public_full_data.json --fail-under 99
+  & $Python scripts\check_localization.py
+  & $Python scripts\check_community_rules.py
   & $Python scripts\ingest_graph.py --data data\public_full_data.json --dry-run
   & $Python scripts\check_graph_fixtures.py --data data\public_full_data.json
   & $Python scripts\check_decision_engine.py --data data\public_full_data.json
-  & $Python scripts\check_live_bridge.py --data data\public_full_data.json --all-scenarios
+  & $Python scripts\check_replay_analysis.py
+  & $Python scripts\check_live_bridge.py --data data\public_full_data.json --all-scenarios --check-replay --check-overlay-fallback
+  & $Python scripts\replay_mod_payloads.py data\mod_payload_replay_sample.jsonl --json
+  & $Python scripts\import_captured_payloads.py data\mod_payload_replay_sample.jsonl --no-write --summary-only
+  & $Python scripts\decision_harness.py --mode all --no-write --summary-only
+  & $Python scripts\ablation_insights.py --no-write --summary-only
+  & $Python scripts\agent_trace_audit.py --no-write --summary-only
   & $Python scripts\evaluate.py --data data\public_full_data.json --eval data\public_eval_cases.json
+  & $Python scripts\benchmark_report.py --data data\public_full_data.json --eval data\public_eval_cases.json --output reports\benchmark.md
 }
 finally {
   Pop-Location

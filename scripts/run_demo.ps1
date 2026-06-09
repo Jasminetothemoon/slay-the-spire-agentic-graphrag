@@ -1,5 +1,5 @@
 param(
-  [string]$HostName = "127.0.0.1",
+  [string]$BindHost = "127.0.0.1",
   [int]$Port = 8000,
   [string]$DataPath = "data\public_full_data.json",
   [double]$Delay = 1.5,
@@ -29,7 +29,7 @@ function Test-ApiHealth {
 Push-Location $ProjectRoot
 try {
   $env:STS_KB_PATH = $DataPath
-  $baseUrl = "http://${HostName}:${Port}"
+  $baseUrl = "http://${BindHost}:${Port}"
   $startedHere = $false
   $apiProcess = $null
 
@@ -37,7 +37,7 @@ try {
     Write-Host "[demo] Starting API at $baseUrl"
     $apiProcess = Start-Process `
       -FilePath $Python `
-      -ArgumentList "-m uvicorn api.main:app --host $HostName --port $Port" `
+      -ArgumentList "-m uvicorn api.main:app --host $BindHost --port $Port" `
       -WorkingDirectory $ProjectRoot `
       -WindowStyle Hidden `
       -PassThru

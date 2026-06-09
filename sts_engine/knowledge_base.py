@@ -10,6 +10,7 @@ PUBLIC_DATA_PATH = ROOT / "data" / "public_full_data.json"
 SEED_DATA_PATH = ROOT / "data" / "sample_data.json"
 DATA_PATH = PUBLIC_DATA_PATH if PUBLIC_DATA_PATH.exists() else SEED_DATA_PATH
 STRATEGY_PATH = Path(__file__).resolve().parents[1] / "data" / "strategy" / "archetypes.json"
+LOCALIZATION_ZHS_PATH = Path(__file__).resolve().parents[1] / "data" / "localization_zhs.json"
 
 
 ENTITY_COLLECTIONS = (
@@ -24,9 +25,52 @@ ENTITY_COLLECTIONS = (
     "path_nodes",
 )
 
+GAME_ID_ALIASES = {
+    "purewater": "pure_water",
+    "strike_r": "strike_ironclad",
+    "defend_r": "defend_ironclad",
+    "strike_g": "strike_silent",
+    "defend_g": "defend_silent",
+    "strike_b": "strike_defect",
+    "defend_b": "defend_defect",
+    "strike_p": "strike_watcher",
+    "defend_p": "defend_watcher",
+}
+
+LOCALIZED_ALIASES = {
+    "打击": {
+        "ironclad": "strike_ironclad",
+        "silent": "strike_silent",
+        "defect": "strike_defect",
+        "watcher": "strike_watcher",
+    },
+    "防御": {
+        "ironclad": "defend_ironclad",
+        "silent": "defend_silent",
+        "defect": "defend_defect",
+        "watcher": "defend_watcher",
+    },
+    "暴怒": "eruption",
+    "警惕": "vigilance",
+    "发泄": "tantrum",
+    "停顿": "halt",
+    "至纯之水": "pure_water",
+    "药水栏": None,
+}
+
 
 def normalize_id(value: str) -> str:
     return value.strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def repair_mojibake(value: str) -> str:
+    if not value:
+        return value
+    try:
+        repaired = value.encode("latin1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return value
+    return repaired if repaired != value else value
 
 
 class KnowledgeBase:
@@ -37,7 +81,9 @@ class KnowledgeBase:
         self.entities: Dict[str, Dict[str, Any]] = {}
         self.name_to_id: Dict[str, str] = {}
         self.name_to_ids: Dict[str, List[str]] = {}
+        self.compact_to_id: Dict[str, str] = {}
         self._index_entities()
+        self._index_localized_names()
 
     def _index_entities(self) -> None:
         for collection in ENTITY_COLLECTIONS:
@@ -49,25 +95,66 @@ class KnowledgeBase:
                 for key in {normalize_id(entity_id), normalize_id(entity.get("name", entity_id))}:
                     self.name_to_id[key] = entity_id
                     self.name_to_ids.setdefault(key, []).append(entity_id)
+                    self.compact_to_id.setdefault(key.replace("_", ""), entity_id)
+
+    def _add_name_alias(self, alias: str, entity_id: str) -> None:
+        key = normalize_id(alias)
+        if not key:
+            return
+        self.name_to_id[key] = entity_id
+        self.name_to_ids.setdefault(key, []).append(entity_id)
+        self.compact_to_id.setdefault(key.replace("_", ""), entity_id)
+
+    def _index_localized_names(self) -> None:
+        if not LOCALIZATION_ZHS_PATH.exists():
+            return
+        try:
+            with open(LOCALIZATION_ZHS_PATH, "r", encoding="utf-8") as f:
+                localized = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            return
+        for entity_id, item in localized.get("entities", {}).items():
+            if entity_id not in self.entities:
+                continue
+            name = item.get("name")
+            if name:
+                self._add_name_alias(name, entity_id)
 
     def resolve_id(self, value: str, character_class: str | None = None) -> Optional[str]:
         if not value:
             return None
-        key = normalize_id(value)
-        candidates = self.name_to_ids.get(key, [])
-        if not candidates:
+        value = repair_mojibake(str(value))
+        localized = LOCALIZED_ALIASES.get(value)
+        if isinstance(localized, dict):
+            localized_id = localized.get((character_class or "").lower())
+            if localized_id:
+                return localized_id
+        if isinstance(localized, str):
+            return localized
+        if localized is None and value in LOCALIZED_ALIASES:
             return None
-        if character_class:
-            character_class = character_class.lower()
-            for entity_id in candidates:
-                entity = self.entities.get(entity_id, {})
-                if entity.get("class") == character_class:
-                    return entity_id
-            for entity_id in candidates:
-                entity = self.entities.get(entity_id, {})
-                if entity.get("class") in {"any", "colorless", None}:
-                    return entity_id
-        return candidates[0]
+        key = normalize_id(value)
+        if key in GAME_ID_ALIASES:
+            return GAME_ID_ALIASES[key]
+        if key in self.entities:
+            return key
+        candidates = self.name_to_ids.get(key, [])
+        if candidates:
+            if character_class:
+                character_class = character_class.lower()
+                for entity_id in candidates:
+                    entity = self.entities.get(entity_id, {})
+                    if entity.get("class") == character_class:
+                        return entity_id
+                for entity_id in candidates:
+                    entity = self.entities.get(entity_id, {})
+                    if entity.get("class") in {"any", "colorless", None}:
+                        return entity_id
+            return candidates[0]
+        compact_id = self.compact_to_id.get(key.replace("_", ""))
+        if compact_id:
+            return compact_id
+        return None
 
     def resolve_many(self, values: Iterable[str], character_class: str | None = None) -> List[str]:
         resolved = []
@@ -85,6 +172,18 @@ class KnowledgeBase:
     def option_entities(self, options: Iterable[str], character_class: str | None = None) -> List[Dict[str, Any]]:
         entities = []
         for option in options:
+            if normalize_id(str(option)) in {"skip", "skip_card"}:
+                entities.append(
+                    {
+                        "id": "skip",
+                        "name": "Skip",
+                        "entity_type": "unknown",
+                        "base_value": 35,
+                        "tags": ["skip_card", "deck_control"],
+                        "relationships": [],
+                    }
+                )
+                continue
             entity = self.get(option, character_class)
             if entity:
                 entities.append(entity)
@@ -174,6 +273,7 @@ class KnowledgeBase:
 
     def strategy_matches(self, state: Dict[str, Any], options: Iterable[str]) -> Dict[str, List[Dict[str, Any]]]:
         character_class = state.get("character_class", "").lower()
+        preferred_archetype = self._normalize_archetype_id(state.get("preferred_archetype", ""))
         owned_ids = set(self.resolve_many(state.get("deck", []), character_class))
         owned_ids.update(self.resolve_many(state.get("relics", []), character_class))
         option_entities = self.option_entities(options, character_class)
@@ -184,20 +284,30 @@ class KnowledgeBase:
         for archetype in self.strategy_data.get("archetypes", []):
             if archetype.get("class") not in {"any", character_class}:
                 continue
+            is_preferred = preferred_archetype == self._normalize_archetype_id(archetype.get("id", ""))
+            if is_preferred:
+                self._append_preferred_archetype_matches(matches, option_ids, archetype)
             for rule in archetype.get("rules", []):
                 owned_any = set(rule.get("when_owned_any", []))
                 target_any = set(rule.get("target_any", []))
                 if owned_any and not owned_ids.intersection(owned_any):
                     continue
                 for option_id in option_ids.intersection(target_any):
+                    bonus = float(rule.get("bonus", 0))
+                    reason = rule.get("reason", "Matches a curated archetype rule.")
+                    match_type = "archetype_rule"
+                    if is_preferred:
+                        bonus *= 1.35
+                        reason = f"Preferred archetype {archetype['name']}: {reason}"
+                        match_type = "preferred_archetype_rule"
                     matches.setdefault(option_id, []).append(
                         {
-                            "type": "archetype_rule",
+                            "type": match_type,
                             "archetype_id": archetype["id"],
                             "archetype_name": archetype["name"],
                             "rule_id": rule["id"],
-                            "bonus": float(rule.get("bonus", 0)),
-                            "reason": rule.get("reason", "Matches a curated archetype rule."),
+                            "bonus": bonus,
+                            "reason": reason,
                         }
                     )
 
@@ -217,6 +327,37 @@ class KnowledgeBase:
                     )
 
         return {option_id: items for option_id, items in matches.items() if items}
+
+    def _append_preferred_archetype_matches(
+        self,
+        matches: Dict[str, List[Dict[str, Any]]],
+        option_ids: set[str],
+        archetype: Dict[str, Any],
+    ) -> None:
+        groups = [
+            ("enablers", 28.0, "enabler"),
+            ("payoffs", 32.0, "payoff"),
+            ("support", 8.0, "support"),
+            ("relics", 20.0, "relic"),
+        ]
+        for field, bonus, role in groups:
+            for option_id in option_ids.intersection(set(archetype.get(field, []))):
+                matches.setdefault(option_id, []).append(
+                    {
+                        "type": "preferred_archetype",
+                        "archetype_id": archetype["id"],
+                        "archetype_name": archetype["name"],
+                        "role": role,
+                        "bonus": bonus,
+                        "reason": f"Preferred archetype {archetype['name']} values this {role} piece.",
+                    }
+                )
+
+    def _normalize_archetype_id(self, value: Any) -> str:
+        text = str(value or "").strip().lower().replace(" ", "_").replace("-", "_")
+        if text in {"", "auto", "none", "default"}:
+            return ""
+        return text
 
     def risk_tags(self, state: Dict[str, Any]) -> List[str]:
         deck_ids = self.resolve_many(state.get("deck", []), state.get("character_class", "").lower())

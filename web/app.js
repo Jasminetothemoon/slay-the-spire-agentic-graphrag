@@ -1,6 +1,7 @@
 const runIdInput = document.querySelector("#runId");
 const statusEl = document.querySelector("#status");
 const answerEl = document.querySelector("#answer");
+const explanationPanelEl = document.querySelector("#explanationPanel");
 const scoresEl = document.querySelector("#scores");
 const evidenceEl = document.querySelector("#evidence");
 const languageSelect = document.querySelector("#languageSelect");
@@ -10,6 +11,9 @@ const connectionStatusEl = document.querySelector("#connectionStatus");
 const decisionTypeLabelEl = document.querySelector("#decisionTypeLabel");
 const lastUpdatedEl = document.querySelector("#lastUpdated");
 const topRecommendationEl = document.querySelector("#topRecommendation");
+const queryTypeInput = document.querySelector("#queryType");
+const optionsInput = document.querySelector("#options");
+const recommendButton = document.querySelector("#recommend");
 
 const translations = {
   en: {
@@ -57,9 +61,24 @@ const translations = {
     score: "Score",
     reasons: "Reasons",
     risks: "Risks",
+    currentPlan: "Current Plan",
+    whyPick: "Why This Pick",
+    riskCoverage: "Risk Coverage",
+    candidateComparison: "Candidate Comparison",
+    graphEvidenceSummary: "Graph Evidence",
+    archetypes: "Archetypes",
+    deckTags: "Deck Tags",
+    riskTags: "Risk Tags",
+    delta: "Delta",
+    strategy: "Strategy",
+    graph: "Graph",
+    whyNot: "Why Not",
     stateSummary: "State",
     topPick: "Top pick",
     noScores: "No recommendation yet.",
+    noLiveOptions: "No live decision options are available yet.",
+    noLiveRoutes: "No live route options are available yet.",
+    waitingForDecision: "Live state synced. Waiting for a real game decision.",
     act: "Act",
     floor: "Floor",
     source: "Source",
@@ -112,9 +131,24 @@ const translations = {
     score: "分数",
     reasons: "理由",
     risks: "风险",
+    currentPlan: "当前计划",
+    whyPick: "推荐依据",
+    riskCoverage: "风险覆盖",
+    candidateComparison: "候选对比",
+    graphEvidenceSummary: "图谱证据",
+    archetypes: "流派",
+    deckTags: "卡组标签",
+    riskTags: "风险标签",
+    delta: "差距",
+    strategy: "策略",
+    graph: "图谱",
+    whyNot: "为何不选",
     stateSummary: "状态",
     topPick: "首选",
     noScores: "还没有推荐。",
+    noLiveOptions: "当前还没有实时候选项。",
+    noLiveRoutes: "当前还没有实时路线。",
+    waitingForDecision: "已同步实时状态，正在等待真实游戏决策。",
     act: "阶段",
     floor: "楼层",
     source: "来源",
@@ -156,6 +190,13 @@ function applyLanguage() {
   languageSelect.value = currentLanguage;
   overlayToggle.textContent = overlayMode ? t("fullMode") : t("overlayMode");
   updateConnectionStatus(connectionState);
+  renderStateInputs();
+  if (window.lastRecommendation) {
+    answerEl.textContent = localizedReasoning(window.lastRecommendation);
+    evidenceEl.textContent = JSON.stringify(localizedGraphContext(window.lastRecommendation), null, 2);
+  }
+  renderExplanationPanel(window.lastRecommendation);
+  renderScores(window.lastRecommendation?.option_scores || []);
   renderStateSummary();
   renderTopRecommendation();
   updateLiveStrip();
@@ -224,6 +265,69 @@ function currentStatePayload() {
   };
 }
 
+function zhState() {
+  return latestState.localized?.zh || {};
+}
+
+function localizedList(key, fallback) {
+  if (currentLanguage === "zh" && Array.isArray(zhState()[key])) {
+    return zhState()[key];
+  }
+  return fallback || [];
+}
+
+function isLiveModSource(source = latestState.source) {
+  return source === "java_mod_bridge" || source === "mod_bridge";
+}
+
+function renderStateInputs() {
+  if (!latestState || !Object.keys(latestState).length) {
+    return;
+  }
+  setLines("#deck", localizedList("deck", latestState.deck));
+  setLines("#relics", localizedList("relics", latestState.relics));
+  if (Array.isArray(latestState.options) && latestState.options.length) {
+    setLines("#options", localizedList("options", latestState.options));
+  }
+}
+
+function localizedScore(score, index) {
+  if (currentLanguage !== "zh") {
+    return score;
+  }
+  const localized = window.lastRecommendation?.localized?.zh?.option_scores?.[index] || {};
+  return {
+    ...score,
+    name: localized.name || score.name,
+    reasons: localized.reasons || score.reasons,
+    risks: localized.risks || score.risks,
+  };
+}
+
+function localizedReasoning(data) {
+  if (currentLanguage === "zh") {
+    return data.localized?.zh?.reasoning || data.reasoning;
+  }
+  return data.reasoning;
+}
+
+function localizedGraphContext(data) {
+  if (currentLanguage === "zh") {
+    return data.localized?.zh?.graph_context || data.graph_context;
+  }
+  return data.graph_context;
+}
+
+function localizedExplanationPanel(data) {
+  if (!data) {
+    return {};
+  }
+  if (currentLanguage === "zh") {
+    return data.localized?.zh?.explanation_panel || data.explanation_panel || {};
+  }
+  return data.explanation_panel || {};
+}
+
 function markUpdated() {
   lastUpdatedAt = new Date();
   updateLiveStrip();
@@ -242,7 +346,7 @@ function updateConnectionStatus(status) {
 }
 
 function updateLiveStrip() {
-  decisionTypeLabelEl.textContent = document.querySelector("#queryType").value;
+  decisionTypeLabelEl.textContent = queryTypeInput.value;
   lastUpdatedEl.textContent = lastUpdatedAt ? lastUpdatedAt.toLocaleTimeString() : "-";
 }
 
@@ -261,16 +365,25 @@ function applyIncomingState(state) {
   if (Number.isFinite(Number(state.gold))) {
     document.querySelector("#gold").value = state.gold;
   }
-  setLines("#deck", state.deck);
-  setLines("#relics", state.relics);
+  renderStateInputs();
+  if (state.query_type) {
+    queryTypeInput.value = state.query_type;
+  }
+  if (Array.isArray(state.options) && state.options.length) {
+    setLines("#options", localizedList("options", state.options));
+  } else if (isLiveModSource(state.source)) {
+    setLines("#options", []);
+  }
+  updateRecommendationAvailability();
   renderStateSummary();
 }
 
 function renderRecommendation(data) {
   window.lastRecommendation = data;
   markUpdated();
-  answerEl.textContent = data.reasoning;
-  evidenceEl.textContent = JSON.stringify(data.graph_context, null, 2);
+  answerEl.textContent = localizedReasoning(data);
+  evidenceEl.textContent = JSON.stringify(localizedGraphContext(data), null, 2);
+  renderExplanationPanel(data);
   renderScores(data.option_scores || []);
   renderStateSummary();
   renderTopRecommendation();
@@ -279,8 +392,10 @@ function renderRecommendation(data) {
 function renderStateSummary() {
   const state = currentStatePayload();
   const topScore = window.lastRecommendation?.option_scores?.[0];
+  const displayTopScore = topScore ? localizedScore(topScore, 0) : null;
+  const stateClass = currentLanguage === "zh" ? zhState().character_class || state.character_class : state.character_class;
   const chips = [
-    `${t("class")}: ${state.character_class || "-"}`,
+    `${t("class")}: ${stateClass || "-"}`,
     `${t("hp")}: ${state.current_hp}/${state.max_hp}`,
     `${t("gold")}: ${state.gold}`,
     `${t("act")}: ${state.act}`,
@@ -295,7 +410,7 @@ function renderStateSummary() {
     </div>
     <div class="top-pick">
       <span>${t("topPick")}</span>
-      <strong>${escapeHtml(topScore ? `${topScore.name} / ${topScore.score}` : t("noScores"))}</strong>
+      <strong>${escapeHtml(displayTopScore ? `${displayTopScore.name} / ${displayTopScore.score}` : t("noScores"))}</strong>
     </div>
   `;
 }
@@ -306,13 +421,14 @@ function renderTopRecommendation() {
     topRecommendationEl.innerHTML = `<div class="empty-top">${escapeHtml(t("noScores"))}</div>`;
     return;
   }
-  const keyReason = topScore.reasons?.[0] || "";
-  const keyRisk = topScore.risks?.[0] || "";
+  const displayScore = localizedScore(topScore, 0);
+  const keyReason = displayScore.reasons?.[0] || "";
+  const keyRisk = displayScore.risks?.[0] || "";
   topRecommendationEl.innerHTML = `
     <div class="top-rank">#1</div>
     <div class="top-copy">
       <span>${escapeHtml(t("topPick"))}</span>
-      <strong>${escapeHtml(topScore.name)}</strong>
+      <strong>${escapeHtml(displayScore.name)}</strong>
       <p>${escapeHtml(keyReason)}</p>
       ${keyRisk ? `<p class="risk-line">${escapeHtml(t("keyRisk"))}: ${escapeHtml(keyRisk)}</p>` : ""}
     </div>
@@ -320,6 +436,82 @@ function renderTopRecommendation() {
       <span>${escapeHtml(t("score"))}<strong>${escapeHtml(topScore.score)}</strong></span>
       <span>${escapeHtml(t("confidence"))}<strong>${escapeHtml(topScore.confidence ?? "-")}</strong></span>
       <span>${escapeHtml(t("validity"))}<strong>${escapeHtml(topScore.valid === false ? t("invalid") : t("valid"))}</strong></span>
+    </div>
+  `;
+}
+
+function renderExplanationPanel(data) {
+  const panel = localizedExplanationPanel(data);
+  if (!panel || !Object.keys(panel).length) {
+    explanationPanelEl.innerHTML = "";
+    return;
+  }
+  const plan = panel.current_plan || {};
+  const whyPick = panel.why_pick || {};
+  const archetypes = plan.detected_archetypes || [];
+  const deckTags = plan.deck_tags || [];
+  const riskTags = plan.risk_tags || [];
+  const riskCoverage = panel.risk_coverage || [];
+  const comparison = panel.candidate_comparison || [];
+  const graphEvidence = panel.graph_evidence || [];
+  const topTradeoff = whyPick.tradeoff || "";
+
+  explanationPanelEl.innerHTML = `
+    <div class="explain-card">
+      <h3>${escapeHtml(t("currentPlan"))}</h3>
+      <p>${escapeHtml(panel.summary || plan.risk_summary || "")}</p>
+      <div class="tag-row">
+        ${archetypes.map((item) => `<span class="explain-tag">${escapeHtml(item.name || item.id)}</span>`).join("")}
+        ${riskTags.map((risk) => `<span class="explain-tag">${escapeHtml(risk)}</span>`).join("")}
+      </div>
+    </div>
+    <div class="explanation-grid">
+      <div class="explain-card">
+        <h3>${escapeHtml(t("whyPick"))}</h3>
+        <p><strong>${escapeHtml(whyPick.name || "")}</strong> ${escapeHtml(t("score"))}: ${escapeHtml(whyPick.score ?? "-")} / ${escapeHtml(t("confidence"))}: ${escapeHtml(whyPick.confidence ?? "-")}</p>
+        ${topTradeoff ? `<p class="tradeoff-line">${escapeHtml(topTradeoff)}</p>` : ""}
+        <ul>
+          ${(whyPick.main_reasons || []).map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}
+        </ul>
+      </div>
+      <div class="explain-card">
+        <h3>${escapeHtml(t("riskCoverage"))}</h3>
+        ${
+          riskCoverage.length
+            ? `<ul>${riskCoverage.map((item) => `<li><strong>${escapeHtml(item.risk)}</strong>: ${escapeHtml(item.explanation)} (${escapeHtml(item.status)})</li>`).join("")}</ul>`
+            : `<p>${escapeHtml(plan.risk_summary || t("noScores"))}</p>`
+        }
+      </div>
+      <div class="explain-card">
+        <h3>${escapeHtml(t("deckTags"))}</h3>
+        <div class="tag-row">${deckTags.slice(0, 12).map((tag) => `<span class="explain-tag">${escapeHtml(tag)}</span>`).join("")}</div>
+      </div>
+      <div class="explain-card">
+        <h3>${escapeHtml(t("graphEvidenceSummary"))}</h3>
+        <ul>
+          ${graphEvidence.slice(0, 4).map((item) => `<li>${escapeHtml(item.owned_name || item.owned_id)} -> ${escapeHtml(item.option_name || item.option_id)} / ${escapeHtml(item.mechanic_name || item.mechanic)}</li>`).join("")}
+        </ul>
+      </div>
+    </div>
+    <div class="explain-card">
+      <h3>${escapeHtml(t("candidateComparison"))}</h3>
+      <table class="comparison-table">
+        <thead><tr><th>#</th><th>${escapeHtml(t("options"))}</th><th>${escapeHtml(t("score"))}</th><th>${escapeHtml(t("delta"))}</th><th>${escapeHtml(t("strategy"))}</th><th>${escapeHtml(t("graph"))}</th><th>${escapeHtml(t("reasons"))}</th><th>${escapeHtml(t("whyNot"))}</th></tr></thead>
+        <tbody>
+          ${comparison.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.rank)}</td>
+              <td>${escapeHtml(item.name || item.option_id)}</td>
+              <td>${escapeHtml(item.score)}</td>
+              <td>${escapeHtml(item.delta_from_top)}</td>
+              <td>${escapeHtml(item.strategy_matches)}</td>
+              <td>${escapeHtml(item.graph_matches)}</td>
+              <td>${escapeHtml(item.best_reason || "")}</td>
+              <td>${escapeHtml(item.why_not || "")}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
     </div>
   `;
 }
@@ -334,6 +526,21 @@ async function postJson(url, payload) {
     throw new Error(await response.text());
   }
   return response.json();
+}
+
+async function loadLiveStateFallback() {
+  try {
+    const response = await fetch("/mod/live");
+    if (!response.ok) {
+      return;
+    }
+    const payload = await response.json();
+    const state = payload.state || payload;
+    applyIncomingState(state);
+    statusEl.textContent = t("liveState", state.run_id || "mod_live");
+  } catch {
+    // The live run may not exist yet; WebSocket updates will fill it in later.
+  }
 }
 
 document.querySelector("#startRun").addEventListener("click", async () => {
@@ -365,23 +572,53 @@ document.querySelectorAll("#characterClass, #hp, #gold, #deck, #relics").forEach
   node.addEventListener("input", renderStateSummary);
 });
 
-document.querySelector("#queryType").addEventListener("change", updateLiveStrip);
+queryTypeInput.addEventListener("change", () => {
+  updateLiveStrip();
+  updateRecommendationAvailability();
+});
 
-document.querySelector("#recommend").addEventListener("click", async () => {
+recommendButton.addEventListener("click", async () => {
   if (!runIdInput.value) {
     statusEl.textContent = t("startFirst");
     return;
   }
-  await syncState();
+  if (!isLiveModSource()) {
+    await syncState();
+  }
+  const options = lines("#options");
+  const queryType = queryTypeInput.value;
+  const hasRouteObjects = Array.isArray(latestState.map_options) && latestState.map_options.length > 0;
+  if (queryType !== "combat" && queryType !== "pathing" && !options.length) {
+    statusEl.textContent = t("noLiveOptions");
+    return;
+  }
+  if (queryType === "pathing" && !options.length && !hasRouteObjects) {
+    statusEl.textContent = t("noLiveRoutes");
+    return;
+  }
   const data = await postJson("/get_recommendation", {
     run_id: runIdInput.value,
-    query_type: document.querySelector("#queryType").value,
-    options: lines("#options"),
+    query_type: queryType,
+    options,
     user_query: "Recommend the best option.",
   });
   renderRecommendation(data);
   statusEl.textContent = t("returned", data.latency_ms);
 });
+
+function updateRecommendationAvailability() {
+  const options = lines("#options");
+  const hasCombatHand = Array.isArray(latestState.hand_cards) && latestState.hand_cards.length > 0;
+  const hasRouteObjects = Array.isArray(latestState.map_options) && latestState.map_options.length > 0;
+  const hasDecision =
+    options.length > 0 ||
+    (queryTypeInput.value === "combat" && hasCombatHand) ||
+    (queryTypeInput.value === "pathing" && hasRouteObjects);
+  recommendButton.disabled = !hasDecision;
+  if (!hasDecision && isLiveModSource()) {
+    statusEl.textContent = t("waitingForDecision");
+  }
+}
 
 function renderScores(optionScores) {
   if (!optionScores.length) {
@@ -391,7 +628,9 @@ function renderScores(optionScores) {
 
   scoresEl.innerHTML = optionScores
     .map(
-      (score, index) => `
+      (rawScore, index) => {
+        const score = localizedScore(rawScore, index);
+        return `
       <article class="score-card ${index === 0 ? "top-score" : ""}">
         <header>
           <span>${escapeHtml(score.name)}</span>
@@ -403,7 +642,8 @@ function renderScores(optionScores) {
           ${(score.risks || []).length ? `<li class="risk"><strong>${t("risks")}:</strong></li>` : ""}
           ${(score.risks || []).map((risk) => `<li class="risk">${escapeHtml(risk)}</li>`).join("")}
         </ul>
-      </article>`
+      </article>`;
+      }
     )
     .join("");
 }
@@ -414,6 +654,7 @@ try {
   socket.onopen = () => {
     updateConnectionStatus("connected");
     statusEl.textContent = t("liveConnected");
+    loadLiveStateFallback();
   };
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
@@ -439,3 +680,5 @@ applyOverlayMode();
 applyLanguage();
 renderTopRecommendation();
 updateLiveStrip();
+loadLiveStateFallback();
+updateRecommendationAvailability();

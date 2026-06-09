@@ -1,0 +1,119 @@
+{
+  "metadata": {
+    "source": "community_strategy_synthesis",
+    "version": "2026-05-29",
+    "description": "Traceable community and wiki strategy heuristics used to explain archetype-aware card picks and pathing advice. Rules are advisory and are converted into deterministic scorer behavior only after regression tests are added."
+  },
+  "sources": [
+    {
+      "id": "wiki_map_locations",
+      "title": "Slay the Spire Wiki - Map Locations",
+      "url": "https://slay-the-spire.fandom.com/wiki/Map_Locations",
+      "source_type": "wiki",
+      "notes": "Documents map node types: unknown, shop, treasure, rest site, monster, elite, and boss."
+    },
+    {
+      "id": "wiki_rest_sites",
+      "title": "Slay the Spire Wiki - Rest Sites",
+      "url": "https://slaythespire.wiki.gg/wiki/Rest_Site",
+      "source_type": "wiki",
+      "notes": "Documents rest and smith choices, including the 30 percent max HP heal option."
+    },
+    {
+      "id": "wiki_elites",
+      "title": "Slay the Spire Wiki - Elites",
+      "url": "https://slay-the-spire.fandom.com/wiki/Elites",
+      "source_type": "wiki",
+      "notes": "Documents elite risk and rewards: relic, gold, card reward, and score bonus."
+    },
+    {
+      "id": "reddit_pathing_early_shop",
+      "title": "Reddit r/slaythespire - Let's talk about pathing",
+      "url": "https://www.reddit.com/r/slaythespire/comments/1td3fa4/lets_talk_about_pathing/",
+      "source_type": "community_discussion",
+      "notes": "Community discussion about early shops, output potions, elite preparation, and flexible routing."
+    },
+    {
+      "id": "reddit_pathing_optimization",
+      "title": "Reddit r/slaythespire - Optimizing pathing",
+      "url": "https://www.reddit.com/r/slaythespire/comments/1p519se/optimizing_pathing/",
+      "source_type": "community_discussion",
+      "notes": "Community discussion emphasizing campfires, elites, and balancing upgrades against fights."
+    },
+    {
+      "id": "reddit_pathing_first_elite",
+      "title": "Reddit r/slaythespire - What should I be looking for when pathing?",
+      "url": "https://www.reddit.com/r/slaythespire/comments/1hqt2s4",
+      "source_type": "community_discussion",
+      "notes": "Community discussion about early easy combats, shops or campfires before the first elite, and opting out when weak."
+    }
+  ],
+  "rules": [
+    {
+      "id": "path_elite_reward_if_ready",
+      "category": "pathing",
+      "applies_to": ["elite", "path_sequence"],
+      "principle": "Elite nodes are high-value when the run has enough HP, frontload, defensive coverage, potion support, or a nearby rest site.",
+      "positive_signals": ["frontload_damage", "aoe", "block", "orb_frost", "potion_available", "rest_after_elite", "ironclad_act1", "watcher_act1"],
+      "negative_signals": ["low_hp", "low_frontload", "forced_multiple_elites_without_rest"],
+      "source_ids": ["wiki_elites", "reddit_pathing_optimization", "reddit_pathing_first_elite"],
+      "confidence": 0.78,
+      "implemented_in": "sts_engine/scoring.py::_elite_path_value"
+    },
+    {
+      "id": "path_rest_as_recovery_exit",
+      "category": "pathing",
+      "applies_to": ["rest", "path_sequence"],
+      "principle": "Rest sites increase route flexibility because the player can heal when low or smith when healthy.",
+      "positive_signals": ["low_hp", "upgrade_value", "rest_before_or_after_elite"],
+      "negative_signals": ["coffee_dripper", "mark_of_the_bloom"],
+      "source_ids": ["wiki_rest_sites", "reddit_pathing_optimization"],
+      "confidence": 0.8,
+      "implemented_in": "sts_engine/scoring.py::_score_pathing"
+    },
+    {
+      "id": "path_shop_for_gold_or_answers",
+      "category": "pathing",
+      "applies_to": ["shop", "path_sequence"],
+      "principle": "Shops are strongest with enough gold, but early shops can also buy potions or frontload answers before elites.",
+      "positive_signals": ["gold_150_plus", "gold_180_plus", "early_shop_before_elite", "silent_or_defect_early_act1"],
+      "negative_signals": ["low_gold", "too_many_shops"],
+      "source_ids": ["wiki_map_locations", "reddit_pathing_early_shop", "reddit_pathing_first_elite"],
+      "confidence": 0.72,
+      "implemented_in": "sts_engine/scoring.py::_shop_path_value"
+    },
+    {
+      "id": "path_early_hallway_for_card_rewards",
+      "category": "pathing",
+      "applies_to": ["monster", "path_sequence"],
+      "principle": "Early Act 1 hallway fights are valuable because they provide card rewards before committing to elites.",
+      "positive_signals": ["act1_floor_1_to_6", "needs_frontload", "needs_block"],
+      "negative_signals": ["low_hp", "already_strong"],
+      "source_ids": ["reddit_pathing_first_elite", "reddit_pathing_optimization"],
+      "confidence": 0.7,
+      "implemented_in": "sts_engine/scoring.py::_monster_path_value"
+    },
+    {
+      "id": "path_events_after_act1_or_when_low_hp",
+      "category": "pathing",
+      "applies_to": ["event", "unknown", "path_sequence"],
+      "principle": "Events become more attractive after Act 1 or when the run wants to avoid dangerous hallway fights; too many early Act 1 events can delay card rewards.",
+      "positive_signals": ["act2_plus", "low_hp", "avoid_hallway_variance"],
+      "negative_signals": ["early_act1_needs_cards"],
+      "source_ids": ["wiki_map_locations", "reddit_pathing_first_elite"],
+      "confidence": 0.68,
+      "implemented_in": "sts_engine/scoring.py::_event_path_value"
+    },
+    {
+      "id": "archetype_payoff_after_enabler",
+      "category": "archetype",
+      "applies_to": ["card_pick"],
+      "principle": "Payoff cards should be prioritized when the deck already contains the enablers that make the payoff reliable.",
+      "positive_signals": ["poison_source_before_catalyst", "shiv_generation_before_accuracy", "discard_outlet_before_tactician", "stance_access_before_rushdown", "zero_cost_density_before_all_for_one"],
+      "negative_signals": ["payoff_without_enabler", "narrow_plan_without_support"],
+      "source_ids": ["reddit_pathing_early_shop"],
+      "confidence": 0.74,
+      "implemented_in": "data/strategy/archetypes.json"
+    }
+  ]
+}

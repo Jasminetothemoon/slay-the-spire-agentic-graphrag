@@ -322,6 +322,91 @@ button {
   line-height: 1.45;
 }
 
+.explanation-panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.explanation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.explain-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+}
+
+.explain-card h3 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.explain-card p,
+.explain-card li {
+  color: #344054;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.explain-card .tradeoff-line {
+  border-left: 3px solid var(--good);
+  padding-left: 8px;
+  color: #0f766e;
+  font-weight: 800;
+}
+
+.explain-card ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.explain-tag {
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #1e3a8a;
+  background: #eff6ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 6px;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.comparison-table th {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.comparison-table tbody tr:first-child {
+  background: #f0fdfa;
+}
+
 .scores {
   display: grid;
   gap: 10px;
@@ -388,6 +473,25 @@ pre {
 .overlay-mode details,
 .overlay-mode .manual-controls,
 .overlay-mode .answer {
+  display: none;
+}
+
+.overlay-mode .explanation-grid {
+  grid-template-columns: 1fr;
+}
+
+.overlay-mode .explain-card {
+  padding: 10px;
+}
+
+.overlay-mode .comparison-table {
+  font-size: 11px;
+}
+
+.overlay-mode .comparison-table th:nth-child(5),
+.overlay-mode .comparison-table td:nth-child(5),
+.overlay-mode .comparison-table th:nth-child(6),
+.overlay-mode .comparison-table td:nth-child(6) {
   display: none;
 }
 
@@ -513,5 +617,9 @@ pre {
   .topbar-actions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .explanation-grid {
+    grid-template-columns: 1fr;
   }
 }

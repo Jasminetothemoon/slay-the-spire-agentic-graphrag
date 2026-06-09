@@ -134,7 +134,10 @@ def _candidate_comparison(scores: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
                 "score": score.get("score"),
                 "confidence": score.get("confidence"),
                 "delta_from_top": round(float(top.get("score", 0)) - float(score.get("score", 0)), 2),
-                "strategy_matches": evidence_types.get("archetype_rule", 0) + evidence_types.get("risk_cover", 0),
+                "strategy_matches": sum(
+                    evidence_types.get(kind, 0)
+                    for kind in ("archetype_rule", "preferred_archetype", "preferred_archetype_rule", "risk_cover")
+                ),
                 "graph_matches": evidence_types.get("shared_mechanic", 0),
                 "risks": score.get("risks", [])[:2],
                 "best_reason": (score.get("reasons") or [""])[0],
@@ -161,7 +164,11 @@ def _tradeoff(score: Dict[str, Any], top: Dict[str, Any], rank: int) -> str:
         return f"Lower priority because it trails the top option by {gap} points."
     if not evidence:
         return "Lower priority because it has weaker graph or strategy evidence for the current run."
-    if evidence_types.get("archetype_rule", 0) == 0 and evidence_types.get("risk_cover", 0) == 0:
+    strategy_count = sum(
+        evidence_types.get(kind, 0)
+        for kind in ("archetype_rule", "preferred_archetype", "preferred_archetype_rule", "risk_cover")
+    )
+    if strategy_count == 0:
         return "Lower priority because it does not clearly advance the detected archetype or cover a major risk."
     if risks:
         return f"Lower priority because of this risk: {risks[0]}"

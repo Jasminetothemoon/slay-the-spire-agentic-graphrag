@@ -225,6 +225,44 @@ def check_card_skip_option() -> List[str]:
     return errors
 
 
+def check_preferred_archetype_bias() -> List[str]:
+    engine = build_graph()
+    base_state: Dict[str, Any] = {
+        "run_id": "preferred_archetype_check",
+        "character_class": "silent",
+        "query_type": "card_pick",
+        "act": 1,
+        "current_floor": 4,
+        "deck": ["Strike", "Strike", "Defend", "Defend", "Neutralize", "Survivor"],
+        "relics": [],
+        "potions": [],
+        "options": ["Blade Dance", "Deadly Poison", "Backflip"],
+    }
+    errors: List[str] = []
+    shiv_state = dict(base_state)
+    shiv_state["preferred_archetype"] = "silent_shiv"
+    shiv_result = engine.invoke(shiv_state)
+    if shiv_result.get("option_scores", [{}])[0].get("option_id") != "blade_dance":
+        errors.append(
+            "Preferred Silent Shiv archetype should bias toward Blade Dance, "
+            f"got {shiv_result.get('option_scores', [{}])[0].get('option_id')}"
+        )
+    poison_state = dict(base_state)
+    poison_state["preferred_archetype"] = "silent_poison"
+    poison_result = engine.invoke(poison_state)
+    if poison_result.get("option_scores", [{}])[0].get("option_id") != "deadly_poison":
+        errors.append(
+            "Preferred Silent Poison archetype should bias toward Deadly Poison, "
+            f"got {poison_result.get('option_scores', [{}])[0].get('option_id')}"
+        )
+    top_evidence = shiv_result.get("option_scores", [{}])[0].get("evidence", [])
+    if not any(item.get("type") == "preferred_archetype" for item in top_evidence):
+        errors.append("Preferred archetype recommendation should include preferred_archetype evidence.")
+    errors.extend(check_agent_contract(shiv_result, "card_pick_skill"))
+    errors.extend(check_agent_contract(poison_result, "card_pick_skill"))
+    return errors
+
+
 def check_structured_shop_context() -> List[str]:
     engine = build_graph()
     state: Dict[str, Any] = {
@@ -362,6 +400,7 @@ def check_live_mod_normalization() -> List[str]:
         deck=["æ\u0089\u0093å\u0087»", "æ\u009a´æ\u0080\u0092", "è\u00ad¦æ\u0083\u0095", "å\u008f\u0091æ³\u0084"],
         relics=["è\u0087³çº¯ä¹\u008bæ°´"],
         potions=["è\u008d¯æ°´æ\xa0\u008f"],
+        preferred_archetype="Watcher Stance Dance",
     )
     state = normalize_mod_state(payload)
     errors = []
@@ -372,6 +411,8 @@ def check_live_mod_normalization() -> List[str]:
         errors.append(f"Live Mod relic should normalize to pure_water, got {state.get('relics')}")
     if state.get("potions") != []:
         errors.append(f"Potion slots should be dropped, got {state.get('potions')}")
+    if state.get("preferred_archetype") != "watcher_stance_dance":
+        errors.append(f"Preferred archetype should normalize, got {state.get('preferred_archetype')}")
     options = normalize_option_list(["Halt", "PureWater", "Remove a Card"], "watcher")
     if options[:2] != ["halt", "pure_water"]:
         errors.append(f"Live Mod options should normalize game ids/names, got {options}")
@@ -394,6 +435,7 @@ def main() -> None:
     errors.extend(check_combat_advice())
     errors.extend(check_combat_setup_order())
     errors.extend(check_card_skip_option())
+    errors.extend(check_preferred_archetype_bias())
     errors.extend(check_structured_shop_context())
     errors.extend(check_boss_relic_context())
     errors.extend(check_pathing_route_objects())
@@ -409,6 +451,7 @@ def main() -> None:
             "combat_advice",
             "combat_setup_order",
             "card_skip_option",
+            "preferred_archetype_bias",
             "structured_shop_context",
             "boss_relic_context",
             "pathing_route_objects",

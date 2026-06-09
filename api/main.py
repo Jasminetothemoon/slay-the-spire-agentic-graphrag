@@ -46,6 +46,7 @@ class StartRunRequest(BaseModel):
     ascension_level: int = Field(default=0, ge=0, le=20)
     max_hp: int = Field(default=70, gt=0)
     source: str = Field(default="manual")
+    preferred_archetype: str = Field(default="")
 
 
 class UpdateStateRequest(BaseModel):
@@ -69,6 +70,7 @@ class UpdateStateRequest(BaseModel):
     map_options: Optional[List[Dict[str, Any]]] = None
     shop_items: Optional[List[Dict[str, Any]]] = None
     boss: Optional[str] = None
+    preferred_archetype: Optional[str] = None
 
 
 class ModStatePayload(BaseModel):
@@ -94,6 +96,7 @@ class ModStatePayload(BaseModel):
     map_options: List[Dict[str, Any]] = []
     shop_items: List[Dict[str, Any]] = []
     boss: Optional[str] = None
+    preferred_archetype: str = ""
 
 
 class RecommendationRequest(BaseModel):
@@ -153,6 +156,7 @@ def default_state(run_id: str, req: StartRunRequest) -> Dict[str, Any]:
         "discard_pile": [],
         "map_options": [],
         "shop_items": [],
+        "preferred_archetype": normalize_archetype_id(req.preferred_archetype),
     }
 
 
@@ -183,6 +187,7 @@ def normalize_mod_state(payload: ModStatePayload) -> Dict[str, Any]:
     state["draw_pile"] = normalize_entity_list(state.get("draw_pile", []), character_class)
     state["discard_pile"] = normalize_entity_list(state.get("discard_pile", []), character_class)
     state["shop_items"] = normalize_shop_items(state.get("shop_items", []), character_class)
+    state["preferred_archetype"] = normalize_archetype_id(state.get("preferred_archetype", ""))
     state.update(
         {
             "run_id": run_id,
@@ -232,6 +237,13 @@ def normalize_shop_items(values: List[Dict[str, Any]], character_class: str) -> 
             normalized_item["affordable"] = True
         normalized.append(normalized_item)
     return normalized
+
+
+def normalize_archetype_id(value: Any) -> str:
+    text = str(value or "").strip().lower().replace(" ", "_").replace("-", "_")
+    if text in {"", "auto", "none", "default"}:
+        return ""
+    return text
 
 
 def scene_type_for_state(state: Dict[str, Any]) -> str:
@@ -323,6 +335,7 @@ def response_debug(state: Dict[str, Any], final_state: Dict[str, Any], scene_typ
         "map_options_count": len(state.get("map_options") or []),
         "shop_items_count": len(shop_items),
         "unaffordable_shop_items_count": len(unaffordable_shop_items),
+        "preferred_archetype": state.get("preferred_archetype", ""),
         "current_screen": state.get("current_screen", ""),
         "latency_ms": final_state.get("latency_ms", 0.0),
         "backend": "neo4j_or_local_fallback",

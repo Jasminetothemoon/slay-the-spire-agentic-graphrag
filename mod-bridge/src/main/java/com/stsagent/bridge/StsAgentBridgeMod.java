@@ -59,6 +59,13 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
                 panel.toggleLanguage();
                 System.out.println("[STS Agent Bridge] Chinese panel visible: " + panel.isChineseVisible());
             }
+            if (Gdx.input != null && Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+                String target = collector.cyclePreferredArchetype();
+                lastSignature = "";
+                panel.updateStatus("Target archetype: " + collector.preferredArchetypeLabel());
+                panel.updateDebug("target_archetype=" + collector.preferredArchetypeLabel());
+                System.out.println("[STS Agent Bridge] Target archetype: " + (target.isEmpty() ? "auto" : target));
+            }
 
             if (AbstractDungeon.player == null) {
                 return;
@@ -88,6 +95,7 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
                         "screen=" + collector.currentScreenName()
                             + " query=" + payload.queryType()
                             + " options=" + payload.options().size()
+                            + " target=" + collector.preferredArchetypeLabel()
                             + " top=" + result.displayName()
                             + " latency=" + (System.currentTimeMillis() - requestStartedAt) + "ms"
                     );

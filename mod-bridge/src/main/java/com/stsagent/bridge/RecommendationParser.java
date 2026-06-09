@@ -92,10 +92,14 @@ public final class RecommendationParser {
         String optionsCount = rawValue(debugBlock, "options_count");
         String shopItemsCount = rawValue(debugBlock, "shop_items_count");
         String unaffordableCount = rawValue(debugBlock, "unaffordable_shop_items_count");
+        String preferredArchetype = stringValue(debugBlock, "preferred_archetype");
         String latency = rawValue(debugBlock, "latency_ms");
         String summary = "scene=" + sceneType + " skill=" + selectedSkill + " query=" + queryType + " options=" + optionsCount + " latency=" + latency + "ms";
         if (!shopItemsCount.isEmpty() || !unaffordableCount.isEmpty()) {
             summary += " shop=" + shopItemsCount + " unaff=" + unaffordableCount;
+        }
+        if (!preferredArchetype.isEmpty()) {
+            summary += " target=" + preferredArchetype;
         }
         return summary;
     }

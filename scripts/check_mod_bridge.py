@@ -57,7 +57,7 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
-        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "Input.Keys.F9", "Input.Keys.F10", "panel.toggleDebugVisible", "panel.toggleLanguage", "captureLogger.recordRecommendation"],
+        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "Input.Keys.F9", "Input.Keys.F10", "Input.Keys.F11", "panel.toggleDebugVisible", "panel.toggleLanguage", "collector.cyclePreferredArchetype", "captureLogger.recordRecommendation"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
@@ -94,7 +94,7 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/RecommendationParser.java",
-        ["scene_type", "display_badge", "why_not", "debugSummary", "objectsInArray", "optionScores", "shop_price", "shop_affordable"],
+        ["scene_type", "display_badge", "why_not", "debugSummary", "objectsInArray", "optionScores", "shop_price", "shop_affordable", "preferred_archetype"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/RecommendationResult.java",
@@ -102,7 +102,7 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/BridgeConfig.java",
-        ["STS_AGENT_CAPTURE", "STS_AGENT_CAPTURE_DIR", "captureDir"],
+        ["STS_AGENT_CAPTURE", "STS_AGENT_CAPTURE_DIR", "captureDir", "STS_AGENT_ARCHETYPE", "preferredArchetype"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/GameStateCollector.java",
@@ -122,6 +122,9 @@ def main() -> None:
             "shopRelicIds",
             "shopPotionIds",
             "shopItems",
+            "preferred_archetype",
+            "cyclePreferredArchetype",
+            "preferredArchetypeLabel",
             "COMBAT_REWARD",
             "BOSS_REWARD",
             "MAP",

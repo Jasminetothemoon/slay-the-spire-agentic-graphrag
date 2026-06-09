@@ -61,6 +61,7 @@ class RunState(TypedDict, total=False):
     map_options: List[RouteNode]
     shop_items: List[Dict[str, Any]]
     boss: Optional[str]
+    preferred_archetype: str
     query_type: DecisionType
     scene_type: str
     options: List[Any]

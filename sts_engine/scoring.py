@@ -731,7 +731,7 @@ class RecommendationScorer:
         return round(max(0.2, min(0.9, confidence)), 2)
 
     def _explicit_strategy_count(self, evidence: List[Dict[str, Any]]) -> int:
-        return sum(1 for item in evidence if item.get("type") == "archetype_rule")
+        return sum(1 for item in evidence if item.get("type") in {"archetype_rule", "preferred_archetype", "preferred_archetype_rule"})
 
     def risk_report(self, state: Dict[str, Any]) -> Dict[str, Any]:
         risks = self.kb.risk_tags(state)

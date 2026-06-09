@@ -273,6 +273,7 @@ class KnowledgeBase:
 
     def strategy_matches(self, state: Dict[str, Any], options: Iterable[str]) -> Dict[str, List[Dict[str, Any]]]:
         character_class = state.get("character_class", "").lower()
+        preferred_archetype = self._normalize_archetype_id(state.get("preferred_archetype", ""))
         owned_ids = set(self.resolve_many(state.get("deck", []), character_class))
         owned_ids.update(self.resolve_many(state.get("relics", []), character_class))
         option_entities = self.option_entities(options, character_class)
@@ -283,20 +284,30 @@ class KnowledgeBase:
         for archetype in self.strategy_data.get("archetypes", []):
             if archetype.get("class") not in {"any", character_class}:
                 continue
+            is_preferred = preferred_archetype == self._normalize_archetype_id(archetype.get("id", ""))
+            if is_preferred:
+                self._append_preferred_archetype_matches(matches, option_ids, archetype)
             for rule in archetype.get("rules", []):
                 owned_any = set(rule.get("when_owned_any", []))
                 target_any = set(rule.get("target_any", []))
                 if owned_any and not owned_ids.intersection(owned_any):
                     continue
                 for option_id in option_ids.intersection(target_any):
+                    bonus = float(rule.get("bonus", 0))
+                    reason = rule.get("reason", "Matches a curated archetype rule.")
+                    match_type = "archetype_rule"
+                    if is_preferred:
+                        bonus *= 1.35
+                        reason = f"Preferred archetype {archetype['name']}: {reason}"
+                        match_type = "preferred_archetype_rule"
                     matches.setdefault(option_id, []).append(
                         {
-                            "type": "archetype_rule",
+                            "type": match_type,
                             "archetype_id": archetype["id"],
                             "archetype_name": archetype["name"],
                             "rule_id": rule["id"],
-                            "bonus": float(rule.get("bonus", 0)),
-                            "reason": rule.get("reason", "Matches a curated archetype rule."),
+                            "bonus": bonus,
+                            "reason": reason,
                         }
                     )
 
@@ -316,6 +327,37 @@ class KnowledgeBase:
                     )
 
         return {option_id: items for option_id, items in matches.items() if items}
+
+    def _append_preferred_archetype_matches(
+        self,
+        matches: Dict[str, List[Dict[str, Any]]],
+        option_ids: set[str],
+        archetype: Dict[str, Any],
+    ) -> None:
+        groups = [
+            ("enablers", 28.0, "enabler"),
+            ("payoffs", 32.0, "payoff"),
+            ("support", 8.0, "support"),
+            ("relics", 20.0, "relic"),
+        ]
+        for field, bonus, role in groups:
+            for option_id in option_ids.intersection(set(archetype.get(field, []))):
+                matches.setdefault(option_id, []).append(
+                    {
+                        "type": "preferred_archetype",
+                        "archetype_id": archetype["id"],
+                        "archetype_name": archetype["name"],
+                        "role": role,
+                        "bonus": bonus,
+                        "reason": f"Preferred archetype {archetype['name']} values this {role} piece.",
+                    }
+                )
+
+    def _normalize_archetype_id(self, value: Any) -> str:
+        text = str(value or "").strip().lower().replace(" ", "_").replace("-", "_")
+        if text in {"", "auto", "none", "default"}:
+            return ""
+        return text
 
     def risk_tags(self, state: Dict[str, Any]) -> List[str]:
         deck_ids = self.resolve_many(state.get("deck", []), state.get("character_class", "").lower())

@@ -19,9 +19,11 @@ import java.util.List;
 
 public class GameStateCollector {
     private final BridgeConfig config;
+    private String preferredArchetype;
 
     public GameStateCollector(BridgeConfig config) {
         this.config = config;
+        this.preferredArchetype = config.preferredArchetype;
     }
 
     public String collectHeartbeatState() {
@@ -37,7 +39,8 @@ public class GameStateCollector {
             + "\"energy\":3,"
             + "\"deck\":[],"
             + "\"relics\":[],"
-            + "\"potions\":[]"
+            + "\"potions\":[],"
+            + "\"preferred_archetype\":\"" + JsonUtil.escape(preferredArchetype) + "\""
             + "}";
     }
 
@@ -70,9 +73,32 @@ public class GameStateCollector {
         json.append("\"enemies\":").append(enemies()).append(",");
         json.append("\"map_options\":").append(mapOptions()).append(",");
         json.append("\"shop_items\":").append(shopItems()).append(",");
+        json.append("\"preferred_archetype\":\"").append(JsonUtil.escape(preferredArchetype)).append("\",");
         json.append("\"combat_state\":").append(combatState());
         json.append("}");
         return json.toString();
+    }
+
+    public String cyclePreferredArchetype() {
+        List<String> choices = archetypeChoices(characterClass());
+        int index = choices.indexOf(preferredArchetype);
+        int next = index < 0 ? 0 : index + 1;
+        if (next >= choices.size()) {
+            next = 0;
+        }
+        preferredArchetype = choices.get(next);
+        return preferredArchetype;
+    }
+
+    public String preferredArchetype() {
+        return preferredArchetype;
+    }
+
+    public String preferredArchetypeLabel() {
+        if (preferredArchetype == null || preferredArchetype.isEmpty()) {
+            return "auto";
+        }
+        return preferredArchetype;
     }
 
     private Decision collectDecision() {
@@ -411,6 +437,37 @@ public class GameStateCollector {
             default:
                 return AbstractDungeon.player.chosenClass.name().toLowerCase();
         }
+    }
+
+    private List<String> archetypeChoices(String characterClass) {
+        List<String> choices = new ArrayList<String>();
+        choices.add("");
+        if ("silent".equals(characterClass)) {
+            choices.add("silent_poison");
+            choices.add("silent_shiv");
+            choices.add("silent_discard");
+            choices.add("silent_wraith_form");
+            choices.add("silent_grand_finale");
+        } else if ("ironclad".equals(characterClass)) {
+            choices.add("ironclad_strength");
+            choices.add("ironclad_exhaust");
+            choices.add("ironclad_block_barricade");
+            choices.add("ironclad_self_damage");
+            choices.add("ironclad_searing_blow");
+        } else if ("defect".equals(characterClass)) {
+            choices.add("defect_frost_focus");
+            choices.add("defect_lightning");
+            choices.add("defect_dark_orb");
+            choices.add("defect_power");
+            choices.add("defect_claw_zero_cost");
+        } else if ("watcher".equals(characterClass)) {
+            choices.add("watcher_stance_dance");
+            choices.add("watcher_wrath_burst");
+            choices.add("watcher_divinity");
+            choices.add("watcher_retain");
+            choices.add("watcher_pressure_points");
+        }
+        return choices;
     }
 
     private int currentEnergy() {

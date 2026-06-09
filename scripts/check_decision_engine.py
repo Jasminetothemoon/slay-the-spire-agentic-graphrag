@@ -15,6 +15,30 @@ from scripts.communication_mod_adapter import read_json, run_offline
 
 
 DEFAULT_DATA = ROOT / "data" / "public_full_data.json"
+EXPECTED_AGENT_TRACE = [
+    "StateAgent",
+    "SceneRouterAgent",
+    "RetrievalAgent",
+    "RiskAgent",
+    "SkillScoringAgent",
+    "CriticAgent",
+    "ExplainerAgent",
+]
+
+
+def check_agent_contract(result: Dict[str, Any], expected_skill: str) -> List[str]:
+    errors = []
+    if result.get("selected_skill") != expected_skill:
+        errors.append(f"Expected selected_skill={expected_skill}, got {result.get('selected_skill')}")
+    trace = [item.get("agent", "") for item in result.get("agent_trace", [])]
+    missing = [agent for agent in EXPECTED_AGENT_TRACE if agent not in trace]
+    if missing:
+        errors.append(f"Agent trace is missing nodes: {', '.join(missing)}")
+    if "critic_warnings" not in result:
+        errors.append("Result should expose critic_warnings.")
+    if result.get("decision_valid") is not True:
+        errors.append(f"Expected decision_valid=True, got {result.get('decision_valid')}")
+    return errors
 
 
 def check_class_aware_resolution(kb: Any) -> List[str]:
@@ -61,6 +85,7 @@ def check_legality_filter() -> List[str]:
     panel = result.get("explanation_panel", {})
     if not panel.get("why_pick") or not panel.get("candidate_comparison"):
         errors.append("Recommendation should include a structured explanation_panel.")
+    errors.extend(check_agent_contract(result, "card_pick_skill"))
     return errors
 
 
@@ -114,6 +139,7 @@ def check_combat_advice() -> List[str]:
         errors.append(f"Combat top score should name a play sequence or potion use, got {top.get('name')}")
     if not top.get("evidence") or top["evidence"][0].get("type") not in {"combat_estimate", "combat_potion"}:
         errors.append("Combat top score should include combat evidence.")
+    errors.extend(check_agent_contract(result, "combat_skill"))
     return errors
 
 
@@ -163,6 +189,7 @@ def check_pathing_route_objects() -> List[str]:
     panel = result.get("explanation_panel", {})
     if not panel.get("candidate_comparison", [{}])[0].get("why_not"):
         errors.append("Candidate comparison should include why_not tradeoff text.")
+    errors.extend(check_agent_contract(result, "pathing_skill"))
     return errors
 
 
@@ -213,6 +240,7 @@ def main() -> None:
         "checks": [
             "class_aware_resolution",
             "decision_legality_filter",
+            "multi_agent_skill_contract",
             "communication_mod_adapter",
             "combat_advice",
             "pathing_route_objects",
@@ -225,7 +253,7 @@ def main() -> None:
     else:
         print(
             "Decision engine checks passed: class-aware resolution, decision legality filter, "
-            "CommunicationMod adapter, combat advice"
+            "Multi-Agent skill contract, CommunicationMod adapter, combat advice"
         )
 
 

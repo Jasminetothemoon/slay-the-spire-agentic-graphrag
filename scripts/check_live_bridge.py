@@ -132,8 +132,18 @@ def validate_events(result: Dict[str, Any], scenario: Dict[str, Any]) -> List[st
     scores = recommendation.get("option_scores", [])
     if not recommendation.get("scene_type"):
         errors.append("HTTP /mod/recommend response did not include scene_type.")
+    if not recommendation.get("selected_skill"):
+        errors.append("HTTP /mod/recommend response did not include selected_skill.")
+    if not recommendation.get("agent_trace"):
+        errors.append("HTTP /mod/recommend response did not include agent_trace.")
+    if "critic_warnings" not in recommendation:
+        errors.append("HTTP /mod/recommend response did not include critic_warnings.")
+    if recommendation.get("decision_valid") is not True:
+        errors.append("HTTP /mod/recommend response did not mark decision_valid=true.")
     if not recommendation.get("debug", {}).get("query_type"):
         errors.append("HTTP /mod/recommend response did not include debug.query_type.")
+    if not recommendation.get("debug", {}).get("selected_skill"):
+        errors.append("HTTP /mod/recommend response did not include debug.selected_skill.")
     if not scores:
         errors.append("HTTP /mod/recommend response did not include option_scores.")
     elif scores[0].get("option_id") != recommendation.get("recommendation"):

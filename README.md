@@ -6,7 +6,7 @@ This project is a realtime AI decision assistant for **Slay the Spire 1**. The g
 
 - Models cards, relics, potions, enemies, bosses, mechanics, shops, routes, and archetypes as a knowledge graph.
 - Uses GraphRAG retrieval to find multi-hop synergies and risks for the current run state.
-- Uses a LangGraph workflow to validate state, retrieve graph context, assess risks, score options, and explain decisions.
+- Uses a LangGraph multi-agent workflow to normalize state, route scenes to Decision Skills, retrieve graph context, assess risks, score options, critique validity, and explain decisions.
 - Returns structured recommendations for card picks, relic picks, shops, routes, and shallow combat play sequences.
 - Provides a FastAPI service, WebSocket updates, and a lightweight web demo.
 - Runs without Neo4j by falling back to the local JSON knowledge base; Neo4j remains the preferred graph backend for larger data.
@@ -21,11 +21,18 @@ FastAPI state API + WebSocket
       |
       v
 LangGraph Agent Workflow
-  - validate_state
-  - retrieve_context
-  - assess_risk
-  - score_options
-  - explain_decision
+  - StateAgent
+  - SceneRouterAgent
+  - RetrievalAgent
+  - RiskAgent
+  - SkillScoringAgent
+  - CriticAgent
+  - ExplainerAgent
+      |
+      v
+Decision Skills
+  - CardPickSkill / RelicPickSkill / ShopSkill
+  - PathingSkill / CombatSkill / RestSiteSkill
       |
       v
 Neo4j GraphRAG or local JSON fallback
@@ -42,10 +49,12 @@ sts_engine/agent.py         LangGraph workflow
 sts_engine/knowledge_base.py Local knowledge-base loader and graph-style lookup
 sts_engine/retriever.py     Neo4j-first GraphRAG retriever with local fallback
 sts_engine/scoring.py       Structured recommendation scorer
+sts_engine/skills/          Pluggable Decision Skills for each scene type
 sts_engine/state.py         RunState and response types
 scripts/ingest_graph.py     Neo4j ingestion
 scripts/validate_data.py    Data integrity checks
 scripts/evaluate.py         Recommendation evaluation harness
+scripts/decision_harness.py Unified eval/replay/ablation/latency harness
 web/                        Lightweight demo UI
 data/public_full_data.json  Real public-data snapshot used by the default app
 data/public_eval_cases.json Public-data evaluation scenarios
@@ -267,6 +276,14 @@ Verify the full local bridge path in one command. This starts a temporary API se
 python scripts/check_live_bridge.py --data data/public_full_data.json --all-scenarios
 ```
 
+Run the unified decision harness for resume-grade metrics:
+
+```bash
+python scripts/decision_harness.py --mode all --no-write --summary-only
+```
+
+The harness covers fixed evaluation cases, real Mod payload replay fixtures, ablation switches for graph/strategy/risk/critic components, and latency percentiles.
+
 For Mod clients, the shortest path is the one-shot endpoint:
 
 ```text
@@ -288,11 +305,11 @@ Current measured snapshot:
 - 666 graph entities and 1442 graph relationships.
 - 6 traceable community strategy rules from 6 public wiki/community sources.
 - 0 relationships missing provenance fields.
-- 26 fixed evaluation cases, including card-pick, shop, and pathing scenarios.
+- 51 fixed evaluation cases across card-pick, relic, shop, pathing, and combat scenarios.
 - Top-1 accuracy: 1.0.
 - Top-3 accuracy: 1.0.
-- Mean latency: about 1.3 ms in the latest local benchmark.
-- P95 latency: about 1.3 ms in the latest local benchmark.
+- Mean latency: about 1.6 ms in the latest local benchmark.
+- P95 latency: about 1.6 ms in the latest local benchmark.
 - Chinese localization coverage: 560/612 localizable entities, 91.5%.
 
 The generated report lives at:
@@ -316,11 +333,13 @@ Implemented:
 
 - UTF-8 schema plus real public data snapshot for cards, relics, potions, enemies, mechanics, shops, and path nodes.
 - Agentic GraphRAG workflow.
+- Pluggable Decision Skills for card, relic, shop, pathing, combat, and rest-site decisions.
+- Multi-Agent trace output with selected skill, critic warnings, and decision-valid flags for the Mod debug panel.
 - Structured scoring and explanations.
 - Neo4j ingestion script and local fallback.
 - FastAPI, WebSocket, mod-state bridge contract, and compact overlay HUD.
 - CommunicationMod-style adapter with offline debug mode.
-- Data validation, graph fixture checks, live bridge e2e check, and evaluation harness.
+- Data validation, graph fixture checks, live bridge e2e check, replay harness, ablation harness, latency harness, and evaluation harness.
 - Shallow combat advisor for current hand, energy, incoming damage, enemy board, and defensive potion prompts.
 
 Still to expand:

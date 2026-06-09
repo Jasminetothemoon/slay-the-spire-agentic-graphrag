@@ -35,9 +35,10 @@ public final class RecommendationParser {
         }
         String queryType = stringValue(debugBlock, "query_type");
         String sceneType = stringValue(debugBlock, "scene_type");
+        String selectedSkill = stringValue(debugBlock, "selected_skill");
         String optionsCount = rawValue(debugBlock, "options_count");
         String latency = rawValue(debugBlock, "latency_ms");
-        return "scene=" + sceneType + " query=" + queryType + " options=" + optionsCount + " latency=" + latency + "ms";
+        return "scene=" + sceneType + " skill=" + selectedSkill + " query=" + queryType + " options=" + optionsCount + " latency=" + latency + "ms";
     }
 
     private static String objectForKey(String json, String key) {

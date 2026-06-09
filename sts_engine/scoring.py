@@ -33,9 +33,9 @@ class RecommendationScorer:
         for item in evidence:
             evidence_by_option.setdefault(item["option_id"], []).append(item)
 
-        risk_tags = self.kb.risk_tags(state)
+        risk_tags = [] if state.get("_ablation_disable_risk") else self.kb.risk_tags(state)
         deck_tags = self._deck_tags(state)
-        strategy_matches = self.kb.strategy_matches(state, state.get("options", []))
+        strategy_matches = {} if state.get("_ablation_disable_strategy") else self.kb.strategy_matches(state, state.get("options", []))
         query_type = state.get("query_type", "card_pick")
         scores = []
         for option in self.kb.option_entities(state.get("options", []), state.get("character_class", "").lower()):
@@ -133,7 +133,7 @@ class RecommendationScorer:
         return round(min(100.0, 100 - 28 / (1 + overflow / 28)), 2)
 
     def _score_pathing(self, state: Dict[str, Any]) -> List[Dict[str, Any]]:
-        risk_tags = self.kb.risk_tags(state)
+        risk_tags = [] if state.get("_ablation_disable_risk") else self.kb.risk_tags(state)
         deck_tags = self._deck_tags(state)
         hp_ratio = state.get("current_hp", state.get("max_hp", 1)) / max(state.get("max_hp", 1), 1)
         character_class = state.get("character_class", "").lower()

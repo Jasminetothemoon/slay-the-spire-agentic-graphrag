@@ -96,14 +96,14 @@ class ModStatePayload(BaseModel):
 
 class RecommendationRequest(BaseModel):
     run_id: str
-    query_type: str = Field(pattern="^(card_pick|relic_pick|shop|pathing|combat)$")
+    query_type: str = Field(pattern="^(card_pick|relic_pick|shop|pathing|combat|rest_site|smith)$")
     options: List[str] = []
     user_query: str = ""
 
 
 class ModRecommendationRequest(BaseModel):
     state: ModStatePayload
-    query_type: str = Field(pattern="^(card_pick|relic_pick|shop|pathing|combat)$")
+    query_type: str = Field(pattern="^(card_pick|relic_pick|shop|pathing|combat|rest_site|smith)$")
     options: List[str] = []
     user_query: str = ""
 
@@ -112,6 +112,10 @@ class RecommendationResponse(BaseModel):
     recommendation: str
     reasoning: str
     scene_type: str = ""
+    selected_skill: str = ""
+    agent_trace: List[Dict[str, Any]] = []
+    critic_warnings: List[str] = []
+    decision_valid: bool = False
     explanation_panel: Dict[str, Any] = {}
     option_scores: List[Dict[str, Any]]
     graph_context: List[Dict[str, Any]]
@@ -216,6 +220,10 @@ def scene_type_for_state(state: Dict[str, Any]) -> str:
         return "map"
     if query_type == "combat":
         return "combat"
+    if query_type == "rest_site":
+        return "rest_site"
+    if query_type == "smith":
+        return "smith"
     if query_type == "relic_pick":
         if "BOSS" in current_screen:
             return "boss_relic"
@@ -281,11 +289,15 @@ def response_debug(state: Dict[str, Any], final_state: Dict[str, Any], scene_typ
     return {
         "query_type": state.get("query_type", ""),
         "scene_type": scene_type,
+        "selected_skill": final_state.get("selected_skill", ""),
         "options_count": len(state.get("options") or []),
         "map_options_count": len(state.get("map_options") or []),
         "current_screen": state.get("current_screen", ""),
         "latency_ms": final_state.get("latency_ms", 0.0),
         "backend": "neo4j_or_local_fallback",
+        "agent_trace": final_state.get("agent_trace", []),
+        "critic_warnings": final_state.get("critic_warnings", []),
+        "decision_valid": final_state.get("decision_valid", False),
         "normalization_warnings": warnings,
     }
 
@@ -308,7 +320,7 @@ def build_recommendation_response(current_state: Dict[str, Any]) -> Recommendati
         current_state["options"] = list(current_state.get("map_options") or [])
     started_at = time.perf_counter()
     final_state = engine.invoke(current_state)
-    scene_type = scene_type_for_state(current_state)
+    scene_type = final_state.get("scene_type") or scene_type_for_state(current_state)
     option_scores = enrich_option_scores(
         final_state.get("option_scores", []),
         final_state.get("explanation_panel", {}),
@@ -319,6 +331,10 @@ def build_recommendation_response(current_state: Dict[str, Any]) -> Recommendati
         recommendation=final_state.get("recommendation", "skip"),
         reasoning=final_state.get("reasoning", ""),
         scene_type=scene_type,
+        selected_skill=final_state.get("selected_skill", ""),
+        agent_trace=final_state.get("agent_trace", []),
+        critic_warnings=final_state.get("critic_warnings", []),
+        decision_valid=final_state.get("decision_valid", False),
         explanation_panel=final_state.get("explanation_panel", {}),
         option_scores=option_scores,
         graph_context=final_state.get("graph_context", []),

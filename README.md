@@ -250,6 +250,11 @@ reports/benchmark.md                Generated benchmark snapshot
 docs/resume_project_summary.md      Resume-ready project writeup
 docs/ai_app_and_pm_polish_plan.md   AI application / AI PM polish plan
 docs/project_implementation_report.md Implementation report and interview story
+docs/product_prd.md                 Product requirements document
+docs/user_journey.md                User journey and in-game UX design
+docs/competitor_analysis.md         Companion/overlay competitor analysis
+docs/feature_priority_matrix.md     Value/cost/risk feature prioritization
+docs/product_metrics.md             Product metrics and evaluation loop
 ```
 
 ## Verification
@@ -279,7 +284,14 @@ Suggested bullets:
 Role-specific writeups:
 
 - AI application developer: see `docs/resume_project_summary.md` and `docs/ai_app_and_pm_polish_plan.md`.
-- AI product manager: see `docs/project_implementation_report.md`, especially the product evolution, metrics, and roadmap sections.
+- AI product manager: see `docs/product_prd.md`, `docs/user_journey.md`, `docs/competitor_analysis.md`, `docs/feature_priority_matrix.md`, `docs/product_metrics.md`, and `docs/project_implementation_report.md`.
+
+For interviews, the strongest product story is:
+
+1. The user pain was not "missing AI", but "recommendations are outside the game flow".
+2. The product was refocused from a webpage demo to an in-game Mod-first assistant.
+3. The AI workflow was made observable through agent traces, Critic warnings, replay, ablation, and latency metrics.
+4. Recommendation quality is treated as a product loop: capture real payloads, replay failures, label cases, tune Skills, and compare baselines.
 
 ## Current Gaps
 

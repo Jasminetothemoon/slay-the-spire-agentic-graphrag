@@ -71,6 +71,14 @@ Built a real-time in-game AI decision assistant that combines a Java Mod bridge,
 - 为什么做流派选择：同一个选项在不同目标下价值不同，用户意图必须进入推荐链路。
 - 如何衡量推荐质量：用评测集、replay、消融和用户反馈替代主观感受。
 
+### 产品材料入口
+
+- PRD：`docs/product_prd.md`
+- 用户旅程：`docs/user_journey.md`
+- 竞品分析：`docs/competitor_analysis.md`
+- 功能优先级：`docs/feature_priority_matrix.md`
+- 指标体系：`docs/product_metrics.md`
+
 ## 项目实施精华
 
 ## Interview Talking Points

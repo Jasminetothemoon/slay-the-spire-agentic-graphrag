@@ -134,7 +134,18 @@ def main() -> None:
     )
     assert_contains(
         ROOT / "scripts/build_mod_bridge.ps1",
-        [".tools\\jdk17", ".tools\\gradle", "desktop-1.0.jar", "BaseMod.jar", "ModTheSpire.jar", "ModsDir", "Copy-Item"],
+        [
+            ".tools\\jdk17",
+            ".tools\\gradle",
+            "desktop-1.0.jar",
+            "BaseMod.jar",
+            "ModTheSpire.jar",
+            "ModsDir",
+            "Resolve-ModsDir",
+            "STS_AGENT_MODS_DIR",
+            "local.modsdir.txt",
+            "Copy-Item",
+        ],
     )
 
     print("Mod bridge structure checks passed.")

@@ -31,3 +31,4 @@ mod-bridge/libs/*.zip
 mod-bridge/libs/mts/
 mod-bridge/libs/*.jar
 !mod-bridge/libs/README.md
+mod-bridge/local.modsdir.txt

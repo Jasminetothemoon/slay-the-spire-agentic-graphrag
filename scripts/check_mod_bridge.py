@@ -57,7 +57,7 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
-        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "Input.Keys.F9", "Input.Keys.F10", "Input.Keys.F11", "panel.toggleDebugVisible", "panel.toggleLanguage", "collector.cyclePreferredArchetype", "captureLogger.recordRecommendation"],
+        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "Input.Keys.F9", "Input.Keys.F10", "Input.Keys.F11", "panel.toggleDebugVisible", "panel.toggleLanguage", "panel.updatePreferredArchetype", "collector.cyclePreferredArchetype", "captureLogger.recordRecommendation"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
@@ -80,6 +80,11 @@ def main() -> None:
             "lastBadgeUnmatchedLabels",
             "shopDebug",
             "chineseVisible",
+            "updatePreferredArchetype",
+            "targetText",
+            "archetypeDisplayName",
+            "F11 Target",
+            "F11 流派",
             "hoveredOption",
             "renderHoveredOptionDetail",
             "optionMetricsText",

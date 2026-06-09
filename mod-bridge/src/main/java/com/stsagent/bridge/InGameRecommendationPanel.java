@@ -32,6 +32,7 @@ public class InGameRecommendationPanel {
     private int lastBadgeUnmatched = 0;
     private String lastBadgeUnmatchedLabels = "";
     private RecommendationResult.OptionScore hoveredOption;
+    private String preferredArchetype = "";
 
     public void update(RecommendationResult result) {
         if (result != null && result.hasContent()) {
@@ -79,6 +80,10 @@ public class InGameRecommendationPanel {
 
     public boolean isChineseVisible() {
         return chineseVisible;
+    }
+
+    public void updatePreferredArchetype(String archetypeId) {
+        preferredArchetype = archetypeId == null ? "" : archetypeId;
     }
 
     public void render(SpriteBatch sb) {
@@ -162,6 +167,19 @@ public class InGameRecommendationPanel {
             Settings.GREEN_TEXT_COLOR
         );
         cursorY -= 24.0F * scale;
+
+        String targetText = targetText();
+        if (!targetText.isEmpty()) {
+            FontHelper.renderFontLeftTopAligned(
+                sb,
+                FontHelper.topPanelInfoFont,
+                targetText,
+                textX,
+                cursorY,
+                Settings.BLUE_TEXT_COLOR
+            );
+            cursorY -= 22.0F * scale;
+        }
 
         String reasonText = latest.reason(chineseVisible);
         if (!reasonText.isEmpty()) {
@@ -685,6 +703,7 @@ public class InGameRecommendationPanel {
             return 84.0F * scale;
         }
         float height = latest.risk(chineseVisible).isEmpty() ? 190.0F * scale : 224.0F * scale;
+        height += 22.0F * scale;
         if (debugVisible) {
             height += latest.whyNot.isEmpty() ? 48.0F * scale : 84.0F * scale;
         }
@@ -795,7 +814,7 @@ public class InGameRecommendationPanel {
     }
 
     private String panelTitle() {
-        return chineseVisible ? "STS 助手  |  F10 English" : "STS Agent  |  F10 中文";
+        return chineseVisible ? "STS 助手  |  F10 English  |  F11 流派" : "STS Agent  |  F10 中文  |  F11 Target";
     }
 
     private String riskLabel() {
@@ -807,6 +826,80 @@ public class InGameRecommendationPanel {
             return "分数 " + latest.score + " | 置信度 " + latest.confidence;
         }
         return "Score " + latest.score + " | Confidence " + latest.confidence;
+    }
+
+    private String targetText() {
+        if (chineseVisible) {
+            return "目标流派：" + archetypeDisplayName(preferredArchetype, true);
+        }
+        return "Target: " + archetypeDisplayName(preferredArchetype, false);
+    }
+
+    private String archetypeDisplayName(String archetypeId, boolean chinese) {
+        if (archetypeId == null || archetypeId.isEmpty()) {
+            return chinese ? "自动检测" : "Auto";
+        }
+        if ("silent_poison".equals(archetypeId)) {
+            return chinese ? "猎手毒流" : "Silent Poison";
+        }
+        if ("silent_shiv".equals(archetypeId)) {
+            return chinese ? "猎手刀片流" : "Silent Shiv";
+        }
+        if ("silent_discard".equals(archetypeId)) {
+            return chinese ? "猎手弃牌流" : "Silent Discard";
+        }
+        if ("silent_wraith_form".equals(archetypeId)) {
+            return chinese ? "猎手幽魂防御" : "Silent Wraith Form";
+        }
+        if ("silent_grand_finale".equals(archetypeId)) {
+            return chinese ? "猎手华丽收场" : "Silent Grand Finale";
+        }
+        if ("ironclad_strength".equals(archetypeId)) {
+            return chinese ? "铁甲力量流" : "Ironclad Strength";
+        }
+        if ("ironclad_exhaust".equals(archetypeId)) {
+            return chinese ? "铁甲消耗流" : "Ironclad Exhaust";
+        }
+        if ("ironclad_block_barricade".equals(archetypeId)) {
+            return chinese ? "铁甲壁垒格挡" : "Ironclad Barricade";
+        }
+        if ("ironclad_self_damage".equals(archetypeId)) {
+            return chinese ? "铁甲自残流" : "Ironclad Self Damage";
+        }
+        if ("ironclad_searing_blow".equals(archetypeId)) {
+            return chinese ? "铁甲灼热攻击" : "Ironclad Searing Blow";
+        }
+        if ("defect_frost_focus".equals(archetypeId)) {
+            return chinese ? "故障机器人冰球集中" : "Defect Frost Focus";
+        }
+        if ("defect_lightning".equals(archetypeId)) {
+            return chinese ? "故障机器人闪电流" : "Defect Lightning";
+        }
+        if ("defect_dark_orb".equals(archetypeId)) {
+            return chinese ? "故障机器人黑球流" : "Defect Dark Orb";
+        }
+        if ("defect_power".equals(archetypeId)) {
+            return chinese ? "故障机器人能力流" : "Defect Power";
+        }
+        if ("defect_claw_zero_cost".equals(archetypeId)) {
+            return chinese ? "故障机器人爪击零费" : "Defect Claw";
+        }
+        if ("watcher_stance_dance".equals(archetypeId)) {
+            return chinese ? "观者姿态切换" : "Watcher Stance Dance";
+        }
+        if ("watcher_wrath_burst".equals(archetypeId)) {
+            return chinese ? "观者愤怒爆发" : "Watcher Wrath Burst";
+        }
+        if ("watcher_divinity".equals(archetypeId)) {
+            return chinese ? "观者神格真言" : "Watcher Divinity";
+        }
+        if ("watcher_retain".equals(archetypeId)) {
+            return chinese ? "观者保留流" : "Watcher Retain";
+        }
+        if ("watcher_pressure_points".equals(archetypeId)) {
+            return chinese ? "观者点穴流" : "Watcher Pressure Points";
+        }
+        return archetypeId;
     }
 
     private String badgeText() {

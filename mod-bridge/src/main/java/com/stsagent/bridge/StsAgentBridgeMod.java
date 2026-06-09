@@ -28,6 +28,7 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
         this.client = new BridgeClient(config);
         this.collector = new GameStateCollector(config);
         this.panel = new InGameRecommendationPanel();
+        this.panel.updatePreferredArchetype(collector.preferredArchetype());
         this.captureLogger = new BridgeCaptureLogger(config);
     }
 
@@ -62,10 +63,11 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
             if (Gdx.input != null && Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
                 String target = collector.cyclePreferredArchetype();
                 lastSignature = "";
-                panel.updateStatus("Target archetype: " + collector.preferredArchetypeLabel());
+                panel.updatePreferredArchetype(target);
                 panel.updateDebug("target_archetype=" + collector.preferredArchetypeLabel());
                 System.out.println("[STS Agent Bridge] Target archetype: " + (target.isEmpty() ? "auto" : target));
             }
+            panel.updatePreferredArchetype(collector.preferredArchetype());
 
             if (AbstractDungeon.player == null) {
                 return;

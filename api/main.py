@@ -311,12 +311,18 @@ def response_debug(state: Dict[str, Any], final_state: Dict[str, Any], scene_typ
         warnings.append("No explicit decision options were provided.")
     if scene_type == "map" and not state.get("options") and not state.get("map_options"):
         warnings.append("No map_options were available for pathing.")
+    shop_items = state.get("shop_items") or []
+    unaffordable_shop_items = [
+        item for item in shop_items if isinstance(item, dict) and item.get("affordable") is False
+    ]
     return {
         "query_type": state.get("query_type", ""),
         "scene_type": scene_type,
         "selected_skill": final_state.get("selected_skill", ""),
         "options_count": len(state.get("options") or []),
         "map_options_count": len(state.get("map_options") or []),
+        "shop_items_count": len(shop_items),
+        "unaffordable_shop_items_count": len(unaffordable_shop_items),
         "current_screen": state.get("current_screen", ""),
         "latency_ms": final_state.get("latency_ms", 0.0),
         "backend": "neo4j_or_local_fallback",

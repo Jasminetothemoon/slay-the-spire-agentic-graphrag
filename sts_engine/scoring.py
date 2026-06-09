@@ -127,21 +127,25 @@ class RecommendationScorer:
             raw_score = score
             display_score = self._display_score(raw_score)
             confidence = self._confidence(option, option_evidence, option_strategy, reasons, risks, valid)
-            scores.append(
-                {
-                    "option_id": option_id,
-                    "name": option.get("name", option_id),
-                    "decision_type": query_type,
-                    "valid": valid,
-                    "score": display_score,
-                    "raw_score": round(raw_score, 2),
-                    "strategy_signal": round(strategy_bonus, 2),
-                    "confidence": confidence,
-                    "reasons": reasons[:4],
-                    "risks": risks[:3],
-                    "evidence": (option_evidence + option_strategy)[:8],
-                }
-            )
+            score_item = {
+                "option_id": option_id,
+                "name": option.get("name", option_id),
+                "decision_type": query_type,
+                "valid": valid,
+                "score": display_score,
+                "raw_score": round(raw_score, 2),
+                "strategy_signal": round(strategy_bonus, 2),
+                "confidence": confidence,
+                "reasons": reasons[:4],
+                "risks": risks[:3],
+                "evidence": (option_evidence + option_strategy)[:8],
+            }
+            context = shop_context.get(option_id)
+            if query_type == "shop" and context:
+                score_item["shop_item_type"] = str(context.get("item_type", ""))
+                score_item["shop_price"] = int(context.get("price") or 0)
+                score_item["shop_affordable"] = bool(context.get("affordable", True))
+            scores.append(score_item)
 
         self._apply_skip_card_context(scores, query_type, state)
         scores.sort(

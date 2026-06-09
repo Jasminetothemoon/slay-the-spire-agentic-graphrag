@@ -18,6 +18,9 @@ public class RecommendationResult {
         public final String zhName;
         public final String zhReason;
         public final String zhRisk;
+        public final String shopItemType;
+        public final String shopPrice;
+        public final boolean shopAffordable;
 
         public OptionScore(
             String optionId,
@@ -31,7 +34,10 @@ public class RecommendationResult {
             String risk,
             String zhName,
             String zhReason,
-            String zhRisk
+            String zhRisk,
+            String shopItemType,
+            String shopPrice,
+            boolean shopAffordable
         ) {
             this.optionId = valueOrEmpty(optionId);
             this.name = valueOrEmpty(name);
@@ -45,6 +51,9 @@ public class RecommendationResult {
             this.zhName = valueOrEmpty(zhName);
             this.zhReason = valueOrEmpty(zhReason);
             this.zhRisk = valueOrEmpty(zhRisk);
+            this.shopItemType = valueOrEmpty(shopItemType);
+            this.shopPrice = valueOrEmpty(shopPrice);
+            this.shopAffordable = shopAffordable;
         }
 
         public String displayBadge() {
@@ -58,7 +67,7 @@ public class RecommendationResult {
         }
 
         public boolean hasRisk() {
-            return !risk.isEmpty();
+            return !risk.isEmpty() || (!shopPrice.isEmpty() && !shopAffordable);
         }
 
         public String displayName(boolean chinese) {
@@ -71,6 +80,14 @@ public class RecommendationResult {
 
         public String risk(boolean chinese) {
             return chinese && !zhRisk.isEmpty() ? zhRisk : risk;
+        }
+
+        public String shopDebug() {
+            if (shopPrice.isEmpty()) {
+                return "";
+            }
+            String type = shopItemType.isEmpty() ? "shop" : shopItemType;
+            return type + " " + shopPrice + "g " + (shopAffordable ? "ok" : "no");
         }
     }
 

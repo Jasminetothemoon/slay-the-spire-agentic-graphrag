@@ -24,7 +24,7 @@ public final class RecommendationParser {
         List<String> zhScoreBlocks = objectsInArray(zhBlock, "option_scores");
         List<RecommendationResult.OptionScore> optionScores = optionScores(recommendationBlock, zhScoreBlocks);
         RecommendationResult.OptionScore top = optionScores.isEmpty()
-            ? new RecommendationResult.OptionScore("", "", "", "", "", "", "", "", "", "", "", "")
+            ? new RecommendationResult.OptionScore("", "", "", "", "", "", "", "", "", "", "", "", "", "", true)
             : optionScores.get(0);
         String name = top.name;
         String score = top.score;
@@ -71,7 +71,10 @@ public final class RecommendationParser {
                     firstStringInArray(scoreBlock, "risks"),
                     stringValue(zhBlock, "name"),
                     firstStringInArray(zhBlock, "reasons"),
-                    firstStringInArray(zhBlock, "risks")
+                    firstStringInArray(zhBlock, "risks"),
+                    stringValue(scoreBlock, "shop_item_type"),
+                    rawValue(scoreBlock, "shop_price"),
+                    booleanValue(scoreBlock, "shop_affordable", true)
                 )
             );
             index++;
@@ -87,8 +90,14 @@ public final class RecommendationParser {
         String sceneType = stringValue(debugBlock, "scene_type");
         String selectedSkill = stringValue(debugBlock, "selected_skill");
         String optionsCount = rawValue(debugBlock, "options_count");
+        String shopItemsCount = rawValue(debugBlock, "shop_items_count");
+        String unaffordableCount = rawValue(debugBlock, "unaffordable_shop_items_count");
         String latency = rawValue(debugBlock, "latency_ms");
-        return "scene=" + sceneType + " skill=" + selectedSkill + " query=" + queryType + " options=" + optionsCount + " latency=" + latency + "ms";
+        String summary = "scene=" + sceneType + " skill=" + selectedSkill + " query=" + queryType + " options=" + optionsCount + " latency=" + latency + "ms";
+        if (!shopItemsCount.isEmpty() || !unaffordableCount.isEmpty()) {
+            summary += " shop=" + shopItemsCount + " unaff=" + unaffordableCount;
+        }
+        return summary;
     }
 
     private static String objectForKey(String json, String key) {
@@ -189,6 +198,14 @@ public final class RecommendationParser {
             end++;
         }
         return json.substring(start, end).replace("\"", "").trim();
+    }
+
+    private static boolean booleanValue(String json, String key, boolean fallback) {
+        String value = rawValue(json, key);
+        if (value.isEmpty()) {
+            return fallback;
+        }
+        return "true".equalsIgnoreCase(value);
     }
 
     private static int matching(String text, int start, char open, char close) {

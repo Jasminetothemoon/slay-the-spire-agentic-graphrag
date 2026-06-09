@@ -77,6 +77,8 @@ def main() -> None:
             "renderShopBadges",
             "renderBossRelicBadges",
             "lastBadgeUnmatched",
+            "lastBadgeUnmatchedLabels",
+            "shopDebug",
             "chineseVisible",
             "STATUS_STALE_AFTER_MS",
             "latest != null",
@@ -88,7 +90,7 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/RecommendationParser.java",
-        ["scene_type", "display_badge", "why_not", "debugSummary", "objectsInArray", "optionScores"],
+        ["scene_type", "display_badge", "why_not", "debugSummary", "objectsInArray", "optionScores", "shop_price", "shop_affordable"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/RecommendationResult.java",

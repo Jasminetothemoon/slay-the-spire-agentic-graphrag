@@ -29,6 +29,7 @@ public class InGameRecommendationPanel {
     private boolean chineseVisible = false;
     private int lastBadgeMatches = 0;
     private int lastBadgeUnmatched = 0;
+    private String lastBadgeUnmatchedLabels = "";
 
     public void update(RecommendationResult result) {
         if (result != null && result.hasContent()) {
@@ -191,9 +192,15 @@ public class InGameRecommendationPanel {
         if (debugVisible) {
             String debug = bridgeDebug.isEmpty() ? "F9 Debug: waiting for bridge event." : bridgeDebug;
             debug = debug + " badges=" + lastBadgeMatches + "/" + latest.optionScoreCount() + " unmatched=" + lastBadgeUnmatched;
+            if (!latest.optionScores.isEmpty() && !latest.optionScores.get(0).shopDebug().isEmpty()) {
+                debug = debug + " topShop=" + latest.optionScores.get(0).shopDebug();
+            }
+            if (!lastBadgeUnmatchedLabels.isEmpty()) {
+                debug = debug + " miss=" + lastBadgeUnmatchedLabels;
+            }
             cursorY = renderWrappedLines(
                 sb,
-                "F9 Debug: " + clamp(debug, 160),
+                "F9 Debug: " + clamp(debug, 220),
                 textX,
                 cursorY - 4.0F * scale,
                 contentWidth,
@@ -219,6 +226,7 @@ public class InGameRecommendationPanel {
     private void renderCandidateBadges(SpriteBatch sb, RecommendationResult result) {
         lastBadgeMatches = 0;
         lastBadgeUnmatched = 0;
+        lastBadgeUnmatchedLabels = "";
         if (result == null || result.optionScores.isEmpty()) {
             return;
         }
@@ -237,6 +245,26 @@ public class InGameRecommendationPanel {
         }
         lastBadgeMatches = matched.size();
         lastBadgeUnmatched = Math.max(0, result.optionScoreCount() - matched.size());
+        lastBadgeUnmatchedLabels = unmatchedLabels(result, matched);
+    }
+
+    private String unmatchedLabels(RecommendationResult result, Set<RecommendationResult.OptionScore> matched) {
+        StringBuilder out = new StringBuilder();
+        int count = 0;
+        for (RecommendationResult.OptionScore score : result.optionScores) {
+            if (matched.contains(score)) {
+                continue;
+            }
+            if (count > 0) {
+                out.append(",");
+            }
+            out.append(score.optionId.isEmpty() ? score.name : score.optionId);
+            count++;
+            if (count >= 3) {
+                break;
+            }
+        }
+        return out.toString();
     }
 
     private void renderCardRewardBadges(SpriteBatch sb, RecommendationResult result, Set<RecommendationResult.OptionScore> matched) {

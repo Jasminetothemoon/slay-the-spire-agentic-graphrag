@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rewards.RewardItem;
@@ -30,6 +31,7 @@ public class InGameRecommendationPanel {
     private int lastBadgeMatches = 0;
     private int lastBadgeUnmatched = 0;
     private String lastBadgeUnmatchedLabels = "";
+    private RecommendationResult.OptionScore hoveredOption;
 
     public void update(RecommendationResult result) {
         if (result != null && result.hasContent()) {
@@ -221,12 +223,14 @@ public class InGameRecommendationPanel {
                 );
             }
         }
+        renderHoveredOptionDetail(sb);
     }
 
     private void renderCandidateBadges(SpriteBatch sb, RecommendationResult result) {
         lastBadgeMatches = 0;
         lastBadgeUnmatched = 0;
         lastBadgeUnmatchedLabels = "";
+        hoveredOption = null;
         if (result == null || result.optionScores.isEmpty()) {
             return;
         }
@@ -313,6 +317,7 @@ public class InGameRecommendationPanel {
             matched.add(score);
             float x = card.hb == null ? card.current_x : card.hb.cX;
             float y = card.hb == null ? card.current_y - 210.0F * Settings.scale : card.hb.cY - card.hb.height / 2.0F + yOffset;
+            trackHover(score, card, card, x, y);
             renderBadge(sb, score, x, y, isTopScore(result, score));
         }
     }
@@ -332,6 +337,7 @@ public class InGameRecommendationPanel {
                 }
                 matched.add(score);
                 float[] position = positionForObject(reward, reward.relic);
+                trackHover(score, reward, reward.relic, position[0], position[1] - 30.0F * Settings.scale);
                 renderBadge(sb, score, position[0], position[1] - 30.0F * Settings.scale, isTopScore(result, score));
             }
         } catch (Exception ignored) {
@@ -353,6 +359,7 @@ public class InGameRecommendationPanel {
                 }
                 matched.add(score);
                 float[] position = positionForObject(relic, relic);
+                trackHover(score, relic, relic, position[0], position[1] - 44.0F * Settings.scale);
                 renderBadge(sb, score, position[0], position[1] - 44.0F * Settings.scale, isTopScore(result, score));
             }
         } catch (Exception ignored) {
@@ -377,6 +384,7 @@ public class InGameRecommendationPanel {
             }
             matched.add(score);
             float[] position = positionForObject(item, relic);
+            trackHover(score, item, relic, position[0], position[1] - 34.0F * Settings.scale);
             renderBadge(sb, score, position[0], position[1] - 34.0F * Settings.scale, isTopScore(result, score));
         }
     }
@@ -399,6 +407,7 @@ public class InGameRecommendationPanel {
             }
             matched.add(score);
             float[] position = positionForObject(item, potion);
+            trackHover(score, item, potion, position[0], position[1] - 34.0F * Settings.scale);
             renderBadge(sb, score, position[0], position[1] - 34.0F * Settings.scale, isTopScore(result, score));
         }
     }
@@ -412,7 +421,10 @@ public class InGameRecommendationPanel {
             return;
         }
         matched.add(score);
-        renderBadge(sb, score, Settings.WIDTH * 0.77F, Settings.HEIGHT * 0.18F, isTopScore(result, score));
+        float x = Settings.WIDTH * 0.77F;
+        float y = Settings.HEIGHT * 0.18F;
+        trackHover(score, null, null, x, y);
+        renderBadge(sb, score, x, y, isTopScore(result, score));
     }
 
     private void renderBadge(SpriteBatch sb, RecommendationResult.OptionScore score, float centerX, float centerY, boolean top) {
@@ -445,6 +457,141 @@ public class InGameRecommendationPanel {
             top ? Settings.GOLD_COLOR : Settings.CREAM_COLOR
         );
         sb.setColor(previous);
+    }
+
+    private void trackHover(RecommendationResult.OptionScore score, Object owner, Object fallback, float centerX, float centerY) {
+        if (score == null) {
+            return;
+        }
+        if (isHovered(owner) || isHovered(fallback) || mouseNear(centerX, centerY, 118.0F * Settings.scale, 40.0F * Settings.scale)) {
+            hoveredOption = score;
+        }
+    }
+
+    private boolean isHovered(Object owner) {
+        if (owner == null) {
+            return false;
+        }
+        Object hb = objectField(owner, "hb");
+        if (hb == null) {
+            hb = owner;
+        }
+        return booleanField(hb, "hovered", false);
+    }
+
+    private boolean mouseNear(float centerX, float centerY, float width, float height) {
+        return InputHelper.mX >= centerX - width / 2.0F
+            && InputHelper.mX <= centerX + width / 2.0F
+            && InputHelper.mY >= centerY - height / 2.0F
+            && InputHelper.mY <= centerY + height / 2.0F;
+    }
+
+    private void renderHoveredOptionDetail(SpriteBatch sb) {
+        if (hoveredOption == null) {
+            return;
+        }
+        float scale = Settings.scale;
+        float width = 360.0F * scale;
+        float height = hoverDetailHeight(hoveredOption);
+        float x = InputHelper.mX + 18.0F * scale;
+        if (x + width > Settings.WIDTH - 16.0F * scale) {
+            x = InputHelper.mX - width - 18.0F * scale;
+        }
+        x = Math.max(16.0F * scale, x);
+        float y = InputHelper.mY + 18.0F * scale;
+        if (y + height > Settings.HEIGHT - 16.0F * scale) {
+            y = InputHelper.mY - height - 18.0F * scale;
+        }
+        y = Math.max(16.0F * scale, y);
+
+        Color previous = sb.getColor().cpy();
+        sb.setColor(new Color(0.02F, 0.04F, 0.07F, 0.92F));
+        sb.draw(ImageMaster.WHITE_SQUARE_IMG, x, y, width, height);
+        sb.setColor(hoveredOption.hasRisk() ? new Color(0.65F, 0.12F, 0.12F, 0.96F) : new Color(0.10F, 0.48F, 0.22F, 0.96F));
+        sb.draw(ImageMaster.WHITE_SQUARE_IMG, x, y + height - 4.0F * scale, width, 4.0F * scale);
+        sb.setColor(previous);
+
+        float padding = 12.0F * scale;
+        float textX = x + padding;
+        float cursorY = y + height - padding;
+        float contentWidth = width - padding * 2.0F;
+        cursorY = renderWrappedLines(
+            sb,
+            clamp(hoveredOption.displayName(chineseVisible), chineseVisible ? 32 : 58),
+            textX,
+            cursorY,
+            contentWidth,
+            1,
+            22.0F * scale,
+            Settings.GOLD_COLOR,
+            true
+        );
+        FontHelper.renderFontLeftTopAligned(
+            sb,
+            FontHelper.topPanelInfoFont,
+            optionMetricsText(hoveredOption),
+            textX,
+            cursorY - 2.0F * scale,
+            Settings.GREEN_TEXT_COLOR
+        );
+        cursorY -= 24.0F * scale;
+
+        String reason = hoveredOption.reason(chineseVisible);
+        if (!reason.isEmpty()) {
+            cursorY = renderWrappedLines(
+                sb,
+                clamp(reason, chineseVisible ? 92 : 150),
+                textX,
+                cursorY,
+                contentWidth,
+                2,
+                19.0F * scale,
+                Settings.CREAM_COLOR
+            );
+        }
+        String risk = hoveredOption.risk(chineseVisible);
+        if (!risk.isEmpty()) {
+            renderWrappedLines(
+                sb,
+                riskLabel() + clamp(risk, chineseVisible ? 50 : 82),
+                textX,
+                cursorY - 2.0F * scale,
+                contentWidth,
+                2,
+                18.0F * scale,
+                Settings.RED_TEXT_COLOR
+            );
+        }
+    }
+
+    private float hoverDetailHeight(RecommendationResult.OptionScore score) {
+        float scale = Settings.scale;
+        float height = 104.0F * scale;
+        if (!score.reason(chineseVisible).isEmpty()) {
+            height += 42.0F * scale;
+        }
+        if (!score.risk(chineseVisible).isEmpty()) {
+            height += 38.0F * scale;
+        }
+        return Math.min(190.0F * scale, height);
+    }
+
+    private String optionMetricsText(RecommendationResult.OptionScore score) {
+        String text;
+        if (chineseVisible) {
+            text = "分数 " + score.score + " | 置信度 " + score.confidence;
+            if (!score.shopPrice.isEmpty()) {
+                text += " | 价格 " + score.shopPrice + " 金";
+                text += score.shopAffordable ? " | 可购买" : " | 金币不足";
+            }
+            return text;
+        }
+        text = "Score " + score.score + " | Confidence " + score.confidence;
+        if (!score.shopPrice.isEmpty()) {
+            text += " | " + score.shopPrice + "g";
+            text += score.shopAffordable ? " | affordable" : " | cannot afford";
+        }
+        return text;
     }
 
     private boolean isTopScore(RecommendationResult result, RecommendationResult.OptionScore score) {
@@ -520,6 +667,14 @@ public class InGameRecommendationPanel {
         Object value = objectField(owner, fieldName);
         if (value instanceof Number) {
             return ((Number) value).floatValue();
+        }
+        return fallback;
+    }
+
+    private boolean booleanField(Object owner, String fieldName, boolean fallback) {
+        Object value = objectField(owner, fieldName);
+        if (value instanceof Boolean) {
+            return ((Boolean) value).booleanValue();
         }
         return fallback;
     }

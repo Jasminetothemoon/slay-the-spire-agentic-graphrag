@@ -172,6 +172,18 @@ class KnowledgeBase:
     def option_entities(self, options: Iterable[str], character_class: str | None = None) -> List[Dict[str, Any]]:
         entities = []
         for option in options:
+            if normalize_id(str(option)) in {"skip", "skip_card"}:
+                entities.append(
+                    {
+                        "id": "skip",
+                        "name": "Skip",
+                        "entity_type": "unknown",
+                        "base_value": 35,
+                        "tags": ["skip_card", "deck_control"],
+                        "relationships": [],
+                    }
+                )
+                continue
             entity = self.get(option, character_class)
             if entity:
                 entities.append(entity)

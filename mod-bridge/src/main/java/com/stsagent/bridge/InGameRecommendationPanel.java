@@ -17,13 +17,14 @@ import java.util.List;
 import java.util.Set;
 
 public class InGameRecommendationPanel {
-    private static final long STALE_AFTER_MS = 15000L;
+    private static final long STATUS_STALE_AFTER_MS = 15000L;
     private RecommendationResult latest;
     private String statusMessage = "";
     private long statusReceivedAt = 0L;
     private String bridgeDebug = "";
     private boolean visible = true;
     private boolean debugVisible = false;
+    private boolean chineseVisible = false;
     private int lastBadgeMatches = 0;
     private int lastBadgeUnmatched = 0;
 
@@ -67,14 +68,22 @@ public class InGameRecommendationPanel {
         return debugVisible;
     }
 
+    public void toggleLanguage() {
+        chineseVisible = !chineseVisible;
+    }
+
+    public boolean isChineseVisible() {
+        return chineseVisible;
+    }
+
     public void render(SpriteBatch sb) {
         if (!visible) {
             return;
         }
 
         long now = System.currentTimeMillis();
-        boolean hasFreshRecommendation = latest != null && now - latest.receivedAt <= STALE_AFTER_MS;
-        boolean hasFreshStatus = !statusMessage.isEmpty() && now - statusReceivedAt <= STALE_AFTER_MS;
+        boolean hasFreshRecommendation = latest != null;
+        boolean hasFreshStatus = !statusMessage.isEmpty() && now - statusReceivedAt <= STATUS_STALE_AFTER_MS;
         if (!hasFreshRecommendation && !hasFreshStatus) {
             return;
         }
@@ -98,7 +107,7 @@ public class InGameRecommendationPanel {
 
         float textX = x + padding;
         float textY = y + height - padding;
-        FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, "STS Agent", textX, textY, Settings.GOLD_COLOR);
+        FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, panelTitle(), textX, textY, Settings.GOLD_COLOR);
 
         if (!hasFreshRecommendation) {
             FontHelper.renderSmartText(
@@ -124,12 +133,14 @@ public class InGameRecommendationPanel {
             Settings.GREEN_TEXT_COLOR
         );
 
-        FontHelper.renderFontLeftTopAligned(
+        FontHelper.renderSmartText(
             sb,
             FontHelper.tipHeaderFont,
-            latest.displayName(),
+            clamp(latest.displayName(chineseVisible), chineseVisible ? 42 : 58),
             textX,
             textY - 48.0F * scale,
+            width - padding * 2.0F,
+            24.0F * scale,
             Settings.CREAM_COLOR
         );
 
@@ -143,26 +154,28 @@ public class InGameRecommendationPanel {
             Settings.GREEN_TEXT_COLOR
         );
 
-        if (!latest.reason.isEmpty()) {
+        String reasonText = latest.reason(chineseVisible);
+        if (!reasonText.isEmpty()) {
             FontHelper.renderSmartText(
                 sb,
                 FontHelper.tipBodyFont,
-                clamp(latest.reason, 92),
+                clamp(reasonText, chineseVisible ? 92 : 150),
                 textX,
-                textY - 100.0F * scale,
+                textY - 104.0F * scale,
                 width - padding * 2.0F,
                 22.0F * scale,
                 Settings.CREAM_COLOR
             );
         }
 
-        if (!latest.risk.isEmpty()) {
+        String riskText = latest.risk(chineseVisible);
+        if (!riskText.isEmpty()) {
             FontHelper.renderSmartText(
                 sb,
                 FontHelper.tipBodyFont,
-                "Risk: " + clamp(latest.risk, 84),
+                riskLabel() + clamp(riskText, chineseVisible ? 54 : 96),
                 textX,
-                textY - 126.0F * scale,
+                textY - 136.0F * scale,
                 width - padding * 2.0F,
                 22.0F * scale,
                 Settings.RED_TEXT_COLOR
@@ -177,7 +190,7 @@ public class InGameRecommendationPanel {
                 FontHelper.tipBodyFont,
                 "F9 Debug: " + clamp(debug, 160),
                 textX,
-                textY - (latest.risk.isEmpty() ? 126.0F : 152.0F) * scale,
+                textY - (riskText.isEmpty() ? 136.0F : 164.0F) * scale,
                 width - padding * 2.0F,
                 22.0F * scale,
                 Settings.BLUE_TEXT_COLOR
@@ -188,7 +201,7 @@ public class InGameRecommendationPanel {
                     FontHelper.tipBodyFont,
                     "Why: " + clamp(latest.whyNot, 130),
                     textX,
-                    textY - (latest.risk.isEmpty() ? 152.0F : 178.0F) * scale,
+                    textY - (riskText.isEmpty() ? 164.0F : 192.0F) * scale,
                     width - padding * 2.0F,
                     22.0F * scale,
                     Settings.CREAM_COLOR
@@ -481,11 +494,19 @@ public class InGameRecommendationPanel {
         if (!hasFreshRecommendation) {
             return 84.0F * scale;
         }
-        float height = latest.risk.isEmpty() ? 142.0F * scale : 168.0F * scale;
+        float height = latest.risk(chineseVisible).isEmpty() ? 154.0F * scale : 184.0F * scale;
         if (debugVisible) {
             height += latest.whyNot.isEmpty() ? 36.0F * scale : 62.0F * scale;
         }
         return height;
+    }
+
+    private String panelTitle() {
+        return chineseVisible ? "STS 助手  |  F10 English" : "STS Agent  |  F10 中文";
+    }
+
+    private String riskLabel() {
+        return chineseVisible ? "风险：" : "Risk: ";
     }
 
     private String badgeText() {
@@ -500,22 +521,22 @@ public class InGameRecommendationPanel {
 
     private String sceneDisplayName(String sceneType) {
         if ("card_reward".equals(sceneType)) {
-            return "Card Reward";
+            return chineseVisible ? "选牌奖励" : "Card Reward";
         }
         if ("relic_reward".equals(sceneType)) {
-            return "Relic Reward";
+            return chineseVisible ? "遗物奖励" : "Relic Reward";
         }
         if ("boss_relic".equals(sceneType)) {
-            return "Boss Relic";
+            return chineseVisible ? "Boss 遗物" : "Boss Relic";
         }
         if ("shop".equals(sceneType)) {
-            return "Shop";
+            return chineseVisible ? "商店" : "Shop";
         }
         if ("map".equals(sceneType)) {
-            return "Map";
+            return chineseVisible ? "地图" : "Map";
         }
         if ("combat".equals(sceneType)) {
-            return "Combat";
+            return chineseVisible ? "战斗" : "Combat";
         }
         return sceneType;
     }

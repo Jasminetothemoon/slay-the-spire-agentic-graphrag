@@ -143,6 +143,59 @@ def check_combat_advice() -> List[str]:
     return errors
 
 
+def check_card_skip_option() -> List[str]:
+    engine = build_graph()
+    state: Dict[str, Any] = {
+        "run_id": "skip_card_check",
+        "character_class": "silent",
+        "query_type": "card_pick",
+        "act": 2,
+        "current_floor": 25,
+        "deck": [
+            "Strike",
+            "Strike",
+            "Defend",
+            "Defend",
+            "Neutralize",
+            "Survivor",
+            "Dagger Spray",
+            "Backflip",
+            "Leg Sweep",
+            "Noxious Fumes",
+            "Corpse Explosion",
+            "Footwork",
+            "Acrobatics",
+            "Prepared",
+            "Deadly Poison",
+            "Bouncing Flask",
+            "Piercing Wail",
+            "Well-Laid Plans",
+            "Dodge and Roll",
+            "Cloak and Dagger",
+            "Predator",
+            "Malaise",
+            "Wraith Form",
+            "Catalyst",
+        ],
+        "relics": ["Snecko Skull"],
+        "potions": [],
+        "options": ["Skip", "Clash", "Searing Blow"],
+    }
+    result = engine.invoke(state)
+    scores = result.get("option_scores", [])
+    errors = []
+    if not scores:
+        errors.append("Card-pick skip scenario should return scores.")
+        return errors
+    if scores[0].get("option_id") != "skip":
+        errors.append(f"Large-deck weak reward should prefer skip, got {scores[0].get('option_id')}")
+    skip_score = next((item for item in scores if item.get("option_id") == "skip"), {})
+    if not skip_score.get("reasons"):
+        errors.append("Skip score should explain why preserving draw consistency matters.")
+    errors.extend(check_agent_contract(result, "card_pick_skill"))
+    return errors
+
+
 def check_pathing_route_objects() -> List[str]:
     engine = build_graph()
     state: Dict[str, Any] = {
@@ -232,6 +285,7 @@ def main() -> None:
     errors.extend(check_legality_filter())
     errors.extend(check_communication_mod_adapter())
     errors.extend(check_combat_advice())
+    errors.extend(check_card_skip_option())
     errors.extend(check_pathing_route_objects())
     errors.extend(check_live_mod_normalization())
     if errors:
@@ -243,6 +297,7 @@ def main() -> None:
             "multi_agent_skill_contract",
             "communication_mod_adapter",
             "combat_advice",
+            "card_skip_option",
             "pathing_route_objects",
             "live_mod_normalization",
         ],

@@ -129,6 +129,7 @@ public class GameStateCollector {
             }
             if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.CARD_REWARD || isRewardSelectionFallback()) {
                 options.addAll(cardNames(screen.rewardGroup));
+                options.add("Skip");
             }
         } catch (Exception ignored) {
         }

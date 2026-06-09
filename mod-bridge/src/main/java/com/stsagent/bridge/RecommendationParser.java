@@ -19,9 +19,12 @@ public final class RecommendationParser {
         String optionId = stringValue(recommendationBlock, "recommendation");
         String sceneType = stringValue(recommendationBlock, "scene_type");
         String debugBlock = objectForKey(recommendationBlock, "debug");
-        List<RecommendationResult.OptionScore> optionScores = optionScores(recommendationBlock);
+        String localizedBlock = objectForKey(recommendationBlock, "localized");
+        String zhBlock = objectForKey(localizedBlock, "zh");
+        List<String> zhScoreBlocks = objectsInArray(zhBlock, "option_scores");
+        List<RecommendationResult.OptionScore> optionScores = optionScores(recommendationBlock, zhScoreBlocks);
         RecommendationResult.OptionScore top = optionScores.isEmpty()
-            ? new RecommendationResult.OptionScore("", "", "", "", "", "", "", "", "")
+            ? new RecommendationResult.OptionScore("", "", "", "", "", "", "", "", "", "", "", "")
             : optionScores.get(0);
         String name = top.name;
         String score = top.score;
@@ -32,12 +35,29 @@ public final class RecommendationParser {
         String reason = top.reason;
         String risk = top.risk;
         String debugSummary = debugSummary(debugBlock);
-        return new RecommendationResult(optionId, name, reason, risk, score, confidence, sceneType, grade, displayBadge, whyNot, debugSummary, optionScores);
+        return new RecommendationResult(
+            optionId,
+            name,
+            reason,
+            risk,
+            score,
+            confidence,
+            sceneType,
+            grade,
+            displayBadge,
+            whyNot,
+            debugSummary,
+            stringValue(zhBlock, "reasoning"),
+            stringValue(zhBlock, "recommendation_name"),
+            optionScores
+        );
     }
 
-    private static List<RecommendationResult.OptionScore> optionScores(String recommendationBlock) {
+    private static List<RecommendationResult.OptionScore> optionScores(String recommendationBlock, List<String> zhScoreBlocks) {
         List<RecommendationResult.OptionScore> scores = new ArrayList<RecommendationResult.OptionScore>();
+        int index = 0;
         for (String scoreBlock : objectsInArray(recommendationBlock, "option_scores")) {
+            String zhBlock = index < zhScoreBlocks.size() ? zhScoreBlocks.get(index) : "";
             scores.add(
                 new RecommendationResult.OptionScore(
                     stringValue(scoreBlock, "option_id"),
@@ -48,9 +68,13 @@ public final class RecommendationParser {
                     stringValue(scoreBlock, "display_badge"),
                     stringValue(scoreBlock, "why_not"),
                     firstStringInArray(scoreBlock, "reasons"),
-                    firstStringInArray(scoreBlock, "risks")
+                    firstStringInArray(scoreBlock, "risks"),
+                    stringValue(zhBlock, "name"),
+                    firstStringInArray(zhBlock, "reasons"),
+                    firstStringInArray(zhBlock, "risks")
                 )
             );
+            index++;
         }
         return scores;
     }

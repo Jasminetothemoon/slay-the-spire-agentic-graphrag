@@ -57,7 +57,7 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/StsAgentBridgeMod.java",
-        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "Input.Keys.F9", "panel.toggleDebugVisible", "captureLogger.recordRecommendation"],
+        ["PostRenderSubscriber", "receivePostRender", "panel.update", "panel.updateStatus", "panel.clear", "Input.Keys.F8", "Input.Keys.F9", "Input.Keys.F10", "panel.toggleDebugVisible", "panel.toggleLanguage", "captureLogger.recordRecommendation"],
     )
     assert_contains(
         MOD_DIR / "src/main/java/com/stsagent/bridge/InGameRecommendationPanel.java",
@@ -77,6 +77,9 @@ def main() -> None:
             "renderShopBadges",
             "renderBossRelicBadges",
             "lastBadgeUnmatched",
+            "chineseVisible",
+            "STATUS_STALE_AFTER_MS",
+            "latest != null",
         ],
     )
     assert_contains(
@@ -118,6 +121,7 @@ def main() -> None:
             "firstMapRowNodes",
             "!AbstractDungeon.isScreenUp",
             "combat",
+            'options.add("Skip")',
         ],
     )
     assert_contains(
@@ -126,7 +130,7 @@ def main() -> None:
     )
     assert_contains(
         MOD_DIR / "build.gradle",
-        ["sourceCompatibility = JavaVersion.VERSION_1_8", "compileOnly fileTree", "copyJarToMods"],
+        ["sourceCompatibility = JavaVersion.VERSION_1_8", "compileOnly fileTree", "copyJarToMods", 'options.encoding = "UTF-8"'],
     )
     assert_contains(
         ROOT / "scripts/build_mod_bridge.ps1",

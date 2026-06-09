@@ -55,6 +55,10 @@ public class StsAgentBridgeMod implements PostInitializeSubscriber, PostUpdateSu
                 panel.toggleDebugVisible();
                 System.out.println("[STS Agent Bridge] Debug panel visible: " + panel.isDebugVisible());
             }
+            if (Gdx.input != null && Gdx.input.isKeyJustPressed(Input.Keys.F10)) {
+                panel.toggleLanguage();
+                System.out.println("[STS Agent Bridge] Chinese panel visible: " + panel.isChineseVisible());
+            }
 
             if (AbstractDungeon.player == null) {
                 return;

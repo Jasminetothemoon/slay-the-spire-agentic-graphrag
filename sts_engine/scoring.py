@@ -29,16 +29,19 @@ class RecommendationScorer:
         if state.get("query_type") == "pathing":
             return self._score_pathing(state)
 
+        query_type = state.get("query_type", "card_pick")
+        current_options = self._options_for_query(state.get("options", []), query_type)
+        state = dict(state)
+        state["options"] = current_options
         evidence_by_option: Dict[str, List[Dict[str, Any]]] = {}
         for item in evidence:
             evidence_by_option.setdefault(item["option_id"], []).append(item)
 
         risk_tags = [] if state.get("_ablation_disable_risk") else self.kb.risk_tags(state)
         deck_tags = self._deck_tags(state)
-        strategy_matches = {} if state.get("_ablation_disable_strategy") else self.kb.strategy_matches(state, state.get("options", []))
-        query_type = state.get("query_type", "card_pick")
+        strategy_matches = {} if state.get("_ablation_disable_strategy") else self.kb.strategy_matches(state, current_options)
         scores = []
-        for option in self.kb.option_entities(state.get("options", []), state.get("character_class", "").lower()):
+        for option in self.kb.option_entities(current_options, state.get("character_class", "").lower()):
             option_id = option["id"]
             option_tags = set(option.get("tags", []))
             option_evidence = evidence_by_option.get(option_id, [])
@@ -56,6 +59,13 @@ class RecommendationScorer:
                 reasons.append(legality_reason)
             if legality_risk:
                 risks.append(legality_risk)
+
+            skip_adjustment, skip_reason, skip_risk = self._skip_card_adjustment(option, query_type, state)
+            score += skip_adjustment
+            if skip_reason:
+                reasons.append(skip_reason)
+            if skip_risk:
+                risks.append(skip_risk)
 
             synergy_bonus = sum(self._synergy_weight(item) for item in option_evidence)
             if synergy_bonus:
@@ -113,8 +123,10 @@ class RecommendationScorer:
                 }
             )
 
+        self._apply_skip_card_context(scores, query_type, state)
         scores.sort(
             key=lambda item: (
+                not item.get("valid", True),
                 -self._explicit_strategy_count(item.get("evidence", [])),
                 -item.get("strategy_signal", 0),
                 -item["score"],
@@ -125,6 +137,55 @@ class RecommendationScorer:
             )
         )
         return scores
+
+    def _options_for_query(self, options: List[Any], query_type: str) -> List[Any]:
+        if query_type != "shop":
+            return list(options)
+        normalized = []
+        for option in options:
+            if str(option).strip().lower().replace(" ", "_").replace("-", "_") in {"skip", "skip_card"}:
+                normalized.append("skip_shop")
+            else:
+                normalized.append(option)
+        return normalized
+
+    def _apply_skip_card_context(self, scores: List[Dict[str, Any]], query_type: str, state: Dict[str, Any]) -> None:
+        if query_type != "card_pick":
+            return
+        skip = next((item for item in scores if item.get("option_id") == "skip"), None)
+        if not skip:
+            return
+        deck_size = len(state.get("deck", []))
+        act = int(state.get("act", 1) or 1)
+        if deck_size < 18 or act < 2:
+            return
+        non_skip = [item for item in scores if item is not skip and item.get("valid", True)]
+        if not non_skip:
+            return
+
+        def has_decisive_signal(item: Dict[str, Any]) -> bool:
+            if item.get("strategy_signal", 0) > 0:
+                return True
+            for evidence in item.get("evidence", []) or []:
+                if evidence.get("type") in {"archetype_rule", "risk_cover"}:
+                    return True
+            decisive_phrases = (
+                "Fixes an AoE weakness",
+                "Improves a low-defense",
+                "Adds scaling",
+                "Current HP is low",
+                "Low-cost consistency",
+            )
+            return any(any(phrase in reason for phrase in decisive_phrases) for reason in item.get("reasons", []))
+
+        if any(has_decisive_signal(item) for item in non_skip):
+            return
+        best_other = max(float(item.get("raw_score", item.get("score", 0)) or 0) for item in non_skip)
+        promoted = best_other + 2.0
+        skip["raw_score"] = round(promoted, 2)
+        skip["score"] = self._display_score(promoted)
+        skip.setdefault("reasons", []).append("No offered card has a decisive archetype or risk-cover signal, so skipping protects deck quality.")
+        skip["confidence"] = max(float(skip.get("confidence", 0.0) or 0.0), 0.62)
 
     def _display_score(self, raw_score: float) -> float:
         if raw_score <= 100:
@@ -523,6 +584,36 @@ class RecommendationScorer:
             if state.get("current_hp", state.get("max_hp", 1)) / max(state.get("max_hp", 1), 1) < 0.45:
                 return -18.0, "", "Elite path is dangerous at the current HP total.", True
         return 0.0, "", "", True
+
+    def _skip_card_adjustment(self, option: Dict[str, Any], query_type: str, state: Dict[str, Any]) -> tuple[float, str, str]:
+        option_id = option.get("id", "")
+        if query_type != "card_pick" or option_id not in {"skip", "skip_card"}:
+            return 0.0, "", ""
+        deck_size = len(state.get("deck", []))
+        act = int(state.get("act", 1) or 1)
+        floor = int(state.get("current_floor", 1) or 1)
+        risk_tags = set(self.kb.risk_tags(state))
+        score = 0.0
+        reasons: List[str] = []
+        risks: List[str] = []
+        if deck_size <= 12 and act == 1 and floor <= 12:
+            score -= 18.0
+            risks.append("Skipping early can leave the deck short on damage, block, or scaling.")
+        if deck_size >= 24:
+            score += 16.0
+            reasons.append("The deck is already large, so skipping preserves draw consistency.")
+        elif deck_size >= 18:
+            score += 9.0
+            reasons.append("Skipping can be correct when the offered cards do not improve the current plan.")
+        if act >= 2:
+            score += 7.0
+            reasons.append("Later acts punish low-impact additions more, so skip is a real option.")
+        if risk_tags.intersection({"no_aoe", "low_defense", "slow_scaling"}):
+            score -= 7.0
+            risks.append("The deck still has unresolved structural risks, so skipping needs a weak reward screen.")
+        if not reasons:
+            reasons.append("Skip avoids adding a low-impact card that dilutes future draws.")
+        return score, " ".join(reasons), " ".join(risks)
 
     def _synergy_weight(self, item: Dict[str, Any]) -> float:
         base = item.get("weight", 0.5) * 18

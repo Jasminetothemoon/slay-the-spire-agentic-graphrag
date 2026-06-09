@@ -9,7 +9,7 @@ sys.path.insert(0, str(ROOT))
 
 from api.main import ModStatePayload, build_recommendation_response, normalize_mod_state
 from sts_engine.knowledge_base import load_knowledge_base
-from sts_engine.localization import localize_response, localize_state
+from sts_engine.localization import entity_name, localize_response, localize_state
 
 
 LOCALIZATION_PATH = ROOT / "data" / "localization_zhs.json"
@@ -109,6 +109,32 @@ def check_recommendation_localization() -> List[str]:
     )
     expect(errors, direct.get("recommendation_name") == "幸运一击", "Direct localized response should translate recommendation name.")
     expect(errors, direct.get("risk_report", {}).get("risks") == ["缺少群体伤害"], "Risk labels should be Chinese.")
+
+    combat_direct = localize_response(
+        {
+            "recommendation": "play_neutralize_then_survivor_then_strike_silent",
+            "reasoning": "Recommended: Neutralize -> Survivor -> Strike (score 70.0, confidence 0.70).",
+            "option_scores": [
+                {
+                    "option_id": "play_neutralize_then_survivor_then_strike_silent",
+                    "name": "Neutralize -> Survivor -> Strike",
+                    "reasons": ["Estimated sequence output: 9 damage and 8 block."],
+                    "risks": [],
+                    "evidence": [
+                        {
+                            "type": "combat_estimate",
+                            "cards": ["neutralize", "survivor", "strike_silent"],
+                        }
+                    ],
+                }
+            ],
+            "risk_report": {"risks": [], "summary": "", "deck_tags": []},
+        }
+    )
+    expected_sequence = " -> ".join(entity_name(card_id, card_id) for card_id in ["neutralize", "survivor", "strike_silent"])
+    combat_name = combat_direct.get("option_scores", [{}])[0].get("name")
+    expect(errors, combat_name == expected_sequence, f"Combat sequence should localize card names, got {combat_name}")
+    expect(errors, "Neutralize" not in combat_name and "Survivor" not in combat_name, f"Combat sequence still contains English names: {combat_name}")
     return errors
 
 

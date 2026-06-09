@@ -1260,8 +1260,12 @@
       "combat_state": {"incoming_damage": 16}
     },
     "options": [],
-    "expected_top": "play_dagger_spray_then_strike_silent_then_defend_silent_then_neutralize",
-    "acceptable": ["play_dagger_spray_then_strike_silent_then_defend_silent_then_neutralize", "play_dagger_spray_then_strike_silent_then_neutralize"]
+    "expected_top": "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent",
+    "acceptable": [
+      "play_neutralize_then_dagger_spray_then_strike_silent_then_defend_silent",
+      "play_neutralize_then_dagger_spray_then_defend_silent_then_strike_silent",
+      "play_neutralize_then_strike_silent_then_dagger_spray_then_defend_silent"
+    ]
   },
   {
     "id": "public_combat_ironclad_attack_line",

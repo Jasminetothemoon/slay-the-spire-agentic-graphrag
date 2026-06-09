@@ -40,6 +40,7 @@ REASON_TRANSLATIONS = [
     (r"AoE is valuable into the current multi-enemy board\.", "面对多个敌人时，群体伤害价值较高。"),
     (r"Likely removes at least one enemy this turn\.", "本回合大概率可以击杀至少一个敌人。"),
     (r"Weak reduces incoming attack pressure\.", "虚弱可以降低敌人的攻击压力。"),
+    (r"Sequence order plays setup effects before payoff cards\.", "出牌顺序会先打铺垫效果，再打收益牌。"),
     (r"Leaves about (\d+) unblocked incoming damage\.", r"大约还会剩余 \1 点未格挡伤害。"),
     (r"Potion use spends a limited resource\.", "使用药水会消耗有限资源。"),
     (r"Incoming damage is high enough that a defensive potion can preserve HP\.", "当前 incoming 伤害较高，防御药水可以保血。"),
@@ -130,17 +131,35 @@ def localize_text(text: str) -> str:
 def localize_score(score: Dict[str, Any]) -> Dict[str, Any]:
     option_id = score.get("option_id", "")
     localized = {
-        "name": entity_name(option_id, score.get("name")),
+        "name": localize_option_score_name(score),
         "reasons": [localize_text(reason) for reason in score.get("reasons", [])],
         "risks": [localize_text(risk) for risk in score.get("risks", [])],
     }
     return localized
 
 
+def localize_option_score_name(score: Dict[str, Any]) -> str:
+    evidence = score.get("evidence", []) or []
+    for item in evidence:
+        if item.get("type") == "combat_estimate" and item.get("cards"):
+            return " -> ".join(entity_name(str(card_id), str(card_id)) for card_id in item.get("cards", []))
+    option_id = str(score.get("option_id", ""))
+    if option_id.startswith("play_") and "_then_" in option_id:
+        card_ids = option_id.removeprefix("play_").split("_then_")
+        return " -> ".join(entity_name(card_id, card_id) for card_id in card_ids)
+    if option_id.startswith("use_"):
+        potion_id = option_id.removeprefix("use_")
+        return "使用 " + entity_name(potion_id, score.get("name", potion_id))
+    return entity_name(option_id, score.get("name"))
+
+
 def localize_response(response: Dict[str, Any]) -> Dict[str, Any]:
     option_scores = response.get("option_scores", [])
+    top_score = option_scores[0] if option_scores else {}
     return {
-        "recommendation_name": entity_name(response.get("recommendation", ""), response.get("recommendation", "")),
+        "recommendation_name": localize_option_score_name(top_score)
+        if top_score
+        else entity_name(response.get("recommendation", ""), response.get("recommendation", "")),
         "reasoning": localize_text(response.get("reasoning", "")),
         "explanation_panel": localize_explanation_panel(response.get("explanation_panel", {})),
         "option_scores": [localize_score(score) for score in option_scores],

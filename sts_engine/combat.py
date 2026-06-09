@@ -1,5 +1,5 @@
 import re
-from itertools import combinations
+from itertools import combinations, permutations
 from typing import Any, Dict, List
 
 from sts_engine.knowledge_base import KnowledgeBase, load_knowledge_base
@@ -24,6 +24,7 @@ class CombatAdvisor:
                 continue
             estimate = self._estimate_sequence(sequence, state)
             score = estimate["damage"] * 1.35 + estimate["block"] * 1.45 + estimate["utility"] * 8
+            score += self._order_bonus(sequence)
             if incoming_damage > estimate["block"]:
                 score -= min(22, (incoming_damage - estimate["block"]) * 0.8)
             if incoming_damage and estimate["block"] >= incoming_damage:
@@ -83,11 +84,17 @@ class CombatAdvisor:
 
     def _legal_sequences(self, hand: List[Dict[str, Any]], energy: int) -> List[List[Dict[str, Any]]]:
         sequences = []
+        seen = set()
         max_len = min(4, len(hand))
         for length in range(1, max_len + 1):
             for combo in combinations(hand, length):
                 if sum(card["cost"] for card in combo) <= energy:
-                    sequences.append(list(combo))
+                    for sequence in permutations(combo):
+                        key = tuple(card["id"] for card in sequence)
+                        if key in seen:
+                            continue
+                        seen.add(key)
+                        sequences.append(list(sequence))
         return sequences
 
     def _estimate_sequence(self, sequence: List[Dict[str, Any]], state: Dict[str, Any]) -> Dict[str, Any]:
@@ -119,9 +126,14 @@ class CombatAdvisor:
         for potion in state.get("potions", []):
             potion_lower = potion.lower()
             if incoming_damage >= 12 and "block" in potion_lower:
-                score = 58.0
-                if incoming_damage - best_sequence_block >= 12:
-                    score += 14
+                unblocked_after_best = max(0, incoming_damage - best_sequence_block)
+                score = 64.0
+                if incoming_damage >= 18:
+                    score += 10
+                if unblocked_after_best >= 12:
+                    score += 16
+                elif unblocked_after_best > 0:
+                    score += 8
                 candidates.append(
                     {
                         "option_id": "use_" + potion_lower.replace(" ", "_"),
@@ -161,6 +173,46 @@ class CombatAdvisor:
     def _can_likely_kill(self, enemies: List[Dict[str, Any]], damage: int) -> bool:
         return any(damage >= int(enemy.get("hp", 999)) + int(enemy.get("block", 0)) for enemy in enemies)
 
+    def _order_bonus(self, sequence: List[Dict[str, Any]]) -> float:
+        bonus = 0.0
+        total_cards = len(sequence)
+        for index, card in enumerate(sequence):
+            tags = set(card.get("tags", []))
+            card_type = card.get("type", "")
+            later_cards = sequence[index + 1 :]
+            later_attacks = [item for item in later_cards if item.get("type") == "Attack"]
+            bonus += self._play_priority(card) * max(1, total_cards - index) * 0.35
+            if tags.intersection({"weak", "vulnerable"}) and later_attacks:
+                bonus += 5.0 + max(0, len(sequence) - index - 1) * 2.0
+            if tags.intersection({"draw", "discard"}) and later_cards:
+                bonus += 2.0 + max(0, len(sequence) - index - 1)
+            if card_type == "Power" and later_cards:
+                bonus += 3.0 + max(0, len(sequence) - index - 1)
+        if sequence and sequence[-1].get("type") == "Power":
+            bonus -= 3.0
+        return bonus
+
+    def _play_priority(self, card: Dict[str, Any]) -> float:
+        tags = set(card.get("tags", []))
+        priority = 0.0
+        if tags.intersection({"weak", "vulnerable"}):
+            priority += 8.0
+        if "stance_wrath" in tags:
+            priority += 7.0
+        if "aoe" in tags:
+            priority += 5.0
+        if "orb_frost" in tags:
+            priority += 4.5
+        if "orb_lightning" in tags:
+            priority += 3.5
+        if tags.intersection({"draw", "discard"}):
+            priority += 2.5
+        if "frontload_damage" in tags:
+            priority += 2.0
+        if "block" in tags:
+            priority += 1.0
+        return priority
+
     def _reasons(
         self, sequence: List[Dict[str, Any]], estimate: Dict[str, Any], incoming_damage: int, enemies: List[Dict[str, Any]]
     ) -> List[str]:
@@ -175,6 +227,8 @@ class CombatAdvisor:
             reasons.append("Likely removes at least one enemy this turn.")
         if any("weak" in card.get("tags", []) for card in sequence):
             reasons.append("Weak reduces incoming attack pressure.")
+        if self._order_bonus(sequence) >= 6.0:
+            reasons.append("Sequence order plays setup effects before payoff cards.")
         return reasons
 
     def _risks(self, sequence: List[Dict[str, Any]], estimate: Dict[str, Any], incoming_damage: int) -> List[str]:

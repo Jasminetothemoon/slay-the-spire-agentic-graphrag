@@ -143,6 +143,35 @@ def check_combat_advice() -> List[str]:
     return errors
 
 
+def check_combat_setup_order() -> List[str]:
+    engine = build_graph()
+    state: Dict[str, Any] = {
+        "run_id": "combat_setup_order_check",
+        "character_class": "silent",
+        "query_type": "combat",
+        "energy": 3,
+        "deck": ["Strike", "Defend", "Neutralize", "Dagger Spray"],
+        "relics": [],
+        "potions": [],
+        "hand_cards": ["Dagger Spray", "Strike", "Defend", "Neutralize"],
+        "enemies": [
+            {"name": "Red Slaver", "hp": 18, "intent": "attack", "intent_damage": 8},
+            {"name": "Blue Slaver", "hp": 15, "intent": "attack", "intent_damage": 8},
+        ],
+        "combat_state": {"incoming_damage": 16},
+    }
+    result = engine.invoke(state)
+    scores = result.get("option_scores", [])
+    errors: List[str] = []
+    if not scores:
+        errors.append("Combat setup-order scenario should return scores.")
+        return errors
+    top_id = scores[0].get("option_id", "")
+    if not top_id.startswith("play_neutralize_then_dagger_spray"):
+        errors.append(f"Combat setup order should play Neutralize before Dagger Spray, got {top_id}")
+    return errors
+
+
 def check_card_skip_option() -> List[str]:
     engine = build_graph()
     state: Dict[str, Any] = {
@@ -285,6 +314,7 @@ def main() -> None:
     errors.extend(check_legality_filter())
     errors.extend(check_communication_mod_adapter())
     errors.extend(check_combat_advice())
+    errors.extend(check_combat_setup_order())
     errors.extend(check_card_skip_option())
     errors.extend(check_pathing_route_objects())
     errors.extend(check_live_mod_normalization())
@@ -297,6 +327,7 @@ def main() -> None:
             "multi_agent_skill_contract",
             "communication_mod_adapter",
             "combat_advice",
+            "combat_setup_order",
             "card_skip_option",
             "pathing_route_objects",
             "live_mod_normalization",

@@ -1,273 +1,47 @@
-# Slay the Spire Agentic GraphRAG Decision System
+# 杀戮尖塔局内助手
 
-This project is a realtime AI decision assistant for **Slay the Spire 1**. The game is the domain, but the engineering goal is broader: build a production-shaped AI application that combines knowledge graphs, Agent workflows, structured recommendation scoring, realtime state sync, and evaluation.
+《杀戮尖塔》一代的局内助手：玩家打游戏时，在抓牌、篝火、战斗出牌等决策点给建议，并用新手听得懂的话解释为什么。判断、规划和讲解交给 LLM；算术由程序做成工具供 LLM 调用；LLM 说的每句话由程序核对。
 
-## What It Does
+完整设计和第一版的复盘见 [docs/v2_design.md](docs/v2_design.md)。
 
-- Models cards, relics, potions, enemies, bosses, mechanics, shops, routes, and archetypes as a knowledge graph.
-- Uses GraphRAG retrieval to find multi-hop synergies and risks for the current run state.
-- Uses a LangGraph workflow to validate state, retrieve graph context, assess risks, score options, and explain decisions.
-- Returns structured recommendations for card picks, relic picks, shops, routes, and shallow combat play sequences.
-- Provides a FastAPI service, WebSocket updates, and a lightweight web demo.
-- Runs without Neo4j by falling back to the local JSON knowledge base; Neo4j remains the preferred graph backend for larger data.
+## 当前状态
 
-## Architecture
+v2 正在重建，下表是每一层的实际进度。没有列为「已实现」的都还没有代码。
 
-```text
-Game / Mod Bridge
-      |
-      v
-FastAPI state API + WebSocket
-      |
-      v
-LangGraph Agent Workflow
-  - validate_state
-  - retrieve_context
-  - assess_risk
-  - score_options
-  - explain_decision
-      |
-      v
-Neo4j GraphRAG or local JSON fallback
-      |
-      v
-Structured recommendation response
+| 层 | 模块 | 状态 |
+| --- | --- | --- |
+| 接入层 | 可见状态过滤、决策类型识别（`sts_advisor/ingest`） | 已实现，有测试。还没有接真实游戏 |
+| 计算工具 | 抽牌概率（`sts_advisor/tools/draw_odds.py`） | 已实现，有测试 |
+| 计算工具 | 结算器（`sts_advisor/tools/settle.py`） | 已实现，有测试。跨调用的计数还没接，见文件开头的说明 |
+| 计算工具 | 牌组体检 | 未实现 |
+| 知识层 | 规则库、怪物招式表、图谱、统计信号 | 未实现 |
+| 判断层 | 构筑顾问、战斗顾问、本局计划 | 未实现 |
+| 校验与呈现 | 校验、讲解教练、悬浮窗 | 未实现 |
+| 评测 | 指标与基线 | 未实现 |
+
+## 目录
+
+```
+sts_advisor/     v2 代码，按设计文档的五层分包
+tests/           v2 的测试
+docs/            v2 设计文档
+third_party/     bottled_ai 子模块，结算器包装它的单回合计算模块
 ```
 
-## Project Layout
+## 运行测试
 
-```text
-api/main.py                 FastAPI app, WebSocket endpoint, mod-state ingestion stub
-sts_engine/agent.py         LangGraph workflow
-sts_engine/knowledge_base.py Local knowledge-base loader and graph-style lookup
-sts_engine/retriever.py     Neo4j-first GraphRAG retriever with local fallback
-sts_engine/scoring.py       Structured recommendation scorer
-sts_engine/state.py         RunState and response types
-scripts/ingest_graph.py     Neo4j ingestion
-scripts/validate_data.py    Data integrity checks
-scripts/evaluate.py         Recommendation evaluation harness
-web/                        Lightweight demo UI
-data/public_full_data.json  Real public-data snapshot used by the default app
-data/public_eval_cases.json Public-data evaluation scenarios
-```
-
-## Quick Start
-
-Use Python 3.11 or 3.12. On Windows:
-
-```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-.\scripts\dev_check.ps1
-.\scripts\run_api.ps1
-```
-
-Open `http://127.0.0.1:8000` and start a demo run.
-
-To run the first-version demo path on Windows:
-
-```powershell
-.\scripts\run_demo.ps1
-```
-
-This starts the API if needed, verifies the live bridge event path, and replays card, relic, shop, pathing, and combat scenarios into the overlay.
-
-For detailed Windows setup and troubleshooting, see:
-
-```text
-docs/windows_setup.md
-```
-
-## Neo4j Ingestion
-
-Neo4j is optional for local demos. To ingest the graph:
+需要 Python 3.11 或更高版本，没有第三方依赖。
 
 ```bash
-set NEO4J_URI=bolt://localhost:7687
-set NEO4J_USER=neo4j
-set NEO4J_PASSWORD=your_password
-python scripts/ingest_graph.py --dry-run
-python scripts/ingest_graph.py
+git submodule update --init third_party/bottled_ai
+python -m unittest discover -s tests -t .
 ```
 
-The dry run validates relationship targets and prints node/relationship counts. Relationship ingestion preserves provenance fields such as `source`, `source_url`, `confidence`, `source_entity_id`, and `target_entity_id`.
+## 第一版
 
-## Public Wiki Data Import
+第一版是一个规则打分器，带 FastAPI 桥接和网页悬浮窗。它的代码已从主分支删除，完整保留在标签 `v1`（提交 `11c5c69`）里，用 `git checkout v1` 可以查看。它和当时的设计文档不一致的地方，以及为什么重建，写在设计文档的「v1 复盘」一节。
 
-The seed dataset is intentionally small. To build a larger public dataset from `slaythespire.gg`:
+## 出处
 
-```bash
-python scripts/import_public_wiki.py --links-only --output data/public_link_index.json
-python scripts/import_public_wiki.py --collections cards --output data/public_cards.json --checkpoint-every 50
-python scripts/import_public_wiki.py --output data/public_full_data.json --checkpoint-every 50
-python scripts/import_public_wiki.py --collections monsters --output data/public_monsters.json --checkpoint-every 10
-python scripts/merge_public_enemies.py --base data/public_full_data.json --supplement data/public_monsters.json --output data/public_full_data.json
-python scripts/normalize_dataset.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/normalize_system_entities.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/normalize_mechanics.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/normalize_provenance.py --input data/public_full_data.json --output data/public_full_data.json
-python scripts/validate_data.py --data data/public_cards.json
-python scripts/validate_data.py --data data/public_full_data.json
-python scripts/data_quality_report.py --data data/public_full_data.json
-python scripts/data_coverage_report.py --data data/public_full_data.json --fail-under 99
-python scripts/data_provenance_report.py --data data/public_full_data.json
-python scripts/ingest_graph.py --data data/public_full_data.json --dry-run
-python scripts/check_graph_fixtures.py --data data/public_full_data.json
-```
-
-To run the app with the public dataset explicitly:
-
-```bash
-set STS_KB_PATH=data/public_full_data.json
-uvicorn api.main:app --reload
-```
-
-Current public import snapshot:
-
-- 367 cards, including class-specific starter Strike/Defend aliases for live state resolution
-- 146 relics
-- 42 potions
-- 57 enemy entries covering monsters, elites, and bosses
-- 35 extracted and normalized mechanics/risk nodes
-- 5 shop actions
-- 7 path node types
-
-For provenance coverage and known data gaps, see:
-
-```text
-docs/data_audit.md
-```
-
-## Strategy Layer
-
-Mechanic extraction alone is not enough for strong recommendations, so the project includes a curated strategy layer:
-
-```text
-data/strategy/archetypes.json
-```
-
-It currently covers 8 archetypes:
-
-- Silent Poison
-- Silent Shiv
-- Ironclad Strength
-- Ironclad Exhaust
-- Defect Frost Focus
-- Defect Lightning
-- Watcher Stance Dance
-- Watcher Wrath Burst
-
-These rules add explicit strategy signals such as enablers, payoffs, support cards, risk coverage, and archetype-specific pick bonuses. Example: `Catalyst` is scored as a Poison payoff only when the deck already has Poison sources, while `Corpse Explosion` is recognized as a Poison deck's AoE solution.
-
-Run public-data strategy evaluation:
-
-```bash
-python scripts/evaluate.py --data data/public_full_data.json --eval data/public_eval_cases.json
-```
-
-Track strategy coverage:
-
-```bash
-python scripts/strategy_coverage_report.py
-```
-
-The strategy layer is intentionally measured as coverage, not claimed as complete. The current coverage inventory tracks 20 archetypes across four classes; all 20 now have seeded scoring rules and evaluation signals.
-
-## API Example
-
-```bash
-curl -X POST http://127.0.0.1:8000/start_run ^
-  -H "Content-Type: application/json" ^
-  -d "{\"character_class\":\"silent\",\"ascension_level\":20,\"max_hp\":70}"
-```
-
-```bash
-curl -X POST http://127.0.0.1:8000/get_recommendation ^
-  -H "Content-Type: application/json" ^
-  -d "{\"run_id\":\"run_xxxxxxxx\",\"query_type\":\"card_pick\",\"options\":[\"Catalyst\",\"Backflip\",\"Dagger Spray\"],\"user_query\":\"Which card should I pick?\"}"
-```
-
-The response includes:
-
-- `recommendation`
-- `reasoning`
-- `option_scores`
-- `graph_context`
-- `risk_report`
-- `latency_ms`
-
-## Game-State Bridge
-
-The bridge protocol is documented in:
-
-```text
-docs/bridge_protocol.md
-```
-
-Run bridge scenarios without starting FastAPI:
-
-```bash
-python scripts/bridge_simulator.py --mode offline --data data/public_full_data.json
-```
-
-Run against a local API server:
-
-```bash
-set STS_KB_PATH=data/public_full_data.json
-uvicorn api.main:app --reload
-python scripts/bridge_simulator.py --mode http --base-url http://127.0.0.1:8000
-```
-
-The simulator posts full run-state snapshots in the same shape a future Mod/CommunicationMod bridge should send to `/mod/state`, then requests a recommendation for the active decision.
-
-Replay bridge scenarios with a delay so the web overlay updates like a live companion:
-
-```bash
-python scripts/bridge_demo_player.py --delay 3 --loops 1
-```
-
-Verify the full local bridge path in one command. This starts a temporary API server, connects to `/ws`, posts `/mod/recommend` payloads for card, relic, shop, pathing, and combat scenarios, and checks that both `state_updated` and `recommendation` events are broadcast for the overlay:
-
-```bash
-python scripts/check_live_bridge.py --data data/public_full_data.json --all-scenarios
-```
-
-For Mod clients, the shortest path is the one-shot endpoint:
-
-```text
-POST /mod/recommend
-```
-
-It accepts a game-state snapshot plus the active decision options, then broadcasts both state and recommendation updates to the overlay.
-
-## Resume-Oriented Targets
-
-The current repository implements a runnable first version with real public data, local graph fallback, a FastAPI bridge, WebSocket overlay updates, and deterministic scoring. The next high-value work is to deepen evaluation and game-side integration:
-
-- 600+ entities and 1400+ graph relationships.
-- 200+ labeled evaluation cases.
-- P95 recommendation latency below 500ms for non-LLM recommendations.
-- Comparison report: rules only vs pure LLM vs vector RAG vs GraphRAG + scoring.
-- Thin Java/CommunicationMod bridge that posts live game state into `/mod/recommend`.
-
-## Current Status
-
-Implemented:
-
-- UTF-8 schema plus real public data snapshot for cards, relics, potions, enemies, mechanics, shops, and path nodes.
-- Agentic GraphRAG workflow.
-- Structured scoring and explanations.
-- Neo4j ingestion script and local fallback.
-- FastAPI, WebSocket, mod-state bridge contract, and compact overlay HUD.
-- CommunicationMod-style adapter with offline debug mode.
-- Data validation, graph fixture checks, live bridge e2e check, and evaluation harness.
-- Shallow combat advisor for current hand, energy, incoming damage, enemy board, and defensive potion prompts.
-
-Still to expand:
-
-- Base-game event coverage and live-game validation for a few enemy/minion variants.
-- Larger strategy/evaluation knowledge base.
-- Real ModTheSpire/BaseMod bridge or direct CommunicationMod integration.
-- Deeper combat search, exact card text parsing, and broader potion planning.
+- 结算器包装了 [bottled_ai](https://github.com/xaved88/bottled_ai) 的单回合计算模块（MIT 许可，Logan Bentley 与 Robert Aiking）。
+- 游戏状态来自 [CommunicationMod](https://github.com/ForgottenArbiter/CommunicationMod)。

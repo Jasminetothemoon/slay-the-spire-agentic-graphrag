@@ -1,0 +1,3 @@
+[submodule "third_party/bottled_ai"]
+	path = third_party/bottled_ai
+	url = https://github.com/xaved88/bottled_ai.git

@@ -1,0 +1,9 @@
+[project]
+name = "sts-advisor"
+version = "0.2.0.dev0"
+description = "杀戮尖塔局内助手 v2：LLM 做判断和讲解，程序提供计算工具并核对"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.setuptools.packages.find]
+include = ["sts_advisor*"]

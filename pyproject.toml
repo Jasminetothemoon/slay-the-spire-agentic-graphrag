@@ -3,7 +3,13 @@ name = "sts-advisor"
 version = "0.2.0.dev0"
 description = "杀戮尖塔局内助手 v2：LLM 做判断和讲解，程序提供计算工具并核对"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["openai>=3.50,<4"]  # 默认供应商 DeepSeek 用 OpenAI 格式的接口
+
+[project.optional-dependencies]
+claude = ["anthropic>=2.8,<3"]
 
 [tool.setuptools.packages.find]
 include = ["sts_advisor*"]
+
+[tool.setuptools.package-data]
+sts_advisor = ["knowledge/*.json"]

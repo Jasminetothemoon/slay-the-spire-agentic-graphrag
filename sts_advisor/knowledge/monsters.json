@@ -1,0 +1,130 @@
+{
+  "_about": {
+    "scope": "第一幕的精英和 Boss，进阶 0 的数值",
+    "source": "sts_lightspeed（https://github.com/gamerpuppy/sts_lightspeed，MIT）的 src/combat/MonsterSpecific.cpp、Monster.cpp、include/constants/MonsterIds.h。该项目按游戏的反编译逻辑复刻",
+    "checked": "2026-11-13 逐条读源码核对。没有对照真实游戏验证",
+    "key": "键是游戏内部的敌人编号，与 CommunicationMod 给出的 monsters[].id 一致"
+  },
+  "GremlinNob": {
+    "name_en": "Gremlin Nob",
+    "name_zh": "地精大块头",
+    "kind": "elite",
+    "act": 1,
+    "hp": [82, 86],
+    "starts_with": [],
+    "moves": [
+      {"name": "Bellow", "effect": "获得「激怒 2」：此后玩家每打出一张技能牌，它获得 2 点力量"},
+      {"name": "Rush", "damage": 14, "hits": 1},
+      {"name": "Skull Bash", "damage": 6, "hits": 1, "effect": "给玩家 2 层易伤"}
+    ],
+    "pattern_type": "random",
+    "pattern": "第一回合固定 Bellow。之后每回合约三分之一概率 Skull Bash，其余 Rush；Rush 不会连用三次，连用两次后下一回合必为 Skull Bash。",
+    "warnings": [
+      "它 Bellow 之后，每打一张技能牌都会让它永久加 2 点力量。防御牌多数是技能牌，所以这场要少打技能牌，优先用攻击牌尽快打死它。"
+    ]
+  },
+  "Lagavulin": {
+    "name_en": "Lagavulin",
+    "name_zh": "乐加维林",
+    "kind": "elite",
+    "act": 1,
+    "hp": [109, 111],
+    "starts_with": ["沉睡", "金属化 8：每回合结束获得 8 点格挡", "8 点格挡"],
+    "moves": [
+      {"name": "Sleep", "effect": "沉睡，不行动"},
+      {"name": "Attack", "damage": 18, "hits": 1},
+      {"name": "Siphon Soul", "effect": "玩家的力量和敏捷各减 1，持续到战斗结束"}
+    ],
+    "pattern_type": "scripted",
+    "pattern": "开场沉睡。受到未被格挡的伤害时醒来并失去金属化；没人打它的话，沉睡三个回合后自己醒来。醒来后循环：Attack、Attack、Siphon Soul。",
+    "warnings": [
+      "沉睡的三个回合是白送的准备时间：可以先打出成长类的牌，再开始攻击。",
+      "醒来后每三回合降一次力量和敏捷，并且不会恢复，拖得越久越难打。"
+    ]
+  },
+  "Sentry": {
+    "name_en": "Sentry",
+    "name_zh": "哨卫",
+    "kind": "elite",
+    "act": 1,
+    "hp": [38, 42],
+    "starts_with": ["人工制品 1：抵消它受到的第一个减益"],
+    "moves": [
+      {"name": "Bolt", "effect": "往玩家的弃牌堆塞 2 张晕眩。晕眩不能打出，占手牌位置"},
+      {"name": "Beam", "damage": 9, "hits": 1}
+    ],
+    "pattern_type": "scripted",
+    "pattern": "一场有三只。每只在 Bolt 和 Beam 之间交替。第一回合两侧的两只用 Bolt，中间那只用 Beam，之后各自交替。",
+    "warnings": [
+      "每回合都有哨卫往牌组里塞晕眩，手牌会越来越卡。群体伤害在这里很值钱。",
+      "先集中打死一只，能同时减少伤害和塞牌。"
+    ]
+  },
+  "SlimeBoss": {
+    "name_en": "Slime Boss",
+    "name_zh": "史莱姆老大",
+    "kind": "boss",
+    "act": 1,
+    "hp": [140, 140],
+    "starts_with": [],
+    "moves": [
+      {"name": "Goop Spray", "effect": "往玩家的弃牌堆塞 3 张黏液。黏液要花 1 点能量才能打出并消耗掉"},
+      {"name": "Preparing", "effect": "蓄力，不行动"},
+      {"name": "Slam", "damage": 35, "hits": 1},
+      {"name": "Split", "effect": "分裂成两只大史莱姆，每只的血量等于它分裂时的血量"}
+    ],
+    "pattern_type": "scripted",
+    "pattern": "循环：Goop Spray、Preparing、Slam。血量降到一半（70）或以下时，下一次行动改为 Split。",
+    "warnings": [
+      "分裂出的两只史莱姆各自继承分裂时的血量。所以接近半血时先停手：把它压在略高于 70 的位置，再用一回合的爆发把血量打得尽量低，分裂出来的史莱姆血就少。",
+      "Slam 一次 35，Preparing 那一回合是留出来准备格挡的。"
+    ]
+  },
+  "TheGuardian": {
+    "name_en": "The Guardian",
+    "name_zh": "守护者",
+    "kind": "boss",
+    "act": 1,
+    "hp": [240, 240],
+    "starts_with": ["形态转换 30：累计受到 30 点伤害后转入防御形态"],
+    "moves": [
+      {"name": "Charging Up", "effect": "获得 9 点格挡"},
+      {"name": "Fierce Bash", "damage": 32, "hits": 1},
+      {"name": "Vent Steam", "effect": "给玩家 2 层易伤和 2 层虚弱"},
+      {"name": "Whirlwind", "damage": 5, "hits": 4},
+      {"name": "Defensive Mode", "effect": "获得「尖刺外壳 3」：玩家每打出一张攻击牌，自己受到 3 点伤害"},
+      {"name": "Roll Attack", "damage": 9, "hits": 1},
+      {"name": "Twin Slam", "damage": 8, "hits": 2, "effect": "失去尖刺外壳，回到进攻形态；下一次形态转换需要的伤害增加 10"}
+    ],
+    "pattern_type": "scripted",
+    "pattern": "进攻形态循环：Charging Up、Fierce Bash、Vent Steam、Whirlwind。形态转换的计数被打到 0 时，它立刻获得 20 点格挡，并把下一次行动改为 Defensive Mode，之后依次是 Roll Attack、Twin Slam，再从 Whirlwind 接回进攻循环。",
+    "warnings": [
+      "打够形态转换的伤害会打断它原本要做的事。它正要 Fierce Bash（32 点）时把计数打到 0，这一击就不会出。",
+      "防御形态下它有尖刺外壳，每打一张攻击牌自己掉 3 血。这两回合少打攻击牌，尤其不要打很多张小攻击。"
+    ]
+  },
+  "Hexaghost": {
+    "name_en": "Hexaghost",
+    "name_zh": "六火亡魂",
+    "kind": "boss",
+    "act": 1,
+    "hp": [250, 250],
+    "starts_with": [],
+    "moves": [
+      {"name": "Activate", "effect": "不行动，并按玩家此刻的血量定下 Divider 的伤害"},
+      {"name": "Divider", "hits": 6, "effect": "每段伤害 = 玩家在它 Activate 时的血量 ÷ 12（向下取整）+ 1，共 6 段"},
+      {"name": "Sear", "damage": 6, "hits": 1, "effect": "往玩家的弃牌堆塞 1 张灼伤"},
+      {"name": "Tackle", "damage": 5, "hits": 2},
+      {"name": "Inflame", "effect": "获得 12 点格挡和 2 点力量"},
+      {"name": "Inferno", "damage": 2, "hits": 6}
+    ],
+    "pattern_type": "scripted",
+    "pattern": "第一回合 Activate，第二回合 Divider。之后固定循环七招：Sear、Tackle、Sear、Inflame、Tackle、Sear、Inferno。",
+    "warnings": [
+      "Divider 的伤害取决于第一回合时你的血量：血越多打得越疼。满血 80 时是 7×6 共 42 点。",
+      "它的招式顺序完全固定，可以提前算好哪一回合要防、哪一回合可以放手输出。",
+      "Inflame 会让它之后每一段攻击都多 2 点伤害，多段攻击受影响最大。"
+    ],
+    "not_checked": ["Inferno 和后期 Sear 对灼伤牌的强化细节没有核对"]
+  }
+}

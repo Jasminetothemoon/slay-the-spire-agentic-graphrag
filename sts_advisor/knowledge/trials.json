@@ -1,0 +1,28 @@
+{
+  "_about": {
+    "what": "考验表：每一幕里最容易让牌组过不去的敌人，以及它考验牌组的哪项能力",
+    "source": "docs/v2_design.md 改动点 6 的考验表示例，依据是高手社区「按幕解决问题」的说法（多为二手转述）",
+    "status": "初始设定，没有校准过。只有第一幕；本幕 Boss 另按游戏状态里的 act_boss 加入",
+    "metric": "用体检结果里的哪个数来估算打死它要几回合：avg_damage 是单体伤害，avg_aoe_damage 是对多个目标的总伤害"
+  },
+  "1": [
+    {
+      "monster_id": "GremlinNob",
+      "count": 1,
+      "metric": "avg_damage",
+      "needs": "前期伤害，并且不依赖技能牌：它会因为你打技能牌而变强"
+    },
+    {
+      "monster_id": "Lagavulin",
+      "count": 1,
+      "metric": "avg_damage",
+      "needs": "前期伤害，或者能利用它沉睡的几个回合铺好成长"
+    },
+    {
+      "monster_id": "Sentry",
+      "count": 3,
+      "metric": "avg_aoe_damage",
+      "needs": "群伤：一场三只，并且不断往牌组里塞废牌"
+    }
+  ]
+}

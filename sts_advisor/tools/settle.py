@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -24,9 +25,13 @@ from sts_advisor.ingest.visible_state import VisibleState
 
 BOTTLED_ROOT = Path(__file__).resolve().parents[2] / "third_party" / "bottled_ai"
 
-# bottled_ai 按英文显示名识别遗物和药水。游戏状态里的内部编号绝大多数就是英文名；
-# 个别不一致的在这里登记：内部编号 -> bottled_ai 认识的名字。发现一个补一个。
-RELIC_ID_TO_BOTTLED_NAME: dict[str, str] = {}
+# bottled_ai 按英文显示名识别遗物和药水，而游戏状态里可靠的是内部编号（显示名随客户端语言变）。
+# 180 个遗物里有 45 个的内部编号和显示名不同，对照表在 knowledge/relic_names.json。
+with open(Path(__file__).resolve().parents[1] / "knowledge" / "relic_names.json", encoding="utf-8") as _f:
+    _RELIC_NAMES = json.load(_f)
+RELIC_ID_TO_BOTTLED_NAME: dict[str, str] = _RELIC_NAMES["rename"]
+RELICS_NOT_IMPLEMENTED: frozenset[str] = frozenset(_RELIC_NAMES["not_implemented"])
+# 药水的内部编号和显示名是否都一致，还没有核对过。发现不一致的在这里登记。
 POTION_ID_TO_BOTTLED_NAME: dict[str, str] = {}
 
 
@@ -99,6 +104,24 @@ def _monsters(bs) -> list[dict[str, Any]]:
     return [{"name": m.name, "hp": m.current_hp, "block": m.block, "gone": bool(m.is_gone)} for m in bs.monsters]
 
 
+def _hand_labels(hand_raw: list[dict[str, Any]]) -> list[str]:
+    """手牌的标签用游戏里的内部编号，这样结算器不认识的牌也叫得出名字。"""
+    return [_label(raw["id"], raw.get("upgrades", 0)) for raw in hand_raw]
+
+
+def _advance(bs, labels: list[str], idx: int, target: int, first: bool) -> list[str]:
+    """打出一张牌，并返回更新后的手牌标签。
+    出牌后手牌会变：打出的牌离开，抽到的牌用占位牌表示。"""
+    kept = {id(card): label for card, label in zip(bs.hand, labels)}
+    bs.transform_from_play((idx, target), is_first_play=first)
+    return [kept.get(id(card), _label(card.id.value, card.upgrade)) for card in bs.hand]
+
+
+def all_enemies_dead(result: "SettleResult") -> bool:
+    """这串出牌打完之后，是否所有敌人都死了。"""
+    return bool(result.monsters_after) and all(m["hp"] <= 0 or m["gone"] for m in result.monsters_after)
+
+
 def settle(state: VisibleState, plays: Sequence[Play]) -> SettleResult:
     """按顺序打出 plays，返回结果。只接受战斗中的可见状态。"""
     if state.combat is None:
@@ -121,8 +144,7 @@ def settle(state: VisibleState, plays: Sequence[Play]) -> SettleResult:
     )
     hp_before = bs.player.current_hp
 
-    # 手牌的标签：认识的牌用 bottled_ai 的编号，不认识的保留游戏里的内部编号，方便报错
-    labels = [_label(raw["id"], raw.get("upgrades", 0)) for raw in hand_raw]
+    labels = _hand_labels(hand_raw)
 
     for step, play in enumerate(plays):
         want = play.card.lower()
@@ -145,11 +167,7 @@ def settle(state: VisibleState, plays: Sequence[Play]) -> SettleResult:
                 result.reason = f"第 {step + 1} 步：{play.card} 现在打不出，剩余能量 {bs.player.energy}"
             return result
 
-        hand_ids_before = [id(c) for c in bs.hand]
-        bs.transform_from_play((idx, target), is_first_play=(step == 0))
-        # 出牌后手牌会变（打出的牌离开、抽到的牌用占位牌表示），同步更新标签
-        kept = {cid: lab for cid, lab in zip(hand_ids_before, labels)}
-        labels = [kept.get(id(c), _label(c.id.value, c.upgrade)) for c in bs.hand]
+        labels = _advance(bs, labels, idx, target, first=(step == 0))
 
     result.monsters_after = _monsters(bs)
     result.killed = [
